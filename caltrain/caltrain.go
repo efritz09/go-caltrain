@@ -1,17 +1,24 @@
 // caltrain provides a user API for getting live caltrain updates
 package caltrain
 
-import "time"
+import (
+	"context"
+	"fmt"
+	"net/http"
+	"time"
+)
 
 type Caltrain struct {
 	stations  map[string]station // map of station name to station information
 	timetable *timeTable
 }
 
-func New() *Caltrain {
+func New(key string) *Caltrain {
 	return &Caltrain{
 		stations:  getStations(),
 		timetable: newTimeTable(),
+
+		key: key,
 	}
 }
 
@@ -51,5 +58,30 @@ func (c *Caltrain) GetTrainsBetweenStations(a, b string) ([]*TrainStatus, error)
 // UpdateTimeTable should be called once per day to update the day's timetable
 func (c *Caltrain) UpdateTimeTable() error {
 	// TODO: implement in the future
+	return nil
+}
+
+func (c *Caltrain) get(ctx context.Context, url string, query map[string]string) error {
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	if err != nil {
+		return err
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+
+	// update the url with the required query parameters
+	q := req.URL.Query()
+	for k, v := range query {
+		q.Add(k, v)
+	}
+	req.URL.RawQuery = q.Encode()
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("resp:\n%+v\n", resp)
 	return nil
 }
