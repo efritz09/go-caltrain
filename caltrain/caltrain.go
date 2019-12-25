@@ -5,20 +5,22 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 )
 
 type Caltrain struct {
-	stations  map[string]station // map of station name to station information
+	stations  stations // station information struct
 	timetable *timeTable
+
+	key string // API key for 511.org
 }
 
 func New(key string) *Caltrain {
 	return &Caltrain{
 		stations:  getStations(),
 		timetable: newTimeTable(),
-
-		key: key,
+		key:       key,
 	}
 }
 
@@ -30,14 +32,40 @@ type TrainStatus struct {
 }
 
 // GetDelays returns a list of delayed trains and their information
-func (c *Caltrain) GetDelays() ([]*TrainStatus, error) {
-	// TODO: implement
+func (c *Caltrain) GetDelays(ctx context.Context) ([]*TrainStatus, error) {
+	query := map[string]string{
+		"agency":  "CT",
+		"api_key": c.key,
+	}
+	url := baseURL + "StopMonitoring"
+	resp, err := c.get(ctx, url, query)
+	if err != nil {
+		return nil, fmt.Errorf("failed to make request: %w", err)
+	}
+	fmt.Printf("resp:\n%+v\n", resp)
+
 	return nil, nil
 }
 
 // GetStationStatus returns the status of upcoming trains for a given station
-func (c *Caltrain) GetStationStatus(stationName string) ([]*TrainStatus, error) {
-	// TODO: implement
+// and direction. Direction should be caltrain.North or caltrain.South
+func (c *Caltrain) GetStationStatus(ctx context.Context, stationName string, direction string) ([]*TrainStatus, error) {
+	code, err := c.stations.getCode(stationName, direction)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get station code: %w", err)
+	}
+	query := map[string]string{
+		"agency":   "CT",
+		"stopCode": strconv.Itoa(code),
+		"api_key":  c.key,
+	}
+	url := baseURL + "StopMonitoring"
+	resp, err := c.get(ctx, url, query)
+	if err != nil {
+		return nil, fmt.Errorf("failed to make request: %w", err)
+	}
+	fmt.Printf("resp:\n%+v\n", resp)
+
 	return nil, nil
 }
 
@@ -61,10 +89,10 @@ func (c *Caltrain) UpdateTimeTable() error {
 	return nil
 }
 
-func (c *Caltrain) get(ctx context.Context, url string, query map[string]string) error {
+func (c *Caltrain) get(ctx context.Context, url string, query map[string]string) (*http.Response, error) {
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	req.Header.Set("Content-Type", "application/json")
@@ -79,9 +107,7 @@ func (c *Caltrain) get(ctx context.Context, url string, query map[string]string)
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return err
+		return nil, err
 	}
-
-	fmt.Printf("resp:\n%+v\n", resp)
-	return nil
+	return resp, nil
 }
