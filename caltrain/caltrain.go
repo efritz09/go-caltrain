@@ -33,7 +33,7 @@ type TrainStatus struct {
 }
 
 // GetDelays returns a list of delayed trains and their information
-func (c *Caltrain) GetDelays(ctx context.Context) ([]*TrainStatus, error) {
+func (c *Caltrain) GetDelays(ctx context.Context) ([]TrainStatus, error) {
 	query := map[string]string{
 		"agency":  "CT",
 		"api_key": c.key,
@@ -50,12 +50,16 @@ func (c *Caltrain) GetDelays(ctx context.Context) ([]*TrainStatus, error) {
 		return nil, fmt.Errorf("failed to ready body: %w", err)
 	}
 	fmt.Println(string(body))
-	return nil, nil
+
+	// Now parse the body json string
+	ret := []TrainStatus{}
+
+	return ret, nil
 }
 
 // GetStationStatus returns the status of upcoming trains for a given station
 // and direction. Direction should be caltrain.North or caltrain.South
-func (c *Caltrain) GetStationStatus(ctx context.Context, stationName string, direction string) ([]*TrainStatus, error) {
+func (c *Caltrain) GetStationStatus(ctx context.Context, stationName string, direction string) ([]TrainStatus, error) {
 	code, err := c.stations.getCode(stationName, direction)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get station code: %w", err)
@@ -78,7 +82,10 @@ func (c *Caltrain) GetStationStatus(ctx context.Context, stationName string, dir
 	}
 	fmt.Println(string(body))
 
-	return nil, nil
+	// Now parse the body json string
+	ret := []TrainStatus{}
+
+	return ret, nil
 }
 
 // // GetTimeTable returns the time table for the current day for all stations
