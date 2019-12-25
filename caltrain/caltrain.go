@@ -4,6 +4,7 @@ package caltrain
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"strconv"
 	"time"
@@ -44,6 +45,11 @@ func (c *Caltrain) GetDelays(ctx context.Context) ([]*TrainStatus, error) {
 	}
 	fmt.Printf("resp:\n%+v\n", resp)
 
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to ready body: %w", err)
+	}
+	fmt.Println(string(body))
 	return nil, nil
 }
 
@@ -65,6 +71,12 @@ func (c *Caltrain) GetStationStatus(ctx context.Context, stationName string, dir
 		return nil, fmt.Errorf("failed to make request: %w", err)
 	}
 	fmt.Printf("resp:\n%+v\n", resp)
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to ready body: %w", err)
+	}
+	fmt.Println(string(body))
 
 	return nil, nil
 }

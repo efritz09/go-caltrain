@@ -25,6 +25,7 @@ func main() {
 		panic(err)
 	}
 	fmt.Println(s)
+	fmt.Println()
 
 	fmt.Println("Calling GetStationStatus on Hillsdale South")
 	s, err = c.GetStationStatus(ctx, caltrain.StationHillsdale, caltrain.South)
