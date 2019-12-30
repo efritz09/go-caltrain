@@ -47,13 +47,11 @@ func (c *Caltrain) GetDelays(ctx context.Context) ([]Train, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to make request: %w", err)
 	}
-	fmt.Printf("resp:\n%+v\n", resp)
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, fmt.Errorf("failed to ready body: %w", err)
 	}
-	fmt.Println(string(body))
 
 	// Now parse the body json string
 	return parseDelays(body, c.DelayThreshold)
@@ -77,13 +75,11 @@ func (c *Caltrain) GetStationStatus(ctx context.Context, stationName string, dir
 	if err != nil {
 		return nil, fmt.Errorf("failed to make request: %w", err)
 	}
-	fmt.Printf("resp:\n%+v\n", resp)
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, fmt.Errorf("failed to ready body: %w", err)
 	}
-	fmt.Println(string(body))
 
 	// Now parse the body json string
 	return getTrains(body)
