@@ -28,7 +28,7 @@ func New(key string) *Caltrain {
 	}
 }
 
-type TrainStatus struct {
+type Train struct {
 	number    string        // train number
 	nextStop  string        // stop for information
 	direction string        // North or South
@@ -37,7 +37,7 @@ type TrainStatus struct {
 }
 
 // GetDelays returns a list of delayed trains and their information
-func (c *Caltrain) GetDelays(ctx context.Context) ([]TrainStatus, error) {
+func (c *Caltrain) GetDelays(ctx context.Context) ([]Train, error) {
 	query := map[string]string{
 		"agency":  "CT",
 		"api_key": c.key,
@@ -56,14 +56,13 @@ func (c *Caltrain) GetDelays(ctx context.Context) ([]TrainStatus, error) {
 	fmt.Println(string(body))
 
 	// Now parse the body json string
-	ret := []TrainStatus{}
+	return parseDelays(body, c.DelayThreshold)
 
-	return ret, nil
 }
 
 // GetStationStatus returns the status of upcoming trains for a given station
 // and direction. Direction should be caltrain.North or caltrain.South
-func (c *Caltrain) GetStationStatus(ctx context.Context, stationName string, direction string) ([]TrainStatus, error) {
+func (c *Caltrain) GetStationStatus(ctx context.Context, stationName string, direction string) ([]Train, error) {
 	code, err := c.stations.getCode(stationName, direction)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get station code: %w", err)
@@ -87,9 +86,7 @@ func (c *Caltrain) GetStationStatus(ctx context.Context, stationName string, dir
 	fmt.Println(string(body))
 
 	// Now parse the body json string
-	ret := []TrainStatus{}
-
-	return ret, nil
+	return getTrains(body)
 }
 
 // // GetTimeTable returns the time table for the current day for all stations
@@ -101,7 +98,7 @@ func (c *Caltrain) GetStationStatus(ctx context.Context, stationName string, dir
 // GetTrainsBetweenStations returns a list of all trains that go from a to b.
 // Trains with statuses available will include the status. This relies on the
 // accuracy of the timetable.
-func (c *Caltrain) GetTrainsBetweenStations(a, b string) ([]*TrainStatus, error) {
+func (c *Caltrain) GetTrainsBetweenStations(a, b string) ([]*Train, error) {
 	// TODO: implement in the future
 	return nil, nil
 }
