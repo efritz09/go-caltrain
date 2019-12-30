@@ -15,21 +15,25 @@ type Caltrain struct {
 	timetable *timeTable
 
 	key string // API key for 511.org
+
+	DelayThreshold time.Duration // delay time to allow before warning user
 }
 
 func New(key string) *Caltrain {
 	return &Caltrain{
-		stations:  getStations(),
-		timetable: newTimeTable(),
-		key:       key,
+		stations:       getStations(),
+		timetable:      newTimeTable(),
+		key:            key,
+		DelayThreshold: defaultDelayThreshold,
 	}
 }
 
 type TrainStatus struct {
-	number    int
-	nextStop  station
-	direction string
-	delay     time.Duration
+	number    string        // train number
+	nextStop  string        // stop for information
+	direction string        // North or South
+	delay     time.Duration // time behind schedule
+	line      string        // bullet, limited, etc.
 }
 
 // GetDelays returns a list of delayed trains and their information

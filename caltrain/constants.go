@@ -1,12 +1,20 @@
 package caltrain
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 const (
-	baseURL = "http://api.511.org/transit/"
+	baseURL               = "http://api.511.org/transit/"
+	defaultDelayThreshold = 10 * time.Minute
 
 	North = "North"
 	South = "South"
+
+	Bullet  = "Bullet"
+	Limited = "Limited"
+	Local   = "Local"
 
 	// public station constants
 	Station22ndStreet   = "22nd Street"
