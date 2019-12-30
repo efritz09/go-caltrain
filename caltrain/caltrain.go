@@ -10,7 +10,12 @@ import (
 	"time"
 )
 
-type Caltrain struct {
+type Caltrain interface {
+	GetDelays(context.Context) ([]Train, error)
+	GetStationStatus(context.Context, string, string) ([]Train, error)
+}
+
+type CaltrainClient struct {
 	stations  stations // station information struct
 	timetable *timeTable
 
@@ -19,8 +24,8 @@ type Caltrain struct {
 	DelayThreshold time.Duration // delay time to allow before warning user
 }
 
-func New(key string) *Caltrain {
-	return &Caltrain{
+func New(key string) *CaltrainClient {
+	return &CaltrainClient{
 		stations:       getStations(),
 		timetable:      newTimeTable(),
 		key:            key,
@@ -37,7 +42,7 @@ type Train struct {
 }
 
 // GetDelays returns a list of delayed trains and their information
-func (c *Caltrain) GetDelays(ctx context.Context) ([]Train, error) {
+func (c *CaltrainClient) GetDelays(ctx context.Context) ([]Train, error) {
 	query := map[string]string{
 		"agency":  "CT",
 		"api_key": c.key,
@@ -60,7 +65,7 @@ func (c *Caltrain) GetDelays(ctx context.Context) ([]Train, error) {
 
 // GetStationStatus returns the status of upcoming trains for a given station
 // and direction. Direction should be caltrain.North or caltrain.South
-func (c *Caltrain) GetStationStatus(ctx context.Context, stationName string, direction string) ([]Train, error) {
+func (c *CaltrainClient) GetStationStatus(ctx context.Context, stationName string, direction string) ([]Train, error) {
 	code, err := c.stations.getCode(stationName, direction)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get station code: %w", err)
@@ -86,7 +91,7 @@ func (c *Caltrain) GetStationStatus(ctx context.Context, stationName string, dir
 }
 
 // // GetTimeTable returns the time table for the current day for all stations
-// func (c *Caltrain) GetTimeTable() (*TimeTable, error) {
+// func (c *CaltrainClient) GetTimeTable() (*TimeTable, error) {
 // 	// TODO: implement
 // 	return nil, nil
 // }
@@ -94,18 +99,18 @@ func (c *Caltrain) GetStationStatus(ctx context.Context, stationName string, dir
 // GetTrainsBetweenStations returns a list of all trains that go from a to b.
 // Trains with statuses available will include the status. This relies on the
 // accuracy of the timetable.
-func (c *Caltrain) GetTrainsBetweenStations(a, b string) ([]*Train, error) {
+func (c *CaltrainClient) GetTrainsBetweenStations(a, b string) ([]*Train, error) {
 	// TODO: implement in the future
 	return nil, nil
 }
 
 // UpdateTimeTable should be called once per day to update the day's timetable
-func (c *Caltrain) UpdateTimeTable() error {
+func (c *CaltrainClient) UpdateTimeTable() error {
 	// TODO: implement in the future
 	return nil
 }
 
-func (c *Caltrain) get(ctx context.Context, url string, query map[string]string) (*http.Response, error) {
+func (c *CaltrainClient) get(ctx context.Context, url string, query map[string]string) (*http.Response, error) {
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
 		return nil, err
