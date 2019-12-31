@@ -1,0 +1,698 @@
+{
+  "ServiceDelivery": {
+    "ResponseTimestamp": "2019-12-31T02:31:16Z",
+    "ProducerRef": "CT",
+    "Status": true,
+    "StopMonitoringDelivery": {
+      "version": "1.4",
+      "ResponseTimestamp": "2019-12-31T02:31:16Z",
+      "Status": true,
+      "MonitoredStopVisit": [
+        {
+          "RecordedAtTime": "2019-12-31T02:31:01Z",
+          "MonitoringRef": "70061",
+          "MonitoredVehicleJourney": {
+            "LineRef": "Bullet",
+            "DirectionRef": "North",
+            "FramedVehicleJourneyRef": {
+              "DataFrameRef": "2019-12-30",
+              "DatedVehicleJourneyRef": "381"
+            },
+            "PublishedLineName": "Baby Bullet",
+            "OperatorRef": "CT",
+            "OriginRef": "70261",
+            "OriginName": "San Jose Diridon Caltrain",
+            "DestinationRef": "70011",
+            "DestinationName": "San Francisco Caltrain Station",
+            "Monitored": true,
+            "InCongestion": null,
+            "VehicleLocation": {
+              "Longitude": "-122.386391",
+              "Latitude": "37.5994911"
+            },
+            "Bearing": null,
+            "Occupancy": null,
+            "VehicleRef": "381",
+            "MonitoredCall": {
+              "StopPointRef": "70061",
+              "StopPointName": "Millbrae Caltrain",
+              "VehicleLocationAtStop": "",
+              "VehicleAtStop": "",
+              "AimedArrivalTime": "2019-12-31T02:32:00Z",
+              "ExpectedArrivalTime": "2019-12-31T02:27:30Z",
+              "AimedDepartureTime": "2019-12-31T02:32:00Z",
+              "ExpectedDepartureTime": "2019-12-31T02:32:00Z",
+              "Distances": ""
+            }
+          }
+        },
+        {
+          "RecordedAtTime": "2019-12-31T02:31:01Z",
+          "MonitoringRef": "70012",
+          "MonitoredVehicleJourney": {
+            "LineRef": "Limited",
+            "DirectionRef": "South",
+            "FramedVehicleJourneyRef": {
+              "DataFrameRef": "2019-12-30",
+              "DatedVehicleJourneyRef": "284"
+            },
+            "PublishedLineName": "Limited",
+            "OperatorRef": "CT",
+            "OriginRef": "70012",
+            "OriginName": "San Francisco Caltrain",
+            "DestinationRef": "70262",
+            "DestinationName": "San Jose Diridon Caltrain Station",
+            "Monitored": true,
+            "InCongestion": null,
+            "VehicleLocation": {
+              "Longitude": "-122.396408",
+              "Latitude": "37.775631"
+            },
+            "Bearing": null,
+            "Occupancy": null,
+            "VehicleRef": "284",
+            "MonitoredCall": {
+              "StopPointRef": "70012",
+              "StopPointName": "San Francisco Caltrain",
+              "VehicleLocationAtStop": "",
+              "VehicleAtStop": "",
+              "AimedArrivalTime": "2019-12-31T02:32:00Z",
+              "ExpectedArrivalTime": null,
+              "AimedDepartureTime": "2019-12-31T02:32:00Z",
+              "ExpectedDepartureTime": "2019-12-31T02:32:00Z",
+              "Distances": ""
+            }
+          }
+        },
+        {
+          "RecordedAtTime": "2019-12-31T02:31:01Z",
+          "MonitoringRef": "70272",
+          "MonitoredVehicleJourney": {
+            "LineRef": "Limited",
+            "DirectionRef": "South",
+            "FramedVehicleJourneyRef": {
+              "DataFrameRef": "2019-12-30",
+              "DatedVehicleJourneyRef": "268"
+            },
+            "PublishedLineName": "Limited",
+            "OperatorRef": "CT",
+            "OriginRef": "70012",
+            "OriginName": "San Francisco Caltrain",
+            "DestinationRef": "70322",
+            "DestinationName": "Gilroy Caltrain Station",
+            "Monitored": true,
+            "InCongestion": null,
+            "VehicleLocation": {
+              "Longitude": "-121.888008",
+              "Latitude": "37.3166084"
+            },
+            "Bearing": null,
+            "Occupancy": null,
+            "VehicleRef": "268",
+            "MonitoredCall": {
+              "StopPointRef": "70272",
+              "StopPointName": "Tamien Caltrain",
+              "VehicleLocationAtStop": "",
+              "VehicleAtStop": "",
+              "AimedArrivalTime": "2019-12-31T02:31:00Z",
+              "ExpectedArrivalTime": "2019-12-31T02:31:10Z",
+              "AimedDepartureTime": "2019-12-31T02:31:00Z",
+              "ExpectedDepartureTime": "2019-12-31T02:32:10Z",
+              "Distances": ""
+            }
+          }
+        },
+        {
+          "RecordedAtTime": "2019-12-31T02:31:01Z",
+          "MonitoringRef": "70131",
+          "MonitoredVehicleJourney": {
+            "LineRef": "Limited",
+            "DirectionRef": "North",
+            "FramedVehicleJourneyRef": {
+              "DataFrameRef": "2019-12-30",
+              "DatedVehicleJourneyRef": "279"
+            },
+            "PublishedLineName": "Limited",
+            "OperatorRef": "CT",
+            "OriginRef": "70271",
+            "OriginName": "Tamien Caltrain",
+            "DestinationRef": "70011",
+            "DestinationName": "San Francisco Caltrain Station",
+            "Monitored": true,
+            "InCongestion": null,
+            "VehicleLocation": {
+              "Longitude": "-122.231209",
+              "Latitude": "37.4856796"
+            },
+            "Bearing": null,
+            "Occupancy": null,
+            "VehicleRef": "279",
+            "MonitoredCall": {
+              "StopPointRef": "70131",
+              "StopPointName": "San Carlos Caltrain",
+              "VehicleLocationAtStop": "",
+              "VehicleAtStop": "",
+              "AimedArrivalTime": "2019-12-31T02:33:00Z",
+              "ExpectedArrivalTime": "2019-12-31T02:32:21Z",
+              "AimedDepartureTime": "2019-12-31T02:33:00Z",
+              "ExpectedDepartureTime": "2019-12-31T02:33:21Z",
+              "Distances": ""
+            }
+          }
+        },
+        {
+          "RecordedAtTime": "2019-12-31T02:31:01Z",
+          "MonitoringRef": "70062",
+          "MonitoredVehicleJourney": {
+            "LineRef": "Bullet",
+            "DirectionRef": "South",
+            "FramedVehicleJourneyRef": {
+              "DataFrameRef": "2019-12-30",
+              "DatedVehicleJourneyRef": "380"
+            },
+            "PublishedLineName": "Baby Bullet",
+            "OperatorRef": "CT",
+            "OriginRef": "70012",
+            "OriginName": "San Francisco Caltrain",
+            "DestinationRef": "70262",
+            "DestinationName": "San Jose Diridon Caltrain Station",
+            "Monitored": true,
+            "InCongestion": null,
+            "VehicleLocation": {
+              "Longitude": "-122.412483",
+              "Latitude": "37.6318283"
+            },
+            "Bearing": null,
+            "Occupancy": null,
+            "VehicleRef": "380",
+            "MonitoredCall": {
+              "StopPointRef": "70062",
+              "StopPointName": "Millbrae Caltrain",
+              "VehicleLocationAtStop": "",
+              "VehicleAtStop": "",
+              "AimedArrivalTime": "2019-12-31T02:34:00Z",
+              "ExpectedArrivalTime": "2019-12-31T02:32:27Z",
+              "AimedDepartureTime": "2019-12-31T02:34:00Z",
+              "ExpectedDepartureTime": "2019-12-31T02:34:00Z",
+              "Distances": ""
+            }
+          }
+        },
+        {
+          "RecordedAtTime": "1970-01-01T00:00:00Z",
+          "MonitoringRef": "70261",
+          "MonitoredVehicleJourney": {
+            "LineRef": "Limited",
+            "DirectionRef": "North",
+            "FramedVehicleJourneyRef": {
+              "DataFrameRef": "2019-12-30",
+              "DatedVehicleJourneyRef": "287"
+            },
+            "PublishedLineName": "Limited",
+            "OperatorRef": "CT",
+            "OriginRef": "70261",
+            "OriginName": "San Jose Diridon Caltrain",
+            "DestinationRef": "70011",
+            "DestinationName": "San Francisco Caltrain Station",
+            "Monitored": true,
+            "InCongestion": null,
+            "VehicleLocation": {
+              "Longitude": "",
+              "Latitude": ""
+            },
+            "Bearing": null,
+            "Occupancy": null,
+            "VehicleRef": null,
+            "MonitoredCall": {
+              "StopPointRef": "70261",
+              "StopPointName": "San Jose Diridon Caltrain",
+              "VehicleLocationAtStop": "",
+              "VehicleAtStop": "",
+              "AimedArrivalTime": "2019-12-31T02:35:00Z",
+              "ExpectedArrivalTime": null,
+              "AimedDepartureTime": "2019-12-31T02:35:00Z",
+              "ExpectedDepartureTime": "2019-12-31T02:35:00Z",
+              "Distances": ""
+            }
+          }
+        },
+        {
+          "RecordedAtTime": "2019-12-31T02:31:01Z",
+          "MonitoringRef": "70022",
+          "MonitoredVehicleJourney": {
+            "LineRef": "Limited",
+            "DirectionRef": "South",
+            "FramedVehicleJourneyRef": {
+              "DataFrameRef": "2019-12-30",
+              "DatedVehicleJourneyRef": "284"
+            },
+            "PublishedLineName": "Limited",
+            "OperatorRef": "CT",
+            "OriginRef": "70012",
+            "OriginName": "San Francisco Caltrain",
+            "DestinationRef": "70262",
+            "DestinationName": "San Jose Diridon Caltrain Station",
+            "Monitored": true,
+            "InCongestion": null,
+            "VehicleLocation": {
+              "Longitude": "-122.396408",
+              "Latitude": "37.775631"
+            },
+            "Bearing": null,
+            "Occupancy": null,
+            "VehicleRef": "284",
+            "MonitoredCall": {
+              "StopPointRef": "70022",
+              "StopPointName": "22nd Street Caltrain",
+              "VehicleLocationAtStop": "",
+              "VehicleAtStop": "",
+              "AimedArrivalTime": "2019-12-31T02:36:00Z",
+              "ExpectedArrivalTime": "2019-12-31T02:35:45Z",
+              "AimedDepartureTime": "2019-12-31T02:36:00Z",
+              "ExpectedDepartureTime": "2019-12-31T02:36:00Z",
+              "Distances": ""
+            }
+          }
+        },
+        {
+          "RecordedAtTime": "2019-12-31T02:31:01Z",
+          "MonitoringRef": "70021",
+          "MonitoredVehicleJourney": {
+            "LineRef": "Limited",
+            "DirectionRef": "North",
+            "FramedVehicleJourneyRef": {
+              "DataFrameRef": "2019-12-30",
+              "DatedVehicleJourneyRef": "277"
+            },
+            "PublishedLineName": "Limited",
+            "OperatorRef": "CT",
+            "OriginRef": "70261",
+            "OriginName": "San Jose Diridon Caltrain",
+            "DestinationRef": "70011",
+            "DestinationName": "San Francisco Caltrain Station",
+            "Monitored": true,
+            "InCongestion": null,
+            "VehicleLocation": {
+              "Longitude": "-122.396477",
+              "Latitude": "37.6646805"
+            },
+            "Bearing": null,
+            "Occupancy": null,
+            "VehicleRef": "277",
+            "MonitoredCall": {
+              "StopPointRef": "70021",
+              "StopPointName": "22nd Street Caltrain",
+              "VehicleLocationAtStop": "",
+              "VehicleAtStop": "",
+              "AimedArrivalTime": "2019-12-31T02:37:00Z",
+              "ExpectedArrivalTime": "2019-12-31T02:35:12Z",
+              "AimedDepartureTime": "2019-12-31T02:37:00Z",
+              "ExpectedDepartureTime": "2019-12-31T02:37:00Z",
+              "Distances": ""
+            }
+          }
+        },
+        {
+          "RecordedAtTime": "2019-12-31T02:31:01Z",
+          "MonitoringRef": "70211",
+          "MonitoredVehicleJourney": {
+            "LineRef": "Bullet",
+            "DirectionRef": "North",
+            "FramedVehicleJourneyRef": {
+              "DataFrameRef": "2019-12-30",
+              "DatedVehicleJourneyRef": "385"
+            },
+            "PublishedLineName": "Baby Bullet",
+            "OperatorRef": "CT",
+            "OriginRef": "70261",
+            "OriginName": "San Jose Diridon Caltrain",
+            "DestinationRef": "70011",
+            "DestinationName": "San Francisco Caltrain Station",
+            "Monitored": true,
+            "InCongestion": null,
+            "VehicleLocation": {
+              "Longitude": "-121.95546",
+              "Latitude": "37.3617287"
+            },
+            "Bearing": null,
+            "Occupancy": null,
+            "VehicleRef": "385",
+            "MonitoredCall": {
+              "StopPointRef": "70211",
+              "StopPointName": "Mountain View Caltrain",
+              "VehicleLocationAtStop": "",
+              "VehicleAtStop": "",
+              "AimedArrivalTime": "2019-12-31T02:34:00Z",
+              "ExpectedArrivalTime": "2019-12-31T02:36:41Z",
+              "AimedDepartureTime": "2019-12-31T02:34:00Z",
+              "ExpectedDepartureTime": "2019-12-31T02:37:41Z",
+              "Distances": ""
+            }
+          }
+        },
+        {
+          "RecordedAtTime": "2019-12-31T02:31:01Z",
+          "MonitoringRef": "70012",
+          "MonitoredVehicleJourney": {
+            "LineRef": "Bullet",
+            "DirectionRef": "South",
+            "FramedVehicleJourneyRef": {
+              "DataFrameRef": "2019-12-30",
+              "DatedVehicleJourneyRef": "386"
+            },
+            "PublishedLineName": "Baby Bullet",
+            "OperatorRef": "CT",
+            "OriginRef": "70012",
+            "OriginName": "San Francisco Caltrain",
+            "DestinationRef": "70272",
+            "DestinationName": "Tamien Caltrain Station",
+            "Monitored": true,
+            "InCongestion": null,
+            "VehicleLocation": {
+              "Longitude": "-122.396431",
+              "Latitude": "37.7752991"
+            },
+            "Bearing": null,
+            "Occupancy": null,
+            "VehicleRef": "386",
+            "MonitoredCall": {
+              "StopPointRef": "70012",
+              "StopPointName": "San Francisco Caltrain",
+              "VehicleLocationAtStop": "",
+              "VehicleAtStop": "",
+              "AimedArrivalTime": "2019-12-31T02:38:00Z",
+              "ExpectedArrivalTime": null,
+              "AimedDepartureTime": "2019-12-31T02:38:00Z",
+              "ExpectedDepartureTime": "2019-12-31T02:38:00Z",
+              "Distances": ""
+            }
+          }
+        },
+        {
+          "RecordedAtTime": "2019-12-31T02:31:01Z",
+          "MonitoringRef": "70112",
+          "MonitoredVehicleJourney": {
+            "LineRef": "Bullet",
+            "DirectionRef": "South",
+            "FramedVehicleJourneyRef": {
+              "DataFrameRef": "2019-12-30",
+              "DatedVehicleJourneyRef": "380"
+            },
+            "PublishedLineName": "Baby Bullet",
+            "OperatorRef": "CT",
+            "OriginRef": "70012",
+            "OriginName": "San Francisco Caltrain",
+            "DestinationRef": "70262",
+            "DestinationName": "San Jose Diridon Caltrain Station",
+            "Monitored": true,
+            "InCongestion": null,
+            "VehicleLocation": {
+              "Longitude": "-122.412483",
+              "Latitude": "37.6318283"
+            },
+            "Bearing": null,
+            "Occupancy": null,
+            "VehicleRef": "380",
+            "MonitoredCall": {
+              "StopPointRef": "70112",
+              "StopPointName": "Hillsdale Caltrain",
+              "VehicleLocationAtStop": "",
+              "VehicleAtStop": "",
+              "AimedArrivalTime": "2019-12-31T02:44:00Z",
+              "ExpectedArrivalTime": "2019-12-31T02:40:47Z",
+              "AimedDepartureTime": "2019-12-31T02:44:00Z",
+              "ExpectedDepartureTime": "2019-12-31T02:44:00Z",
+              "Distances": ""
+            }
+          }
+        },
+        {
+          "RecordedAtTime": "2019-12-31T02:31:01Z",
+          "MonitoringRef": "70171",
+          "MonitoredVehicleJourney": {
+            "LineRef": "Bullet",
+            "DirectionRef": "North",
+            "FramedVehicleJourneyRef": {
+              "DataFrameRef": "2019-12-30",
+              "DatedVehicleJourneyRef": "385"
+            },
+            "PublishedLineName": "Baby Bullet",
+            "OperatorRef": "CT",
+            "OriginRef": "70261",
+            "OriginName": "San Jose Diridon Caltrain",
+            "DestinationRef": "70011",
+            "DestinationName": "San Francisco Caltrain Station",
+            "Monitored": true,
+            "InCongestion": null,
+            "VehicleLocation": {
+              "Longitude": "-121.95546",
+              "Latitude": "37.3617287"
+            },
+            "Bearing": null,
+            "Occupancy": null,
+            "VehicleRef": "385",
+            "MonitoredCall": {
+              "StopPointRef": "70171",
+              "StopPointName": "Palo Alto Caltrain",
+              "VehicleLocationAtStop": "",
+              "VehicleAtStop": "",
+              "AimedArrivalTime": "2019-12-31T02:42:00Z",
+              "ExpectedArrivalTime": "2019-12-31T02:43:39Z",
+              "AimedDepartureTime": "2019-12-31T02:42:00Z",
+              "ExpectedDepartureTime": "2019-12-31T02:44:39Z",
+              "Distances": ""
+            }
+          }
+        },
+        {
+          "RecordedAtTime": "1970-01-01T00:00:00Z",
+          "MonitoringRef": "70261",
+          "MonitoredVehicleJourney": {
+            "LineRef": "Local",
+            "DirectionRef": "North",
+            "FramedVehicleJourneyRef": {
+              "DataFrameRef": "2019-12-30",
+              "DatedVehicleJourneyRef": "191"
+            },
+            "PublishedLineName": "Local",
+            "OperatorRef": "CT",
+            "OriginRef": "70261",
+            "OriginName": "San Jose Diridon Caltrain",
+            "DestinationRef": "70011",
+            "DestinationName": "San Francisco Caltrain Station",
+            "Monitored": true,
+            "InCongestion": null,
+            "VehicleLocation": {
+              "Longitude": "",
+              "Latitude": ""
+            },
+            "Bearing": null,
+            "Occupancy": null,
+            "VehicleRef": null,
+            "MonitoredCall": {
+              "StopPointRef": "70261",
+              "StopPointName": "San Jose Diridon Caltrain",
+              "VehicleLocationAtStop": "",
+              "VehicleAtStop": "",
+              "AimedArrivalTime": "2019-12-31T03:07:00Z",
+              "ExpectedArrivalTime": null,
+              "AimedDepartureTime": "2019-12-31T03:07:00Z",
+              "ExpectedDepartureTime": "2019-12-31T03:07:00Z",
+              "Distances": ""
+            }
+          }
+        },
+        {
+          "RecordedAtTime": "1970-01-01T00:00:00Z",
+          "MonitoringRef": "70241",
+          "MonitoredVehicleJourney": {
+            "LineRef": "Local",
+            "DirectionRef": "North",
+            "FramedVehicleJourneyRef": {
+              "DataFrameRef": "2019-12-30",
+              "DatedVehicleJourneyRef": "191"
+            },
+            "PublishedLineName": "Local",
+            "OperatorRef": "CT",
+            "OriginRef": "70261",
+            "OriginName": "San Jose Diridon Caltrain",
+            "DestinationRef": "70011",
+            "DestinationName": "San Francisco Caltrain Station",
+            "Monitored": true,
+            "InCongestion": null,
+            "VehicleLocation": {
+              "Longitude": "",
+              "Latitude": ""
+            },
+            "Bearing": null,
+            "Occupancy": null,
+            "VehicleRef": null,
+            "MonitoredCall": {
+              "StopPointRef": "70241",
+              "StopPointName": "Santa Clara Caltrain",
+              "VehicleLocationAtStop": "",
+              "VehicleAtStop": "",
+              "AimedArrivalTime": "2019-12-31T03:12:00Z",
+              "ExpectedArrivalTime": "2019-12-31T03:11:45Z",
+              "AimedDepartureTime": "2019-12-31T03:12:00Z",
+              "ExpectedDepartureTime": "2019-12-31T03:12:00Z",
+              "Distances": ""
+            }
+          }
+        },
+        {
+          "RecordedAtTime": "1970-01-01T00:00:00Z",
+          "MonitoringRef": "70231",
+          "MonitoredVehicleJourney": {
+            "LineRef": "Local",
+            "DirectionRef": "North",
+            "FramedVehicleJourneyRef": {
+              "DataFrameRef": "2019-12-30",
+              "DatedVehicleJourneyRef": "191"
+            },
+            "PublishedLineName": "Local",
+            "OperatorRef": "CT",
+            "OriginRef": "70261",
+            "OriginName": "San Jose Diridon Caltrain",
+            "DestinationRef": "70011",
+            "DestinationName": "San Francisco Caltrain Station",
+            "Monitored": true,
+            "InCongestion": null,
+            "VehicleLocation": {
+              "Longitude": "",
+              "Latitude": ""
+            },
+            "Bearing": null,
+            "Occupancy": null,
+            "VehicleRef": null,
+            "MonitoredCall": {
+              "StopPointRef": "70231",
+              "StopPointName": "Lawrence Caltrain",
+              "VehicleLocationAtStop": "",
+              "VehicleAtStop": "",
+              "AimedArrivalTime": "2019-12-31T03:18:00Z",
+              "ExpectedArrivalTime": "2019-12-31T03:17:45Z",
+              "AimedDepartureTime": "2019-12-31T03:18:00Z",
+              "ExpectedDepartureTime": "2019-12-31T03:18:00Z",
+              "Distances": ""
+            }
+          }
+        },
+        {
+          "RecordedAtTime": "1970-01-01T00:00:00Z",
+          "MonitoringRef": "70012",
+          "MonitoredVehicleJourney": {
+            "LineRef": "Local",
+            "DirectionRef": "South",
+            "FramedVehicleJourneyRef": {
+              "DataFrameRef": "2019-12-30",
+              "DatedVehicleJourneyRef": "190"
+            },
+            "PublishedLineName": "Local",
+            "OperatorRef": "CT",
+            "OriginRef": "70012",
+            "OriginName": "San Francisco Caltrain",
+            "DestinationRef": "70262",
+            "DestinationName": "San Jose Diridon Caltrain Station",
+            "Monitored": true,
+            "InCongestion": null,
+            "VehicleLocation": {
+              "Longitude": "",
+              "Latitude": ""
+            },
+            "Bearing": null,
+            "Occupancy": null,
+            "VehicleRef": null,
+            "MonitoredCall": {
+              "StopPointRef": "70012",
+              "StopPointName": "San Francisco Caltrain",
+              "VehicleLocationAtStop": "",
+              "VehicleAtStop": "",
+              "AimedArrivalTime": "2019-12-31T03:30:00Z",
+              "ExpectedArrivalTime": null,
+              "AimedDepartureTime": "2019-12-31T03:30:00Z",
+              "ExpectedDepartureTime": "2019-12-31T03:30:00Z",
+              "Distances": ""
+            }
+          }
+        },
+        {
+          "RecordedAtTime": "1970-01-01T00:00:00Z",
+          "MonitoringRef": "70022",
+          "MonitoredVehicleJourney": {
+            "LineRef": "Local",
+            "DirectionRef": "South",
+            "FramedVehicleJourneyRef": {
+              "DataFrameRef": "2019-12-30",
+              "DatedVehicleJourneyRef": "190"
+            },
+            "PublishedLineName": "Local",
+            "OperatorRef": "CT",
+            "OriginRef": "70012",
+            "OriginName": "San Francisco Caltrain",
+            "DestinationRef": "70262",
+            "DestinationName": "San Jose Diridon Caltrain Station",
+            "Monitored": true,
+            "InCongestion": null,
+            "VehicleLocation": {
+              "Longitude": "",
+              "Latitude": ""
+            },
+            "Bearing": null,
+            "Occupancy": null,
+            "VehicleRef": null,
+            "MonitoredCall": {
+              "StopPointRef": "70022",
+              "StopPointName": "22nd Street Caltrain",
+              "VehicleLocationAtStop": "",
+              "VehicleAtStop": "",
+              "AimedArrivalTime": "2019-12-31T03:34:00Z",
+              "ExpectedArrivalTime": "2019-12-31T02:33:13Z",
+              "AimedDepartureTime": "2019-12-31T03:34:00Z",
+              "ExpectedDepartureTime": "2019-12-31T03:34:00Z",
+              "Distances": ""
+            }
+          }
+        },
+        {
+          "RecordedAtTime": "1970-01-01T00:00:00Z",
+          "MonitoringRef": "70032",
+          "MonitoredVehicleJourney": {
+            "LineRef": "Local",
+            "DirectionRef": "South",
+            "FramedVehicleJourneyRef": {
+              "DataFrameRef": "2019-12-30",
+              "DatedVehicleJourneyRef": "190"
+            },
+            "PublishedLineName": "Local",
+            "OperatorRef": "CT",
+            "OriginRef": "70012",
+            "OriginName": "San Francisco Caltrain",
+            "DestinationRef": "70262",
+            "DestinationName": "San Jose Diridon Caltrain Station",
+            "Monitored": true,
+            "InCongestion": null,
+            "VehicleLocation": {
+              "Longitude": "",
+              "Latitude": ""
+            },
+            "Bearing": null,
+            "Occupancy": null,
+            "VehicleRef": null,
+            "MonitoredCall": {
+              "StopPointRef": "70032",
+              "StopPointName": "Bayshore Caltrain",
+              "VehicleLocationAtStop": "",
+              "VehicleAtStop": "",
+              "AimedArrivalTime": "2019-12-31T03:39:00Z",
+              "ExpectedArrivalTime": "2019-12-31T02:37:15Z",
+              "AimedDepartureTime": "2019-12-31T03:39:00Z",
+              "ExpectedDepartureTime": "2019-12-31T03:39:00Z",
+              "Distances": ""
+            }
+          }
+        }
+      ]
+    }
+  }
+}

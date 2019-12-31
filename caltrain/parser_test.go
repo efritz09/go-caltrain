@@ -2,7 +2,6 @@ package caltrain
 
 import (
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"os"
 	"reflect"
@@ -11,29 +10,52 @@ import (
 )
 
 func TestParseDelays(t *testing.T) {
-	f, err := os.Open("testdata/parseDelayData.json")
-	if err != nil {
-		t.Fatalf("Could not open test data: %v", err)
-	}
-	data, err := ioutil.ReadAll(f)
-	if err != nil {
-		t.Fatalf("Could not read test data: %v", err)
-	}
 	delay1, _ := time.ParseDuration("12m10s")
 	delay2, _ := time.ParseDuration("17m1s")
-
-	expected := []Train{
-		Train{Number: "258", NextStop: StationSunnyvale, Direction: South, Delay: delay1, Line: Limited},
-		Train{Number: "263", NextStop: StationPaloAlto, Direction: North, Delay: delay2, Line: Limited},
+	tests := []struct {
+		name     string
+		data     string
+		expected []Train
+		err      error
+	}{
+		{
+			name: "DelayData1",
+			data: "testdata/parseDelayData1.json",
+			expected: []Train{
+				Train{Number: "258", NextStop: StationSunnyvale, Direction: South, Delay: delay1, Line: Limited},
+				Train{Number: "263", NextStop: StationPaloAlto, Direction: North, Delay: delay2, Line: Limited},
+			},
+			err: nil,
+		},
+		{
+			name:     "DelayData2",
+			data:     "testdata/parseDelayData2.json",
+			expected: []Train{},
+			err:      nil,
+		},
 	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			f, err := os.Open(tt.data)
+			if err != nil {
+				t.Fatalf("Could not open test data for %s: %v", tt.name, err)
+			}
+			data, err := ioutil.ReadAll(f)
+			if err != nil {
+				t.Fatalf("Could not read test data for %s: %v", tt.name, err)
+			}
 
-	delays, err := parseDelays(data, defaultDelayThreshold)
-	if err != nil {
-		t.Fatalf("Failed to parse delays: %v", err)
-	}
+			delays, err := parseDelays(data, defaultDelayThreshold)
+			if err != nil && tt.err == nil {
+				t.Fatalf("Failed to get trains for %s: %v", tt.name, err)
+			} else if err == nil && tt.err != nil {
+				t.Fatalf("getTrains improperly succeeded for %s", tt.name)
+			}
 
-	if !assertEqual(expected, delays) {
-		t.Fatalf("Unexpected delays!\nexpected: %v\nreceived %v", expected, delays)
+			if !assertEqual(tt.expected, delays) {
+				t.Fatalf("Unexpected delays for %s\nexpected: %v\nreceived: %v", tt.name, tt.expected, delays)
+			}
+		})
 	}
 }
 
@@ -85,7 +107,6 @@ func TestGetTrains(t *testing.T) {
 			} else if err == nil && tt.err != nil {
 				t.Fatalf("getTrains improperly succeeded for %s", tt.name)
 			}
-			fmt.Println(err)
 
 			if !assertEqual(tt.expected, trains) {
 				t.Fatalf("Unexpected trains for %s\nexpected: %v\nreceived: %v", tt.name, tt.expected, trains)

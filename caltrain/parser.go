@@ -72,8 +72,17 @@ func getDelay(status monitoredCall) (time.Duration, error) {
 	}
 	expected, err := time.Parse(timeLayout, status.ExpectedArrivalTime)
 	if err != nil {
-		return 0, err
+		// ExpectedArrivalTime can be null if the train is at it's starting station
+		if status.ExpectedArrivalTime == "" {
+			expected, err = time.Parse(timeLayout, status.ExpectedDepartureTime)
+			if err != nil {
+				return 0, err
+			}
+		} else {
+			return 0, err
+		}
 	}
+
 	now := time.Now()
 
 	// The API can mess up the aimed arrival time. If the arrival time is
