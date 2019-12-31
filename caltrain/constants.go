@@ -63,14 +63,14 @@ func newStation(name string, n, s int) station {
 	}
 }
 
-type stations struct {
-	allStations map[string]station
+type Stations struct {
+	AllStations map[string]station
 }
 
-// getStations returns a stations struct with a map of station name to station information
-func getStations() stations {
-	return stations{
-		allStations: map[string]station{
+// getStations returns a Stations struct with a map of station name to station information
+func getStations() Stations {
+	return Stations{
+		AllStations: map[string]station{
 			Station22ndStreet:   newStation(Station22ndStreet, 70021, 70022),
 			StationAtherton:     newStation(StationAtherton, 70151, 70152),
 			StationBayshore:     newStation(StationBayshore, 70031, 70032),
@@ -107,13 +107,13 @@ func getStations() stations {
 }
 
 // getCode returns the code for a given station and direction
-func (s stations) getCode(st, dir string) (int, error) {
+func (s Stations) getCode(st, dir string) (int, error) {
 	// first validate the direction
 	if dir != North && dir != South {
 		return 0, fmt.Errorf("unknown direction %s", dir)
 	}
 
-	if station, ok := s.allStations[st]; !ok {
+	if station, ok := s.AllStations[st]; !ok {
 		return 0, fmt.Errorf("unknown station %s", st)
 	} else {
 		return station.directions[dir], nil

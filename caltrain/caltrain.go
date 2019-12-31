@@ -16,20 +16,20 @@ type Caltrain interface {
 }
 
 type CaltrainClient struct {
-	stations  stations // station information struct
 	timetable *timeTable
 
 	key string // API key for 511.org
 
 	DelayThreshold time.Duration // delay time to allow before warning user
+	Stations       Stations      // station information struct
 }
 
 func New(key string) *CaltrainClient {
 	return &CaltrainClient{
-		stations:       getStations(),
 		timetable:      newTimeTable(),
 		key:            key,
 		DelayThreshold: defaultDelayThreshold,
+		Stations:       getStations(),
 	}
 }
 
@@ -66,7 +66,7 @@ func (c *CaltrainClient) GetDelays(ctx context.Context) ([]Train, error) {
 // GetStationStatus returns the status of upcoming trains for a given station
 // and direction. Direction should be caltrain.North or caltrain.South
 func (c *CaltrainClient) GetStationStatus(ctx context.Context, stationName string, direction string) ([]Train, error) {
-	code, err := c.stations.getCode(stationName, direction)
+	code, err := c.Stations.getCode(stationName, direction)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get station code: %w", err)
 	}
