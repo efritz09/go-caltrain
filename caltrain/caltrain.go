@@ -13,15 +13,16 @@ import (
 type Caltrain interface {
 	GetDelays(context.Context) ([]Train, error)
 	GetStationStatus(context.Context, string, string) ([]Train, error)
+	GetStations() []string
 }
 
 type CaltrainClient struct {
 	timetable *timeTable
+	stations  map[string]station // station information map
 
 	key string // API key for 511.org
 
 	DelayThreshold time.Duration // delay time to allow before warning user
-	Stations       Stations      // station information struct
 }
 
 func New(key string) *CaltrainClient {
@@ -29,7 +30,7 @@ func New(key string) *CaltrainClient {
 		timetable:      newTimeTable(),
 		key:            key,
 		DelayThreshold: defaultDelayThreshold,
-		Stations:       getStations(),
+		stations:       getStations(),
 	}
 }
 
@@ -39,6 +40,15 @@ type Train struct {
 	Direction string        // North or South
 	Delay     time.Duration // time behind schedule
 	Line      string        // bullet, limited, etc.
+}
+
+// GetStations returns a list of station names
+func (c *CaltrainClient) GetStations() []string {
+	ret := make([]string, len(c.stations))
+	for k := range c.stations {
+		ret = append(ret, k)
+	}
+	return ret
 }
 
 // GetDelays returns a list of delayed trains and their information
@@ -66,7 +76,7 @@ func (c *CaltrainClient) GetDelays(ctx context.Context) ([]Train, error) {
 // GetStationStatus returns the status of upcoming trains for a given station
 // and direction. Direction should be caltrain.North or caltrain.South
 func (c *CaltrainClient) GetStationStatus(ctx context.Context, stationName string, direction string) ([]Train, error) {
-	code, err := c.Stations.getCode(stationName, direction)
+	code, err := c.getStationCode(stationName, direction)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get station code: %w", err)
 	}
@@ -131,4 +141,18 @@ func (c *CaltrainClient) get(ctx context.Context, url string, query map[string]s
 		return nil, err
 	}
 	return resp, nil
+}
+
+// getStationCode returns the code for a given station and direction
+func (c *CaltrainClient) getStationCode(st, dir string) (int, error) {
+	// first validate the direction
+	if dir != North && dir != South {
+		return 0, fmt.Errorf("unknown direction %s", dir)
+	}
+
+	if station, ok := c.stations[st]; !ok {
+		return 0, fmt.Errorf("unknown station %s", st)
+	} else {
+		return station.directions[dir], nil
+	}
 }
