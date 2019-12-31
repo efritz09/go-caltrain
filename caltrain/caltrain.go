@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"sort"
 	"strconv"
 	"time"
 )
@@ -44,10 +45,11 @@ type Train struct {
 
 // GetStations returns a list of station names
 func (c *CaltrainClient) GetStations() []string {
-	ret := make([]string, len(c.stations))
+	ret := []string{}
 	for k := range c.stations {
 		ret = append(ret, k)
 	}
+	sort.Strings(ret)
 	return ret
 }
 
