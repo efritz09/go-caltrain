@@ -23,8 +23,8 @@ func TestParseDelays(t *testing.T) {
 	delay2, _ := time.ParseDuration("17m1s")
 
 	expected := []Train{
-		Train{number: "258", nextStop: StationSunnyvale, direction: South, delay: delay1, line: Limited},
-		Train{number: "263", nextStop: StationPaloAlto, direction: North, delay: delay2, line: Limited},
+		Train{Number: "258", NextStop: StationSunnyvale, Direction: South, Delay: delay1, Line: Limited},
+		Train{Number: "263", NextStop: StationPaloAlto, Direction: North, Delay: delay2, Line: Limited},
 	}
 
 	delays, err := parseDelays(data, defaultDelayThreshold)
@@ -48,8 +48,8 @@ func TestGetTrains(t *testing.T) {
 			name: "HillsdaleSouth",
 			data: "testdata/parseHillsdaleSouth.json",
 			expected: []Train{
-				Train{number: "436", nextStop: StationHillsdale, direction: South, delay: 0, line: Local},
-				Train{number: "804", nextStop: StationHillsdale, direction: South, delay: 0, line: Bullet},
+				Train{Number: "436", NextStop: StationHillsdale, Direction: South, Delay: 0, Line: Local},
+				Train{Number: "804", NextStop: StationHillsdale, Direction: South, Delay: 0, Line: Bullet},
 			},
 			err: nil,
 		},
@@ -57,7 +57,7 @@ func TestGetTrains(t *testing.T) {
 			name: "HillsdaleNorth",
 			data: "testdata/parseHillsdaleNorth.json",
 			expected: []Train{
-				Train{number: "437", nextStop: StationHillsdale, direction: North, delay: 0, line: Local},
+				Train{Number: "437", NextStop: StationHillsdale, Direction: North, Delay: 0, Line: Local},
 			},
 			err: nil,
 		},

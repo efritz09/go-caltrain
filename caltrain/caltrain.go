@@ -34,11 +34,11 @@ func New(key string) *CaltrainClient {
 }
 
 type Train struct {
-	number    string        // train number
-	nextStop  string        // stop for information
-	direction string        // North or South
-	delay     time.Duration // time behind schedule
-	line      string        // bullet, limited, etc.
+	Number    string        // train number
+	NextStop  string        // stop for information
+	Direction string        // North or South
+	Delay     time.Duration // time behind schedule
+	Line      string        // bullet, limited, etc.
 }
 
 // GetDelays returns a list of delayed trains and their information

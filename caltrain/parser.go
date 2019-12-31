@@ -21,7 +21,7 @@ func parseDelays(raw []byte, threshold time.Duration) ([]Train, error) {
 	}
 	delayedTrains := []Train{}
 	for _, t := range trains {
-		if t.delay > threshold {
+		if t.Delay > threshold {
 			delayedTrains = append(delayedTrains, t)
 		}
 	}
@@ -51,11 +51,11 @@ func getTrains(raw []byte) ([]Train, error) {
 			fmt.Printf("Error getting the delay: %v\n", err)
 		}
 		newTrain := Train{
-			number:    train.FramedVehicleJourneyRef.DatedVehicleJourneyRef,
-			nextStop:  strings.Split(status.StopPointName, " Caltrain")[0],
-			direction: train.DirectionRef,
-			delay:     delay,
-			line:      train.LineRef,
+			Number:    train.FramedVehicleJourneyRef.DatedVehicleJourneyRef,
+			NextStop:  strings.Split(status.StopPointName, " Caltrain")[0],
+			Direction: train.DirectionRef,
+			Delay:     delay,
+			Line:      train.LineRef,
 		}
 		ret = append(ret, newTrain)
 	}
