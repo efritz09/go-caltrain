@@ -2,6 +2,7 @@ package caltrain
 
 import (
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"reflect"
@@ -111,6 +112,50 @@ func TestGetTrains(t *testing.T) {
 			if !assertEqual(tt.expected, trains) {
 				t.Fatalf("Unexpected trains for %s\nexpected: %v\nreceived: %v", tt.name, tt.expected, trains)
 			}
+		})
+	}
+}
+
+func TestParseTimetable(t *testing.T) {
+	tests := []struct {
+		name string
+		data string // relative file location
+		err  error
+	}{
+		{
+			name: "Bullet",
+			data: "testdata/bulletSchedule.json",
+			err:  nil,
+		},
+		{
+			name: "Limited",
+			data: "testdata/limitedSchedule.json",
+			err:  nil,
+		},
+		{
+			name: "Local",
+			data: "testdata/localSchedule.json",
+			err:  nil,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			f, err := os.Open(tt.data)
+			if err != nil {
+				t.Fatalf("Could not open test data for %s: %v", tt.name, err)
+			}
+			data, err := ioutil.ReadAll(f)
+			if err != nil {
+				t.Fatalf("Could not read test data for %s: %v", tt.name, err)
+			}
+
+			timetable, err := parseTimetable(data)
+			if err != nil && tt.err == nil {
+				t.Fatalf("Failed to get timetable for %s: %v", tt.name, err)
+			} else if err == nil && tt.err != nil {
+				t.Fatalf("parseTimetable improperly succeeded for %s", tt.name)
+			}
+			fmt.Printf("%T\n", timetable)
 		})
 	}
 }

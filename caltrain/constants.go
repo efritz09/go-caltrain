@@ -5,12 +5,17 @@ import (
 )
 
 const (
-	baseURL               = "http://api.511.org/transit/"
+	baseURL      = "http://api.511.org/transit/"
+	delayURL     = "http://api.511.org/transit/StopMonitoring"
+	stationURL   = "http://api.511.org/transit/StopMonitoring"
+	timetableURL = "http://api.511.org/transit/timetable"
+
 	defaultDelayThreshold = 10 * time.Minute
 
 	North = "North"
 	South = "South"
 
+	// lines
 	Bullet  = "Bullet"
 	Limited = "Limited"
 	Local   = "Local"

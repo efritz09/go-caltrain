@@ -4,10 +4,9 @@ package caltrain
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
-	"net/http"
 	"sort"
 	"strconv"
+	"sync"
 	"time"
 )
 
@@ -18,20 +17,23 @@ type Caltrain interface {
 }
 
 type CaltrainClient struct {
-	timetable *timeTable
-	stations  map[string]station // station information map
+	timetable map[string][]TimetableFrame // map of line type to slice of service journeys
+	ttLock    sync.RWMutex                // lock in case someone tries to access it during and update
+	stations  map[string]station          // station information map
 
 	key string // API key for 511.org
 
 	DelayThreshold time.Duration // delay time to allow before warning user
+	APIClient      APIClient     // API client for making caltrain queries. Default APIClient511
 }
 
 func New(key string) *CaltrainClient {
 	return &CaltrainClient{
-		timetable:      newTimeTable(),
+		timetable:      make(map[string][]TimetableFrame),
 		key:            key,
-		DelayThreshold: defaultDelayThreshold,
 		stations:       getStations(),
+		DelayThreshold: defaultDelayThreshold,
+		APIClient:      NewClient(),
 	}
 }
 
@@ -53,25 +55,26 @@ func (c *CaltrainClient) GetStations() []string {
 	return ret
 }
 
+func (c *CaltrainClient) GetTimetable() {
+	c.ttLock.Lock()
+	defer c.ttLock.Unlock()
+	// TODO: return something useful?
+	fmt.Printf("%+v\n", c.timetable)
+}
+
 // GetDelays returns a list of delayed trains and their information
 func (c *CaltrainClient) GetDelays(ctx context.Context) ([]Train, error) {
 	query := map[string]string{
 		"agency":  "CT",
 		"api_key": c.key,
 	}
-	url := baseURL + "StopMonitoring"
-	resp, err := c.get(ctx, url, query)
+	data, err := c.APIClient.Get(ctx, delayURL, query)
 	if err != nil {
 		return nil, fmt.Errorf("failed to make request: %w", err)
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("failed to ready body: %w", err)
-	}
-
 	// Now parse the body json string
-	return parseDelays(body, c.DelayThreshold)
+	return parseDelays(data, c.DelayThreshold)
 
 }
 
@@ -87,62 +90,50 @@ func (c *CaltrainClient) GetStationStatus(ctx context.Context, stationName strin
 		"stopCode": strconv.Itoa(code),
 		"api_key":  c.key,
 	}
-	url := baseURL + "StopMonitoring"
-	resp, err := c.get(ctx, url, query)
+	data, err := c.APIClient.Get(ctx, stationURL, query)
 	if err != nil {
 		return nil, fmt.Errorf("failed to make request: %w", err)
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("failed to ready body: %w", err)
-	}
-
 	// Now parse the body json string
-	return getTrains(body)
+	return getTrains(data)
 }
-
-// // GetTimeTable returns the time table for the current day for all stations
-// func (c *CaltrainClient) GetTimeTable() (*TimeTable, error) {
-// 	// TODO: implement
-// 	return nil, nil
-// }
 
 // GetTrainsBetweenStations returns a list of all trains that go from a to b.
 // Trains with statuses available will include the status. This relies on the
 // accuracy of the timetable.
-func (c *CaltrainClient) GetTrainsBetweenStations(a, b string) ([]*Train, error) {
+func (c *CaltrainClient) GetTrainsBetweenStations(ctx context.Context, a, b string) ([]*Train, error) {
+	c.ttLock.Lock()
+	defer c.ttLock.Unlock()
 	// TODO: implement in the future
 	return nil, nil
 }
 
 // UpdateTimeTable should be called once per day to update the day's timetable
-func (c *CaltrainClient) UpdateTimeTable() error {
-	// TODO: implement in the future
+func (c *CaltrainClient) UpdateTimeTable(ctx context.Context) error {
+	c.ttLock.Lock()
+	defer c.ttLock.Unlock()
+	lines := []string{Bullet, Limited, Local}
+	// request the timetable for each line
+	for _, line := range lines {
+		query := map[string]string{
+			"operator_id": "CT",
+			"line_id":     line,
+			"api_key":     c.key,
+		}
+		data, err := c.APIClient.Get(ctx, timetableURL, query)
+		if err != nil {
+			return fmt.Errorf("failed to make request: %w", err)
+		}
+
+		journeys, err := parseTimetable(data)
+		if err != nil {
+			return fmt.Errorf("failed to parse timetable: %w", err)
+		}
+		c.timetable[line] = journeys
+	}
+
 	return nil
-}
-
-func (c *CaltrainClient) get(ctx context.Context, url string, query map[string]string) (*http.Response, error) {
-	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Set("Content-Type", "application/json")
-
-	// update the url with the required query parameters
-	q := req.URL.Query()
-	for k, v := range query {
-		q.Add(k, v)
-	}
-	req.URL.RawQuery = q.Encode()
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	return resp, nil
 }
 
 // getStationCode returns the code for a given station and direction
