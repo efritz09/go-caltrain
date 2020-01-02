@@ -8,6 +8,8 @@ import (
 	"strconv"
 	"sync"
 	"time"
+
+	"github.com/efritz09/go-caltrain/caltrain/internal/utilities"
 )
 
 type Caltrain interface {
@@ -37,12 +39,29 @@ func New(key string) *CaltrainClient {
 	}
 }
 
+// Information on the current train status
 type Train struct {
 	Number    string        // train number
 	NextStop  string        // stop for information
 	Direction string        // North or South
 	Delay     time.Duration // time behind schedule
 	Line      string        // bullet, limited, etc.
+}
+
+// Stops for a given train
+type Route struct {
+	TrainNum  string // train number
+	Direction string
+	NumStops  int
+	Stops     []TrainStop
+	// TODO: define
+}
+
+type TrainStop struct {
+	Order     int
+	Station   string
+	Arrival   time.Time
+	Departure time.Time
 }
 
 // GetStations returns a list of station names
@@ -99,16 +118,6 @@ func (c *CaltrainClient) GetStationStatus(ctx context.Context, stationName strin
 	return getTrains(data)
 }
 
-// GetTrainsBetweenStations returns a list of all trains that go from a to b.
-// Trains with statuses available will include the status. This relies on the
-// accuracy of the timetable.
-func (c *CaltrainClient) GetTrainsBetweenStations(ctx context.Context, a, b string) ([]*Train, error) {
-	c.ttLock.Lock()
-	defer c.ttLock.Unlock()
-	// TODO: implement in the future
-	return nil, nil
-}
-
 // UpdateTimeTable should be called once per day to update the day's timetable
 func (c *CaltrainClient) UpdateTimeTable(ctx context.Context) error {
 	c.ttLock.Lock()
@@ -148,4 +157,76 @@ func (c *CaltrainClient) getStationCode(st, dir string) (int, error) {
 	} else {
 		return station.directions[dir], nil
 	}
+}
+
+func (c *CaltrainClient) GetStationTimetable(st, dir string) ([]TimetableRouteJourney, error) {
+	c.ttLock.RLock()
+	defer c.ttLock.RUnlock()
+
+	code, err := c.getStationCode(st, dir)
+	if err != nil {
+		return nil, err
+	}
+
+	weekday, err := utilities.GetWeekday(timezone)
+	if err != nil {
+		return nil, err
+	}
+
+	return c.getTimetableForStation(code, dir, weekday)
+
+}
+
+// GetTrainRoute returns the Route struct for a given train
+func (c *CaltrainClient) GetTrainRoute(trainNum string) (Route, error) {
+	c.ttLock.RLock()
+	defer c.ttLock.RUnlock()
+	route := Route{TrainNum: trainNum}
+	r, err := c.getRouteForTrain(trainNum)
+	if err != nil {
+		return route, fmt.Errorf("failed to get Train Route: %w", err)
+	}
+
+	route.Direction = getDirFromChar(r.JourneyPatternView.DirectionRef.Ref)
+	route.NumStops = len(r.Calls.Call)
+	route.Stops = []TrainStop{}
+
+	for _, s := range r.Calls.Call {
+		order, err := strconv.Atoi(s.Order)
+		if err != nil {
+			return route, fmt.Errorf("could not convert order %s to int: %w", s.Order, err)
+		}
+		code, err := strconv.Atoi(s.ScheduledStopPointRef.Ref)
+		if err != nil {
+			return route, fmt.Errorf("could not convert station %s to int: %w", s.ScheduledStopPointRef.Ref, err)
+		}
+		arr, err := time.Parse("15:04:05", s.Arrival.Time)
+		if err != nil {
+			return route, fmt.Errorf("could not parse timem from %s: %w", s.Arrival.Time, err)
+		}
+		dep, err := time.Parse("15:04:05", s.Departure.Time)
+		if err != nil {
+			return route, fmt.Errorf("could not parse timem from %s: %w", s.Departure.Time, err)
+		}
+
+		t := TrainStop{
+			Order:     order,
+			Station:   c.getStationFromCode(code),
+			Arrival:   arr,
+			Departure: dep,
+		}
+		route.Stops = append(route.Stops, t)
+	}
+
+	return route, nil
+}
+
+// GetTrainsBetweenStations returns a list of all trains that go from a to b.
+// Trains with statuses available will include the status. This relies on the
+// accuracy of the timetable.
+func (c *CaltrainClient) GetTrainsBetweenStations(ctx context.Context, a, b string) ([]*Train, error) {
+	c.ttLock.RLock()
+	defer c.ttLock.RUnlock()
+	// TODO: implement in the future
+	return nil, nil
 }

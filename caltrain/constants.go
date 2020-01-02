@@ -1,6 +1,7 @@
 package caltrain
 
 import (
+	"strings"
 	"time"
 )
 
@@ -11,6 +12,8 @@ const (
 	timetableURL = "http://api.511.org/transit/timetable"
 
 	defaultDelayThreshold = 10 * time.Minute
+
+	timezone = "America/Los_Angeles"
 
 	North = "North"
 	South = "South"
@@ -101,5 +104,29 @@ func getStations() map[string]station {
 		StationSouthSF:      newStation(StationSouthSF, 70041, 70042),
 		StationSunnyvale:    newStation(StationSunnyvale, 70221, 70222),
 		StationTamien:       newStation(StationTamien, 70271, 70272),
+	}
+}
+
+// TODO: unit test this
+func (c *CaltrainClient) getStationFromCode(code int) string {
+	for name, st := range c.stations {
+		for _, c := range st.directions {
+			if c == code {
+				return name
+			}
+		}
+	}
+	return ""
+}
+
+// getDirFromChar returns the proper direction string for a given character.
+// HasPrefix is used in case the "char" has whitespace
+func getDirFromChar(c string) string {
+	if strings.HasPrefix(c, "N") {
+		return North
+	} else if strings.HasPrefix(c, "S") {
+		return South
+	} else {
+		return ""
 	}
 }
