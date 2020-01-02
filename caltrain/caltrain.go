@@ -27,6 +27,9 @@ type CaltrainClient struct {
 
 	DelayThreshold time.Duration // delay time to allow before warning user
 	APIClient      APIClient     // API client for making caltrain queries. Default APIClient511
+
+	// Consider adding an "updater" interface that handles the weekday update,
+	// and potentially the timetable. This would make unit testing easier
 }
 
 func New(key string) *CaltrainClient {
@@ -52,9 +55,9 @@ type Train struct {
 type Route struct {
 	TrainNum  string // train number
 	Direction string
+	Line      string // bullet, limited, etc.
 	NumStops  int
 	Stops     []TrainStop
-	// TODO: define
 }
 
 type TrainStop struct {
@@ -106,7 +109,7 @@ func (c *CaltrainClient) GetStationStatus(ctx context.Context, stationName strin
 	}
 	query := map[string]string{
 		"agency":   "CT",
-		"stopCode": strconv.Itoa(code),
+		"stopCode": code,
 		"api_key":  c.key,
 	}
 	data, err := c.APIClient.Get(ctx, stationURL, query)
@@ -146,14 +149,14 @@ func (c *CaltrainClient) UpdateTimeTable(ctx context.Context) error {
 }
 
 // getStationCode returns the code for a given station and direction
-func (c *CaltrainClient) getStationCode(st, dir string) (int, error) {
+func (c *CaltrainClient) getStationCode(st, dir string) (string, error) {
 	// first validate the direction
 	if dir != North && dir != South {
-		return 0, fmt.Errorf("unknown direction %s", dir)
+		return "", fmt.Errorf("unknown direction %s", dir)
 	}
 
 	if station, ok := c.stations[st]; !ok {
-		return 0, fmt.Errorf("unknown station %s", st)
+		return "", fmt.Errorf("unknown station %s", st)
 	} else {
 		return station.directions[dir], nil
 	}
@@ -178,27 +181,69 @@ func (c *CaltrainClient) GetStationTimetable(st, dir string) ([]TimetableRouteJo
 }
 
 // GetTrainRoute returns the Route struct for a given train
-func (c *CaltrainClient) GetTrainRoute(trainNum string) (Route, error) {
+func (c *CaltrainClient) GetTrainRoute(trainNum string) (*Route, error) {
 	c.ttLock.RLock()
 	defer c.ttLock.RUnlock()
-	route := Route{TrainNum: trainNum}
-	r, err := c.getRouteForTrain(trainNum)
+	journey, err := c.getRouteForTrain(trainNum)
 	if err != nil {
-		return route, fmt.Errorf("failed to get Train Route: %w", err)
+		return nil, fmt.Errorf("failed to get Train Route: %w", err)
+	}
+	return c.journeyToRoute(journey)
+}
+
+// GetTrainsBetweenStations returns two slices. The first is routes going north
+// and the second is routes going south. All routes are for the entire day
+func (c *CaltrainClient) GetTrainsBetweenStations(ctx context.Context, src, dst string) ([]*Route, []*Route, error) {
+	c.ttLock.RLock()
+	defer c.ttLock.RUnlock()
+	weekday, err := utilities.GetWeekday(timezone)
+	if err != nil {
+		return nil, nil, err
 	}
 
-	route.Direction = getDirFromChar(r.JourneyPatternView.DirectionRef.Ref)
-	route.NumStops = len(r.Calls.Call)
-	route.Stops = []TrainStop{}
+	journeyN, journeyS, err := c.getTrainRoutesBetweenStations(src, dst, weekday)
+	if err != nil {
+		return nil, nil, fmt.Errorf("failed to get Train Routes: %w", err)
+	}
+	// TODO: we know the length, consider preallocating slice length
+	routeN := []*Route{}
+	routeS := []*Route{}
+	// for line, journeys := range journeyN {
+	for _, journey := range journeyN {
+		r, err := c.journeyToRoute(journey)
+		if err != nil {
+			return routeN, routeS, fmt.Errorf("failed to get Train Routes: %w", err)
+		}
+		routeN = append(routeN, r)
+	}
+	// }
+	// for line, journeys := range journeyS {
+	for _, journey := range journeyS {
+		r, err := c.journeyToRoute(journey)
+		if err != nil {
+			return routeN, routeS, fmt.Errorf("failed to get Train Routes: %w", err)
+		}
+		routeS = append(routeS, r)
+	}
+	// }
+	fmt.Println(len(routeN), len(routeS))
+	return routeN, routeS, nil
+}
+
+// journeyToRoute converts a TimetableRouteJourney into a Route
+func (c *CaltrainClient) journeyToRoute(r TimetableRouteJourney) (*Route, error) {
+	route := &Route{
+		TrainNum:  r.ID,
+		Direction: getDirFromChar(r.JourneyPatternView.DirectionRef.Ref),
+		Line:      r.Line,
+		NumStops:  len(r.Calls.Call),
+		Stops:     []TrainStop{},
+	}
 
 	for _, s := range r.Calls.Call {
 		order, err := strconv.Atoi(s.Order)
 		if err != nil {
 			return route, fmt.Errorf("could not convert order %s to int: %w", s.Order, err)
-		}
-		code, err := strconv.Atoi(s.ScheduledStopPointRef.Ref)
-		if err != nil {
-			return route, fmt.Errorf("could not convert station %s to int: %w", s.ScheduledStopPointRef.Ref, err)
 		}
 		arr, err := time.Parse("15:04:05", s.Arrival.Time)
 		if err != nil {
@@ -211,22 +256,11 @@ func (c *CaltrainClient) GetTrainRoute(trainNum string) (Route, error) {
 
 		t := TrainStop{
 			Order:     order,
-			Station:   c.getStationFromCode(code),
+			Station:   c.getStationFromCode(s.ScheduledStopPointRef.Ref),
 			Arrival:   arr,
 			Departure: dep,
 		}
 		route.Stops = append(route.Stops, t)
 	}
-
 	return route, nil
-}
-
-// GetTrainsBetweenStations returns a list of all trains that go from a to b.
-// Trains with statuses available will include the status. This relies on the
-// accuracy of the timetable.
-func (c *CaltrainClient) GetTrainsBetweenStations(ctx context.Context, a, b string) ([]*Train, error) {
-	c.ttLock.RLock()
-	defer c.ttLock.RUnlock()
-	// TODO: implement in the future
-	return nil, nil
 }

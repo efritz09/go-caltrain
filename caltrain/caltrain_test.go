@@ -26,9 +26,10 @@ func TestGetTrainRoute(t *testing.T) {
 	delete(c.timetable, Limited)
 	delete(c.timetable, Local)
 
-	exp := Route{
+	exp := &Route{
 		TrainNum:  "801",
 		Direction: North,
+		Line:      Bullet,
 		NumStops:  9,
 		Stops: []TrainStop{
 			TrainStop{Order: 1, Station: StationSanJose, Arrival: time.Date(0, time.January, 1, 9, 51, 0, 0, time.UTC), Departure: time.Date(0, time.January, 1, 9, 51, 0, 0, time.UTC)},
@@ -56,7 +57,18 @@ func TestGetTrainRoute(t *testing.T) {
 	if err == nil {
 		t.Fatalf("should not have gotten a route for train 101\n%v", noRoute)
 	}
+}
 
+// Simple test to ensure the code runs
+func TestGetTrainsBetweenStations(t *testing.T) {
+	ctx := context.Background()
+	c := New(fakeKey)
+	m := &MockAPIClient{}
+	c.APIClient = m
+	_, _, err := c.GetTrainsBetweenStations(ctx, StationHillsdale, StationPaloAlto)
+	if err != nil {
+		t.Fatalf("Unexpected error: %v", err)
+	}
 }
 
 // Simple test to ensure the code runs
@@ -80,18 +92,6 @@ func TestGetStationStatus(t *testing.T) {
 	m.GetResultFilePath = "testdata/parseHillsdaleNorth.json"
 	c.APIClient = m
 	_, err := c.GetStationStatus(ctx, StationHillsdale, North)
-	if err != nil {
-		t.Fatalf("Unexpected error: %v", err)
-	}
-}
-
-// Simple test to ensure the code runs
-func TestGetTrainsBetweenStations(t *testing.T) {
-	ctx := context.Background()
-	c := New(fakeKey)
-	m := &MockAPIClient{}
-	c.APIClient = m
-	_, err := c.GetTrainsBetweenStations(ctx, StationHillsdale, StationPaloAlto)
 	if err != nil {
 		t.Fatalf("Unexpected error: %v", err)
 	}

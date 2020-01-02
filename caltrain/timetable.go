@@ -2,7 +2,6 @@ package caltrain
 
 import (
 	"fmt"
-	"strconv"
 	"strings"
 )
 
@@ -23,9 +22,8 @@ var weekdayReferences = map[string][]string{
 
 // getTimetableForStation returns a list of trains that stop at a given station
 // code and directions
-func (c *CaltrainClient) getTimetableForStation(stationCode int, dir, weekday string) ([]TimetableRouteJourney, error) {
+func (c *CaltrainClient) getTimetableForStation(stationCode, dir, weekday string) ([]TimetableRouteJourney, error) {
 	weekdayRefs := weekdayReferences[weekday]
-	st := strconv.Itoa(stationCode)
 
 	allJourneys := []TimetableRouteJourney{}
 
@@ -42,7 +40,7 @@ func (c *CaltrainClient) getTimetableForStation(stationCode int, dir, weekday st
 			// loop through all journeys in this frame
 			journeys := frame.VehicleJourneys.TimetableRouteJourney
 			for _, journey := range journeys {
-				if isStationInJourney(st, journey) {
+				if isStationInJourney(stationCode, journey) {
 					allJourneys = append(allJourneys, journey)
 				}
 			}
@@ -51,21 +49,75 @@ func (c *CaltrainClient) getTimetableForStation(stationCode int, dir, weekday st
 	return allJourneys, nil
 }
 
-// getRouteForTrain returns a TimetableRouteJourney for the given train number
+// getRouteForTrain returns a TimetableRouteJourney and the route's line for
+// the given train number
 func (c *CaltrainClient) getRouteForTrain(trainNum string) (TimetableRouteJourney, error) {
 	// TODO: the train number has metadata on the line type, and the day, it
 	// could save time to use that to limit the search
-	for _, ttArray := range c.timetable {
+	for line, ttArray := range c.timetable {
 		for _, frame := range ttArray {
 			journeys := frame.VehicleJourneys.TimetableRouteJourney
 			for _, journey := range journeys {
 				if journey.ID == trainNum {
+					journey.Line = line
 					return journey, nil
 				}
 			}
 		}
 	}
 	return TimetableRouteJourney{}, fmt.Errorf("No routes found for train %s", trainNum)
+}
+
+// getTrainRoutesBetweenStations returns two maps of line: TimetableRouteJourney
+// the first is the routes north, the second is routes south
+func (c *CaltrainClient) getTrainRoutesBetweenStations(src, dst, weekday string) ([]TimetableRouteJourney, []TimetableRouteJourney, error) {
+	srcN, err := c.getStationCode(src, North)
+	if err != nil {
+		return nil, nil, fmt.Errorf("failed to get station code: %w", err)
+	}
+	dstN, err := c.getStationCode(dst, North)
+	if err != nil {
+		return nil, nil, fmt.Errorf("failed to get station code: %w", err)
+	}
+	srcS, err := c.getStationCode(src, South)
+	if err != nil {
+		return nil, nil, fmt.Errorf("failed to get station code: %w", err)
+	}
+	dstS, err := c.getStationCode(dst, South)
+	if err != nil {
+		return nil, nil, fmt.Errorf("failed to get station code: %w", err)
+	}
+
+	weekdayRefs := weekdayReferences[weekday]
+	journeyN := []TimetableRouteJourney{}
+	journeyS := []TimetableRouteJourney{}
+	for line, ttArray := range c.timetable {
+		for _, frame := range ttArray {
+			// Check the day reference
+			if !isInDayRef(weekdayRefs, frame.FrameValidityConditions.AvailabilityCondition.DayTypes.DayTypeRef.Ref) {
+				continue
+			}
+			// convert `Bullet:N :Year Round Weekday (Weekday)` to `North`
+			dir := getDirFromChar(strings.Split(frame.Name, ":")[1])
+			// if it's north, check that both srcN and dstN are there
+			// same for south
+			journeys := frame.VehicleJourneys.TimetableRouteJourney
+			for _, journey := range journeys {
+				if dir == North {
+					if areStationsInJourney(srcN, dstN, journey) {
+						journey.Line = line
+						journeyN = append(journeyN, journey)
+					}
+				} else if dir == South {
+					if areStationsInJourney(srcS, dstS, journey) {
+						journey.Line = line
+						journeyS = append(journeyS, journey)
+					}
+				}
+			}
+		}
+	}
+	return journeyN, journeyS, nil
 }
 
 // isInDayRef returns true if the value is in the slice day
@@ -93,4 +145,21 @@ func isStationInJourney(st string, journey TimetableRouteJourney) bool {
 		}
 	}
 	return false
+}
+
+// TODO: unit test this
+func areStationsInJourney(src, dst string, journey TimetableRouteJourney) bool {
+	srcT := false
+	dstT := false
+	for _, call := range journey.Calls.Call {
+		if call.ScheduledStopPointRef.Ref == src {
+			srcT = true
+		} else if call.ScheduledStopPointRef.Ref == dst {
+			dstT = true
+		}
+		if srcT && dstT {
+			return true
+		}
+	}
+	return srcT && dstT
 }

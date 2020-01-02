@@ -55,6 +55,57 @@ func TestGetTimetableForStation(t *testing.T) {
 	}
 }
 
+func TestGetTrainRoutesBetweenStations(t *testing.T) {
+	// Load the timetable for only the bullet schedule
+	ctx := context.Background()
+	c := New(fakeKey)
+	m := &MockAPIClient{}
+	m.GetResultFilePath = "testdata/bulletSchedule.json"
+	c.APIClient = m
+	err := c.UpdateTimeTable(ctx)
+	if err != nil {
+		t.Fatalf("Unexpected error loading timetable: %v", err)
+	}
+	// c.UpdateTimeTable currently populates each line with bulletSchedule.
+	// remove the other instances
+	delete(c.timetable, Limited)
+	delete(c.timetable, Local)
+
+	tests := []struct {
+		src  string
+		dst  string
+		numN int // len of array for now
+		numS int
+		day  string
+		err  error
+	}{
+		{src: StationHillsdale, dst: StationPaloAlto, numN: 5, numS: 5, day: "monday", err: nil},
+		{src: StationSanJose, dst: StationSanFrancisco, numN: 11, numS: 11, day: "monday", err: nil},
+		{src: StationSanJose, dst: StationSanFrancisco, numN: 2, numS: 2, day: "sunday", err: nil},
+		{src: StationHillsdale, dst: StationHaywardPark, numN: 0, numS: 0, day: "monday", err: nil},
+		{src: StationSanFrancisco, dst: "BadSation", numN: 0, numS: 0, day: "monday", err: errors.New("")},
+	}
+
+	for _, tt := range tests {
+		name := tt.src + "_" + tt.dst
+		t.Run(name, func(t *testing.T) {
+			n, s, err := c.getTrainRoutesBetweenStations(tt.src, tt.dst, tt.day)
+			if err != nil && tt.err == nil {
+				t.Fatalf("Failed to get train routes for %s: %v", name, err)
+			} else if err == nil && tt.err != nil {
+				t.Fatalf("getTrainRoutesBetweenStations improperly succeeded for %s", name)
+			}
+
+			if len(n) != tt.numN {
+				t.Fatalf("Incorrect routes North. Expected %d, recieved %d", tt.numN, len(n))
+			}
+			if len(s) != tt.numS {
+				t.Fatalf("Incorrect routes North. Expected %d, recieved %d", tt.numS, len(s))
+			}
+		})
+	}
+}
+
 func TestGetRouteForTrain(t *testing.T) {
 	// Load the timetable for only the bullet schedule
 	ctx := context.Background()
@@ -73,20 +124,24 @@ func TestGetRouteForTrain(t *testing.T) {
 
 	tests := []struct {
 		train string
+		line  string
 		err   error
 	}{
-		{train: "801", err: nil},
-		{train: "324", err: nil},
-		{train: "101", err: errors.New("")},
+		{train: "801", line: Bullet, err: nil},
+		{train: "324", line: Bullet, err: nil},
+		{train: "101", line: "", err: errors.New("")},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.train, func(t *testing.T) {
-			_, err := c.getRouteForTrain(tt.train)
+			r, err := c.getRouteForTrain(tt.train)
 			if err != nil && tt.err == nil {
 				t.Fatalf("Failed to get train info for %s: %v", tt.train, err)
 			} else if err == nil && tt.err != nil {
-				t.Fatalf("getRoutesForTrain improperly succeeded for %s", tt.train)
+				t.Fatalf("getRouteForTrain improperly succeeded for %s", tt.train)
+			}
+			if r.Line != tt.line {
+				t.Fatalf("Unexpected train line. Expected %s, received %s", tt.line, r.Line)
 			}
 		})
 	}

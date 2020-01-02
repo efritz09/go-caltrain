@@ -70,6 +70,7 @@ type TimetableFrame struct {
 }
 
 type TimetableRouteJourney struct {
+	Line                  string // is not in the json, added for convenience
 	ID                    string `json:"id"`
 	SiriVehicleJourneyRef string `json:"SiriVehicleJourneyRef"`
 	JourneyPatternView    struct {
