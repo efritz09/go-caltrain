@@ -21,7 +21,7 @@ func parseDelays(raw []byte, threshold time.Duration) ([]Train, error) {
 	}
 	delayedTrains := []Train{}
 	for _, t := range trains {
-		if t.delay > threshold {
+		if t.Delay > threshold {
 			delayedTrains = append(delayedTrains, t)
 		}
 	}
@@ -33,8 +33,7 @@ func getTrains(raw []byte) ([]Train, error) {
 	data := trainStatusJson{}
 	// trim some problematic characters: https://stackoverflow.com/questions/31398044/got-error-invalid-character-%C3%AF-looking-for-beginning-of-value-from-json-unmar
 	raw = bytes.TrimPrefix(raw, []byte("\xef\xbb\xbf"))
-	err := json.Unmarshal(raw, &data)
-	if err != nil {
+	if err := json.Unmarshal(raw, &data); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal: %w", err)
 	}
 
@@ -43,19 +42,16 @@ func getTrains(raw []byte) ([]Train, error) {
 	for _, t := range trains {
 		train := t.MonitoredVehicleJourney
 		status := train.MonitoredCall
-		delay, err := getDelay(status)
+		delay := getDelay(status)
 		if delay < 0 {
 			delay = 0
 		}
-		if err != nil {
-			fmt.Printf("Error getting the delay: %v\n", err)
-		}
 		newTrain := Train{
-			number:    train.FramedVehicleJourneyRef.DatedVehicleJourneyRef,
-			nextStop:  strings.Split(status.StopPointName, " Caltrain")[0],
-			direction: train.DirectionRef,
-			delay:     delay,
-			line:      train.LineRef,
+			Number:    train.FramedVehicleJourneyRef.DatedVehicleJourneyRef,
+			NextStop:  strings.Split(status.StopPointName, " Caltrain")[0],
+			Direction: train.DirectionRef,
+			Delay:     delay,
+			Line:      train.LineRef,
 		}
 		ret = append(ret, newTrain)
 	}
@@ -65,25 +61,39 @@ func getTrains(raw []byte) ([]Train, error) {
 
 // getDelay returns the time difference between the expected arrival time and
 // the aimed arrival time.
-func getDelay(status monitoredCall) (time.Duration, error) {
-	arrival, err := time.Parse(timeLayout, status.AimedArrivalTime)
-	if err != nil {
-		return 0, err
+func getDelay(status monitoredCall) time.Duration {
+	arrival := status.AimedArrivalTime
+	expected := status.ExpectedArrivalTime
+	if expected.IsZero() {
+		// ExpectedArrivalTime can be null if the train is at it's starting station
+		expected = status.ExpectedDepartureTime
 	}
-	expected, err := time.Parse(timeLayout, status.ExpectedArrivalTime)
-	if err != nil {
-		return 0, err
-	}
-	now := time.Now()
 
+	now := time.Now()
 	// The API can mess up the aimed arrival time. If the arrival time is
 	// earlier than the current time, use the ExpectedDepartureTime
 	if arrival.Before(now) {
-		arrival, err = time.Parse(timeLayout, status.AimedDepartureTime)
-		if err != nil {
-			return 0, err
-		}
+		arrival = status.AimedDepartureTime
 	}
 
-	return expected.Sub(arrival), nil
+	return expected.Sub(arrival)
+}
+
+// parseTimetable returns a slice of TimetableFrames from the given raw data
+func parseTimetable(raw []byte) ([]TimetableFrame, error) {
+	raw = bytes.TrimPrefix(raw, []byte("\xef\xbb\xbf"))
+	data := timetableJson{}
+	if err := json.Unmarshal(raw, &data); err != nil {
+		e := fmt.Errorf("failed to unmarshal: %w", err)
+		// Try using the alternative struct
+		altData := timetableJsonAlternate{}
+		if err := json.Unmarshal(raw, &altData); err != nil {
+			return nil, fmt.Errorf("failed to unmarshal alternative: %w", e)
+		}
+		frames := altData.Content.TimetableFrame
+		return frames, nil
+	} else {
+		frames := data.Content.TimetableFrame
+		return frames, nil
+	}
 }

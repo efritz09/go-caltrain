@@ -5,6 +5,7 @@ import "context"
 type MockCaltrain struct {
 	GetDelaysFunc        func(context.Context) ([]Train, error)
 	GetStationStatusFunc func(context.Context, string, string) ([]Train, error)
+	GetStationsFunc      func() []string
 }
 
 func (c *MockCaltrain) GetDelays(ctx context.Context) ([]Train, error) {
@@ -19,4 +20,11 @@ func (c *MockCaltrain) GetStationStatus(ctx context.Context, stationName string,
 		return c.GetStationStatusFunc(ctx, stationName, direction)
 	}
 	return nil, nil
+}
+
+func (c *MockCaltrain) GetStations() []string {
+	if c.GetStationsFunc != nil {
+		return c.GetStationsFunc()
+	}
+	return nil
 }
