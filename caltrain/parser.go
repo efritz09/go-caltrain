@@ -79,6 +79,7 @@ func getDelay(status monitoredCall) time.Duration {
 	return expected.Sub(arrival)
 }
 
+// parseTimetable returns a slice of TimetableFrames from the given raw data
 func parseTimetable(raw []byte) ([]TimetableFrame, error) {
 	raw = bytes.TrimPrefix(raw, []byte("\xef\xbb\xbf"))
 	data := timetableJson{}

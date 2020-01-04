@@ -39,14 +39,11 @@ func (a *APIClient511) Get(ctx context.Context, url string, query map[string]str
 	if err != nil {
 		return nil, err
 	}
-	fmt.Printf("%+v", resp)
 	// TODO: check status codes first?
 
 	// TODO: return the number of tries left? It exists in the header under
 	// the Ratelimit-Limit and Ratelimit-Remaining keys
 	body, err := ioutil.ReadAll(resp.Body)
-	fmt.Println()
-	fmt.Println()
 	if err != nil {
 		return nil, fmt.Errorf("failed to read body: %w", err)
 	}

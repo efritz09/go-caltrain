@@ -159,6 +159,8 @@ func (c *CaltrainClient) getStationCode(st, dir string) (string, error) {
 	}
 }
 
+// GetStationTimetable returns the routes that stop at a given station in the
+// given direction
 func (c *CaltrainClient) GetStationTimetable(st, dir string) ([]TimetableRouteJourney, error) {
 	c.ttLock.RLock()
 	defer c.ttLock.RUnlock()
@@ -197,17 +199,14 @@ func (c *CaltrainClient) GetTrainsBetweenStations(ctx context.Context, src, dst 
 	if err != nil {
 		return nil, nil, err
 	}
-	fmt.Println(weekday)
 
 	journeyN, journeyS, err := c.getTrainRoutesBetweenStations(src, dst, weekday)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to get Train Routes: %w", err)
 	}
-	// TODO: we know the length, consider preallocating slice length
+
 	routeN := make([]*Route, len(journeyN))
 	routeS := make([]*Route, len(journeyS))
-	fmt.Println(len(journeyN))
-	fmt.Println(len(journeyS))
 	for i, journey := range journeyN {
 		r, err := c.journeyToRoute(journey)
 		if err != nil {
@@ -222,7 +221,6 @@ func (c *CaltrainClient) GetTrainsBetweenStations(ctx context.Context, src, dst 
 		}
 		routeS[i] = r
 	}
-	fmt.Println(len(routeN), len(routeS))
 	return routeN, routeS, nil
 }
 

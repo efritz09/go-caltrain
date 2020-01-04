@@ -2,7 +2,6 @@ package caltrain
 
 import (
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"os"
 	"reflect"
@@ -155,7 +154,6 @@ func TestParseTimetable(t *testing.T) {
 			} else if err == nil && tt.err != nil {
 				t.Fatalf("parseTimetable improperly succeeded for %s", tt.name)
 			}
-			fmt.Printf("%T\n", timetable)
 		})
 	}
 }
