@@ -8,8 +8,6 @@ import (
 	"strconv"
 	"sync"
 	"time"
-
-	"github.com/efritz09/go-caltrain/caltrain/internal/utilities"
 )
 
 type Caltrain interface {
@@ -27,9 +25,7 @@ type CaltrainClient struct {
 
 	DelayThreshold time.Duration // delay time to allow before warning user
 	APIClient      APIClient     // API client for making caltrain queries. Default APIClient511
-
-	// Consider adding an "updater" interface that handles the weekday update,
-	// and potentially the timetable. This would make unit testing easier
+	Updater        Updater       // interface for applying real world updates, such as the day of the week
 }
 
 func New(key string) *CaltrainClient {
@@ -39,6 +35,7 @@ func New(key string) *CaltrainClient {
 		stations:       getStations(),
 		DelayThreshold: defaultDelayThreshold,
 		APIClient:      NewClient(),
+		Updater:        NewUpdater(),
 	}
 }
 
@@ -171,7 +168,7 @@ func (c *CaltrainClient) GetStationTimetable(st, dir string) ([]TimetableRouteJo
 		return nil, err
 	}
 
-	weekday, err := utilities.GetWeekday(timezone)
+	weekday, err := c.Updater.GetWeekday(timezone)
 	if err != nil {
 		return nil, err
 	}
@@ -196,36 +193,35 @@ func (c *CaltrainClient) GetTrainRoute(trainNum string) (*Route, error) {
 func (c *CaltrainClient) GetTrainsBetweenStations(ctx context.Context, src, dst string) ([]*Route, []*Route, error) {
 	c.ttLock.RLock()
 	defer c.ttLock.RUnlock()
-	weekday, err := utilities.GetWeekday(timezone)
+	weekday, err := c.Updater.GetWeekday(timezone)
 	if err != nil {
 		return nil, nil, err
 	}
+	fmt.Println(weekday)
 
 	journeyN, journeyS, err := c.getTrainRoutesBetweenStations(src, dst, weekday)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to get Train Routes: %w", err)
 	}
 	// TODO: we know the length, consider preallocating slice length
-	routeN := []*Route{}
-	routeS := []*Route{}
-	// for line, journeys := range journeyN {
-	for _, journey := range journeyN {
+	routeN := make([]*Route, len(journeyN))
+	routeS := make([]*Route, len(journeyS))
+	fmt.Println(len(journeyN))
+	fmt.Println(len(journeyS))
+	for i, journey := range journeyN {
 		r, err := c.journeyToRoute(journey)
 		if err != nil {
 			return routeN, routeS, fmt.Errorf("failed to get Train Routes: %w", err)
 		}
-		routeN = append(routeN, r)
+		routeN[i] = r
 	}
-	// }
-	// for line, journeys := range journeyS {
-	for _, journey := range journeyS {
+	for i, journey := range journeyS {
 		r, err := c.journeyToRoute(journey)
 		if err != nil {
 			return routeN, routeS, fmt.Errorf("failed to get Train Routes: %w", err)
 		}
-		routeS = append(routeS, r)
+		routeS[i] = r
 	}
-	// }
 	fmt.Println(len(routeN), len(routeS))
 	return routeN, routeS, nil
 }

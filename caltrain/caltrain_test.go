@@ -2,6 +2,7 @@ package caltrain
 
 import (
 	"context"
+	"errors"
 	"reflect"
 	"testing"
 	"time"
@@ -64,10 +65,53 @@ func TestGetTrainsBetweenStations(t *testing.T) {
 	ctx := context.Background()
 	c := New(fakeKey)
 	m := &MockAPIClient{}
+	m.GetResultFilePath = "testdata/bulletSchedule.json"
 	c.APIClient = m
-	_, _, err := c.GetTrainsBetweenStations(ctx, StationHillsdale, StationPaloAlto)
+	err := c.UpdateTimeTable(ctx)
 	if err != nil {
-		t.Fatalf("Unexpected error: %v", err)
+		t.Fatalf("Unexpected error loading timetable: %v", err)
+	}
+	// c.UpdateTimeTable currently populates each line with bulletSchedule.
+	// remove the other instances
+	delete(c.timetable, Limited)
+	delete(c.timetable, Local)
+
+	tests := []struct {
+		src  string
+		dst  string
+		numN int // len of array for now
+		numS int
+		day  string
+		err  error
+	}{
+		{src: StationHillsdale, dst: StationPaloAlto, numN: 5, numS: 5, day: "monday", err: nil},
+		{src: StationSanJose, dst: StationSanFrancisco, numN: 11, numS: 11, day: "monday", err: nil},
+		{src: StationSanJose, dst: StationSanFrancisco, numN: 2, numS: 2, day: "sunday", err: nil},
+		{src: StationHillsdale, dst: StationHaywardPark, numN: 0, numS: 0, day: "monday", err: nil},
+		{src: StationSanFrancisco, dst: "BadSation", numN: 0, numS: 0, day: "monday", err: errors.New("")},
+	}
+
+	for _, tt := range tests {
+		name := tt.src + "_" + tt.dst
+		t.Run(name, func(t *testing.T) {
+			u := &MockUpdater{}
+			u.Weekday = tt.day
+			c.Updater = u
+
+			n, s, err := c.GetTrainsBetweenStations(ctx, tt.src, tt.dst)
+			if err != nil && tt.err == nil {
+				t.Fatalf("Failed to get train routes for %s: %v", name, err)
+			} else if err == nil && tt.err != nil {
+				t.Fatalf("getTrainRoutesBetweenStations improperly succeeded for %s", name)
+			}
+
+			if len(n) != tt.numN {
+				t.Fatalf("Incorrect routes North. Expected %d, recieved %d", tt.numN, len(n))
+			}
+			if len(s) != tt.numS {
+				t.Fatalf("Incorrect routes North. Expected %d, recieved %d", tt.numS, len(s))
+			}
+		})
 	}
 }
 
@@ -75,12 +119,33 @@ func TestGetTrainsBetweenStations(t *testing.T) {
 func TestGetDelays(t *testing.T) {
 	ctx := context.Background()
 	c := New(fakeKey)
-	m := &MockAPIClient{}
-	m.GetResultFilePath = "testdata/parseDelayData2.json"
-	c.APIClient = m
-	_, err := c.GetDelays(ctx)
-	if err != nil {
-		t.Fatalf("Unexpected error: %v", err)
+	tests := []struct {
+		name   string
+		data   string
+		delays int
+		err    error
+	}{
+		{name: "Data1", data: "testdata/parseDelayData1.json", delays: 2, err: nil},
+		{name: "Data2", data: "testdata/parseDelayData2.json", delays: 0, err: nil},
+		{name: "DataErr", data: "testdata/parseDelayData.json", delays: 0, err: errors.New("")},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			m := &MockAPIClient{}
+			m.GetResultFilePath = tt.data
+			c.APIClient = m
+			d, err := c.GetDelays(ctx)
+			if err != nil && tt.err == nil {
+				t.Fatalf("Failed to get train delays for %s: %v", tt.name, err)
+			} else if err == nil && tt.err != nil {
+				t.Fatalf("GetDelays improperly succeeded for %s", tt.name)
+			}
+
+			if len(d) != tt.delays {
+				t.Fatalf("Incorrect number of delays. Expected %d, recieved %d", tt.delays, len(d))
+			}
+		})
 	}
 }
 
