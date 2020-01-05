@@ -48,6 +48,7 @@ type Train struct {
 	NextStop  string        // stop for information
 	Direction string        // North or South
 	Delay     time.Duration // time behind schedule
+	Arrival   time.Time     // expected arrival time at NextStop
 	Line      string        // bullet, limited, etc.
 }
 

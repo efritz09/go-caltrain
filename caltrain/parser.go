@@ -42,7 +42,7 @@ func getTrains(raw []byte) ([]Train, error) {
 	for _, t := range trains {
 		train := t.MonitoredVehicleJourney
 		status := train.MonitoredCall
-		delay := getDelay(status)
+		delay, arrival := getDelay(status)
 		if delay < 0 {
 			delay = 0
 		}
@@ -51,6 +51,7 @@ func getTrains(raw []byte) ([]Train, error) {
 			NextStop:  strings.Split(status.StopPointName, " Caltrain")[0],
 			Direction: train.DirectionRef,
 			Delay:     delay,
+			Arrival:   arrival,
 			Line:      train.LineRef,
 		}
 		ret = append(ret, newTrain)
@@ -61,7 +62,7 @@ func getTrains(raw []byte) ([]Train, error) {
 
 // getDelay returns the time difference between the expected arrival time and
 // the aimed arrival time.
-func getDelay(status monitoredCall) time.Duration {
+func getDelay(status monitoredCall) (time.Duration, time.Time) {
 	arrival := status.AimedArrivalTime
 	expected := status.ExpectedArrivalTime
 	if expected.IsZero() {
@@ -76,7 +77,7 @@ func getDelay(status monitoredCall) time.Duration {
 		arrival = status.AimedDepartureTime
 	}
 
-	return expected.Sub(arrival)
+	return expected.Sub(arrival), expected
 }
 
 // parseTimetable returns a slice of TimetableFrames from the given raw data

@@ -22,8 +22,8 @@ func TestParseDelays(t *testing.T) {
 			name: "DelayData1",
 			data: "testdata/parseDelayData1.json",
 			expected: []Train{
-				Train{Number: "258", NextStop: StationSunnyvale, Direction: South, Delay: delay1, Line: Limited},
-				Train{Number: "263", NextStop: StationPaloAlto, Direction: North, Delay: delay2, Line: Limited},
+				Train{Number: "258", NextStop: StationSunnyvale, Direction: South, Delay: delay1, Arrival: time.Date(2019, time.December, 25, 0, 58, 10, 0, time.UTC), Line: Limited},
+				Train{Number: "263", NextStop: StationPaloAlto, Direction: North, Delay: delay2, Arrival: time.Date(2019, time.December, 25, 0, 50, 01, 0, time.UTC), Line: Limited},
 			},
 			err: nil,
 		},
@@ -70,8 +70,8 @@ func TestGetTrains(t *testing.T) {
 			name: "HillsdaleSouth",
 			data: "testdata/parseHillsdaleSouth.json",
 			expected: []Train{
-				Train{Number: "436", NextStop: StationHillsdale, Direction: South, Delay: 0, Line: Local},
-				Train{Number: "804", NextStop: StationHillsdale, Direction: South, Delay: 0, Line: Bullet},
+				Train{Number: "436", NextStop: StationHillsdale, Direction: South, Delay: 0, Arrival: time.Date(2019, time.December, 30, 3, 6, 57, 0, time.UTC), Line: Local},
+				Train{Number: "804", NextStop: StationHillsdale, Direction: South, Delay: 0, Arrival: time.Date(2019, time.December, 30, 3, 59, 45, 0, time.UTC), Line: Bullet},
 			},
 			err: nil,
 		},
@@ -79,7 +79,7 @@ func TestGetTrains(t *testing.T) {
 			name: "HillsdaleNorth",
 			data: "testdata/parseHillsdaleNorth.json",
 			expected: []Train{
-				Train{Number: "437", NextStop: StationHillsdale, Direction: North, Delay: 0, Line: Local},
+				Train{Number: "437", NextStop: StationHillsdale, Direction: North, Delay: 0, Arrival: time.Date(2019, time.December, 30, 4, 4, 45, 0, time.UTC), Line: Local},
 			},
 			err: nil,
 		},
