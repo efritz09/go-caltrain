@@ -95,14 +95,29 @@ func (c *CaltrainClient) GetDelays(ctx context.Context) ([]Train, error) {
 		"agency":  "CT",
 		"api_key": c.key,
 	}
+
+	if c.useCache {
+		data, ok := c.Cache.get(delayURL)
+		if ok {
+			return parseDelays(data, c.DelayThreshold)
+		}
+	}
+
 	data, err := c.APIClient.Get(ctx, delayURL, query)
 	if err != nil {
 		return nil, fmt.Errorf("failed to make request: %w", err)
 	}
 
 	// Now parse the body json string
-	return parseDelays(data, c.DelayThreshold)
+	trains, err := parseDelays(data, c.DelayThreshold)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse delay data: %w", err)
+	}
 
+	if c.useCache {
+		c.Cache.set(delayURL, data)
+	}
+	return trains, nil
 }
 
 // GetStationStatus returns the status of upcoming trains for a given station
@@ -117,13 +132,30 @@ func (c *CaltrainClient) GetStationStatus(ctx context.Context, stationName strin
 		"stopCode": code,
 		"api_key":  c.key,
 	}
+
+	// cache key is stationURL plus the stop code
+	if c.useCache {
+		data, ok := c.Cache.get(stationURL + code)
+		if ok {
+			return getTrains(data)
+		}
+	}
+
 	data, err := c.APIClient.Get(ctx, stationURL, query)
 	if err != nil {
 		return nil, fmt.Errorf("failed to make request: %w", err)
 	}
 
 	// Now parse the body json string
-	return getTrains(data)
+	trains, err := getTrains(data)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse trains: %w", err)
+	}
+
+	if c.useCache {
+		c.Cache.set(stationURL+code, data)
+	}
+	return trains, nil
 }
 
 // UpdateTimeTable should be called once per day to update the day's timetable

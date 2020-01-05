@@ -76,19 +76,19 @@ func (c *CaltrainCache) clearCache() {
 }
 
 type MockCache struct {
-	setFunc func(string, []byte)
-	getFunc func(string) ([]byte, bool)
+	SetFunc func(string, []byte)
+	GetFunc func(string) ([]byte, bool)
 }
 
 func (c *MockCache) set(key string, body []byte) {
-	if c.setFunc != nil {
-		c.setFunc(key, body)
+	if c.SetFunc != nil {
+		c.SetFunc(key, body)
 	}
 }
 
 func (c *MockCache) get(key string) ([]byte, bool) {
-	if c.getFunc != nil {
-		return c.getFunc(key)
+	if c.GetFunc != nil {
+		return c.GetFunc(key)
 	}
 	return nil, false
 }

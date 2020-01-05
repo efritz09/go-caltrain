@@ -126,6 +126,7 @@ func TestGetDelays(t *testing.T) {
 		err    error
 	}{
 		{name: "Data1", data: "testdata/parseDelayData1.json", delays: 2, err: nil},
+		{name: "Data1", data: "testdata/parseDelayData1.json", delays: 2, err: nil},
 		{name: "Data2", data: "testdata/parseDelayData2.json", delays: 0, err: nil},
 		{name: "DataErr", data: "testdata/parseDelayData.json", delays: 0, err: errors.New("")},
 	}
@@ -149,6 +150,54 @@ func TestGetDelays(t *testing.T) {
 	}
 }
 
+func TestGetDelaysCache(t *testing.T) {
+	ctx := context.Background()
+	c := New(fakeKey)
+	m := &MockAPIClient{}
+	m.GetResultFilePath = "testdata/parseDelayData1.json"
+	c.APIClient = m
+	c.SetupCache(DefaultCacheTimeout)
+
+	cache := make(map[string][]byte)
+	mock := &MockCache{}
+	mock.SetFunc = func(key string, body []byte) { cache[key] = body }
+	mock.GetFunc = func(key string) ([]byte, bool) {
+		v, ok := cache[key]
+		return v, ok
+	}
+	c.Cache = mock
+
+	// first make a call, the cache should be empty
+	if len(cache) != 0 {
+		t.Fatalf("Cache is not empty: %v", cache)
+	}
+	d, err := c.GetDelays(ctx)
+	if err != nil {
+		t.Fatalf("Failed to get train delays for %v", err)
+	}
+	if len(d) != 2 {
+		t.Fatalf("Incorrect number of delays. Expected %d, recieved %d", 2, len(d))
+	}
+
+	// check that the cache was filled
+	if len(cache) != 1 {
+		t.Fatalf("Cache does not have only 1 key: %v", cache)
+	}
+	// run it again
+	d, err = c.GetDelays(ctx)
+	if err != nil {
+		t.Fatalf("Failed to get train delays for %v", err)
+	}
+	if len(d) != 2 {
+		t.Fatalf("Incorrect number of delays. Expected %d, recieved %d", 2, len(d))
+	}
+
+	// check that the cache was not changed
+	if len(cache) != 1 {
+		t.Fatalf("Cache does not have only 1 key: %v", cache)
+	}
+}
+
 // Simple test to ensure the code runs
 func TestGetStationStatus(t *testing.T) {
 	ctx := context.Background()
@@ -159,6 +208,70 @@ func TestGetStationStatus(t *testing.T) {
 	_, err := c.GetStationStatus(ctx, StationHillsdale, North)
 	if err != nil {
 		t.Fatalf("Unexpected error: %v", err)
+	}
+}
+
+func TestGetStationStatusCache(t *testing.T) {
+	ctx := context.Background()
+	c := New(fakeKey)
+	m := &MockAPIClient{}
+	m.GetResultFilePath = "testdata/parseHillsdaleNorth.json"
+	c.APIClient = m
+	c.SetupCache(DefaultCacheTimeout)
+
+	cache := make(map[string][]byte)
+	mock := &MockCache{}
+	mock.SetFunc = func(key string, body []byte) { cache[key] = body }
+	mock.GetFunc = func(key string) ([]byte, bool) {
+		v, ok := cache[key]
+		return v, ok
+	}
+	c.Cache = mock
+
+	// first make a call, the cache should be empty
+	if len(cache) != 0 {
+		t.Fatalf("Cache is not empty: %v", cache)
+	}
+	d, err := c.GetStationStatus(ctx, StationHillsdale, North)
+	if err != nil {
+		t.Fatalf("Failed to get train delays for %v", err)
+	}
+	if len(d) != 1 {
+		t.Fatalf("Incorrect number of delays. Expected %d, recieved %d", 1, len(d))
+	}
+	// check that the cache was filled
+	if len(cache) != 1 {
+		t.Fatalf("Cache does not have only 1 key: %v", cache)
+	}
+
+	// Now replace it with a South call
+	m.GetResultFilePath = "testdata/parseHillsdaleSouth.json"
+	c.APIClient = m
+	// make a south call
+	d, err = c.GetStationStatus(ctx, StationHillsdale, South)
+	if err != nil {
+		t.Fatalf("Failed to get train delays for %v", err)
+	}
+	if len(d) != 2 {
+		t.Fatalf("Incorrect number of delays. Expected %d, recieved %d", 2, len(d))
+	}
+
+	// check that the cache was not changed
+	if len(cache) != 2 {
+		t.Fatalf("Cache does not have only 1 key: %v", cache)
+	}
+	// make a the same call call
+	d, err = c.GetStationStatus(ctx, StationHillsdale, South)
+	if err != nil {
+		t.Fatalf("Failed to get train delays for %v", err)
+	}
+	if len(d) != 2 {
+		t.Fatalf("Incorrect number of delays. Expected %d, recieved %d", 2, len(d))
+	}
+
+	// check that the cache was not changed
+	if len(cache) != 2 {
+		t.Fatalf("Cache does not have only 1 key: %v", cache)
 	}
 }
 
