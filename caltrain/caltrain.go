@@ -14,6 +14,7 @@ type Caltrain interface {
 	GetDelays(context.Context) ([]Train, error)
 	GetStationStatus(context.Context, string, string) ([]Train, error)
 	GetStations() []string
+	SetupCache(time.Duration)
 }
 
 type CaltrainClient struct {
@@ -41,12 +42,6 @@ func New(key string) *CaltrainClient {
 	}
 }
 
-// SetupCache defines enables use of endpoint caching
-func (c *CaltrainClient) SetupCache(expire time.Duration) {
-	c.Cache = NewCache(expire)
-	c.useCache = true
-}
-
 // Information on the current train status
 type Train struct {
 	Number    string        // train number
@@ -70,6 +65,12 @@ type TrainStop struct {
 	Station   string
 	Arrival   time.Time
 	Departure time.Time
+}
+
+// SetupCache defines enables use of endpoint caching
+func (c *CaltrainClient) SetupCache(expire time.Duration) {
+	c.Cache = NewCache(expire)
+	c.useCache = true
 }
 
 // GetStations returns a list of station names
