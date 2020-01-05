@@ -126,7 +126,6 @@ func TestGetDelays(t *testing.T) {
 		err    error
 	}{
 		{name: "Data1", data: "testdata/parseDelayData1.json", delays: 2, err: nil},
-		{name: "Data1", data: "testdata/parseDelayData1.json", delays: 2, err: nil},
 		{name: "Data2", data: "testdata/parseDelayData2.json", delays: 0, err: nil},
 		{name: "DataErr", data: "testdata/parseDelayData.json", delays: 0, err: errors.New("")},
 	}
