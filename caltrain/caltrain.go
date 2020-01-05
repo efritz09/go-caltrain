@@ -20,12 +20,14 @@ type CaltrainClient struct {
 	timetable map[string][]TimetableFrame // map of line type to slice of service journeys
 	ttLock    sync.RWMutex                // lock in case someone tries to access it during and update
 	stations  map[string]station          // station information map
+	useCache  bool                        // set by calling the SetupCache method
 
 	key string // API key for 511.org
 
 	DelayThreshold time.Duration // delay time to allow before warning user
 	APIClient      APIClient     // API client for making caltrain queries. Default APIClient511
 	Updater        Updater       // interface for applying real world updates, such as the day of the week
+	Cache          Cache         // interface for caching recent request results
 }
 
 func New(key string) *CaltrainClient {
@@ -37,6 +39,12 @@ func New(key string) *CaltrainClient {
 		APIClient:      NewClient(),
 		Updater:        NewUpdater(),
 	}
+}
+
+// SetupCache defines enables use of endpoint caching
+func (c *CaltrainClient) SetupCache(expire time.Duration) {
+	c.Cache = NewCache(expire)
+	c.useCache = true
 }
 
 // Information on the current train status
