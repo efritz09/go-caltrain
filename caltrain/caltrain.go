@@ -14,18 +14,21 @@ type Caltrain interface {
 	GetDelays(context.Context) ([]Train, error)
 	GetStationStatus(context.Context, string, string) ([]Train, error)
 	GetStations() []string
+	SetupCache(time.Duration)
 }
 
 type CaltrainClient struct {
 	timetable map[string][]TimetableFrame // map of line type to slice of service journeys
 	ttLock    sync.RWMutex                // lock in case someone tries to access it during and update
 	stations  map[string]station          // station information map
+	useCache  bool                        // set by calling the SetupCache method
 
 	key string // API key for 511.org
 
 	DelayThreshold time.Duration // delay time to allow before warning user
 	APIClient      APIClient     // API client for making caltrain queries. Default APIClient511
 	Updater        Updater       // interface for applying real world updates, such as the day of the week
+	Cache          Cache         // interface for caching recent request results
 }
 
 func New(key string) *CaltrainClient {
@@ -64,6 +67,12 @@ type TrainStop struct {
 	Departure time.Time
 }
 
+// SetupCache defines enables use of endpoint caching
+func (c *CaltrainClient) SetupCache(expire time.Duration) {
+	c.Cache = NewCache(expire)
+	c.useCache = true
+}
+
 // GetStations returns a list of station names
 func (c *CaltrainClient) GetStations() []string {
 	ret := []string{}
@@ -87,14 +96,29 @@ func (c *CaltrainClient) GetDelays(ctx context.Context) ([]Train, error) {
 		"agency":  "CT",
 		"api_key": c.key,
 	}
+
+	if c.useCache {
+		data, ok := c.Cache.get(delayURL)
+		if ok {
+			return parseDelays(data, c.DelayThreshold)
+		}
+	}
+
 	data, err := c.APIClient.Get(ctx, delayURL, query)
 	if err != nil {
 		return nil, fmt.Errorf("failed to make request: %w", err)
 	}
 
 	// Now parse the body json string
-	return parseDelays(data, c.DelayThreshold)
+	trains, err := parseDelays(data, c.DelayThreshold)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse delay data: %w", err)
+	}
 
+	if c.useCache {
+		c.Cache.set(delayURL, data)
+	}
+	return trains, nil
 }
 
 // GetStationStatus returns the status of upcoming trains for a given station
@@ -109,13 +133,30 @@ func (c *CaltrainClient) GetStationStatus(ctx context.Context, stationName strin
 		"stopCode": code,
 		"api_key":  c.key,
 	}
+
+	// cache key is stationURL plus the stop code
+	if c.useCache {
+		data, ok := c.Cache.get(stationURL + code)
+		if ok {
+			return getTrains(data)
+		}
+	}
+
 	data, err := c.APIClient.Get(ctx, stationURL, query)
 	if err != nil {
 		return nil, fmt.Errorf("failed to make request: %w", err)
 	}
 
 	// Now parse the body json string
-	return getTrains(data)
+	trains, err := getTrains(data)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse trains: %w", err)
+	}
+
+	if c.useCache {
+		c.Cache.set(stationURL+code, data)
+	}
+	return trains, nil
 }
 
 // UpdateTimeTable should be called once per day to update the day's timetable

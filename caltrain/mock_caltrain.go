@@ -1,6 +1,9 @@
 package caltrain
 
-import "context"
+import (
+	"context"
+	"time"
+)
 
 type MockCaltrain struct {
 	GetDelaysFunc        func(context.Context) ([]Train, error)
@@ -28,3 +31,5 @@ func (c *MockCaltrain) GetStations() []string {
 	}
 	return nil
 }
+
+func (c *MockCaltrain) SetupCache(expire time.Duration) {}
