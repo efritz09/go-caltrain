@@ -16,6 +16,7 @@ type Caltrain interface {
 	GetTrainsBetweenStations(ctx context.Context, src, dst string) ([]*Route, []*Route, error)
 	GetStations() []string
 	SetupCache(time.Duration)
+	UpdateTimeTable(context.Context) error
 }
 
 type CaltrainClient struct {

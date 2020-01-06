@@ -41,3 +41,5 @@ func (c *MockCaltrain) GetTrainsBetweenStations(ctx context.Context, src, dst st
 }
 
 func (c *MockCaltrain) SetupCache(expire time.Duration) {}
+
+func (c *MockCaltrain) UpdateTimeTable(ctx context.Context) error { return nil }
