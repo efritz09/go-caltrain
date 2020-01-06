@@ -6,9 +6,10 @@ import (
 )
 
 type MockCaltrain struct {
-	GetDelaysFunc        func(context.Context) ([]Train, error)
-	GetStationStatusFunc func(context.Context, string, string) ([]Train, error)
-	GetStationsFunc      func() []string
+	GetDelaysFunc                func(context.Context) ([]Train, error)
+	GetStationStatusFunc         func(context.Context, string, string) ([]Train, error)
+	GetTrainsBetweenStationsFunc func(context.Context, string, string) ([]*Route, []*Route, error)
+	GetStationsFunc              func() []string
 }
 
 func (c *MockCaltrain) GetDelays(ctx context.Context) ([]Train, error) {
@@ -30,6 +31,13 @@ func (c *MockCaltrain) GetStations() []string {
 		return c.GetStationsFunc()
 	}
 	return nil
+}
+
+func (c *MockCaltrain) GetTrainsBetweenStations(ctx context.Context, src, dst string) ([]*Route, []*Route, error) {
+	if c.GetTrainsBetweenStationsFunc != nil {
+		return c.GetTrainsBetweenStationsFunc(ctx, src, dst)
+	}
+	return nil, nil, nil
 }
 
 func (c *MockCaltrain) SetupCache(expire time.Duration) {}

@@ -13,6 +13,7 @@ import (
 type Caltrain interface {
 	GetDelays(context.Context) ([]Train, error)
 	GetStationStatus(context.Context, string, string) ([]Train, error)
+	GetTrainsBetweenStations(ctx context.Context, src, dst string) ([]*Route, []*Route, error)
 	GetStations() []string
 	SetupCache(time.Duration)
 }
