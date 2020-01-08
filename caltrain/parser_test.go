@@ -2,6 +2,7 @@ package caltrain
 
 import (
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"reflect"
@@ -156,6 +157,24 @@ func TestParseTimetable(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestParseStations(t *testing.T) {
+	f, err := os.Open("testdata/stations.json")
+	if err != nil {
+		t.Fatalf("Could not open test data: %v", err)
+	}
+	data, err := ioutil.ReadAll(f)
+	if err != nil {
+		t.Fatalf("Could not read test data: %v", err)
+	}
+
+	s, err := parseStations(data)
+	fmt.Printf("%T\n", s)
+	if err != nil {
+		t.Fatalf("failed to get stations: %v", err)
+	}
+
 }
 
 // assertEqual compares two Train slices for the same elements

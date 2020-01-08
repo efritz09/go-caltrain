@@ -4,12 +4,14 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 )
 
 const (
 	timeLayout = "2006-01-02T15:04:05Z"
+	northVal   = 1
 )
 
 // parseDelays returns a slice of TrainsStatus for all trains that are delayed
@@ -107,4 +109,61 @@ func parseTimetable(raw []byte) ([]TimetableFrame, map[string][]string, error) {
 		}
 		return frames, services, nil
 	}
+}
+
+func parseStations(raw []byte) (map[string]*station, error) {
+	raw = bytes.TrimPrefix(raw, []byte("\xef\xbb\xbf"))
+	data := stationJson{}
+	if err := json.Unmarshal(raw, &data); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal: %w", err)
+	}
+
+	ret := make(map[string]*station)
+
+	// stops are indexed by id, not by station, so we have to generate a map
+	// that gets us halfway there first, then convert to our struct
+	stops := data.Contents.DataObjects.ScheduledStopPoint
+	for _, stop := range stops {
+		if strings.HasSuffix(stop.Name, "Station") {
+			continue
+		}
+		name := strings.Split(stop.Name, " Caltrain")[0]
+		if st, ok := ret[name]; !ok {
+			// create a new station
+			newStation := &station{name: name}
+			if err := addDirectionToStation(newStation, stop.ID); err != nil {
+				return nil, fmt.Errorf("failed to parse stations: %w", err)
+			}
+			ret[name] = newStation
+		} else {
+			if err := addDirectionToStation(st, stop.ID); err != nil {
+				return nil, fmt.Errorf("failed to parse stations: %w", err)
+			}
+		}
+	}
+
+	for k, v := range ret {
+		fmt.Println(k, v.northCode, v.southCode)
+	}
+	return ret, nil
+}
+
+func addDirectionToStation(s *station, id string) error {
+	if dir, err := isCodeNorth(id); err != nil {
+		return fmt.Errorf("failed to parse stations: %w", err)
+	} else if dir {
+		s.northCode = id
+	} else {
+		s.southCode = id
+	}
+	return nil
+}
+
+func isCodeNorth(code string) (bool, error) {
+	lastChar := code[len(code)-1:]
+	i, err := strconv.Atoi(lastChar)
+	if err != nil {
+		return false, fmt.Errorf("bad station code: %s", code)
+	}
+	return i <= northVal, nil
 }

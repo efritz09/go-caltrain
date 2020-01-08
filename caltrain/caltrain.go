@@ -72,6 +72,12 @@ type TrainStop struct {
 	Departure time.Time
 }
 
+type station struct {
+	name      string
+	northCode string
+	southCode string
+}
+
 // SetupCache defines enables use of endpoint caching
 func (c *CaltrainClient) SetupCache(expire time.Duration) {
 	c.Cache = NewCache(expire)
@@ -200,14 +206,17 @@ func (c *CaltrainClient) UpdateTimeTable(ctx context.Context) error {
 // getStationCode returns the code for a given station and direction
 func (c *CaltrainClient) getStationCode(st, dir string) (string, error) {
 	// first validate the direction
-	if dir != North && dir != South {
-		return "", fmt.Errorf("unknown direction %s", dir)
+	station, ok := c.stations[st]
+	if !ok {
+		return "", fmt.Errorf("unknown station %s", st)
 	}
 
-	if station, ok := c.stations[st]; !ok {
-		return "", fmt.Errorf("unknown station %s", st)
+	if dir == North {
+		return station.northCode, nil
+	} else if dir == South {
+		return station.southCode, nil
 	} else {
-		return station.directions[dir], nil
+		return "", fmt.Errorf("unknown direction %s", dir)
 	}
 }
 
