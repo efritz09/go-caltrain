@@ -8,29 +8,15 @@ import (
 // timetable.go contains helpers relating to the timetable. All functions must
 // have ttLock read locked before calling
 
-// weekdayReferences are hard coded DayType values. These are from ServiceCalendarFrame
-// but that is currently inconsistent. Future work would be to make this adaptive
-var weekdayReferences = map[string][]string{
-	"monday":    []string{"8005"},
-	"tuesday":   []string{"8005"},
-	"wednesday": []string{"8005"},
-	"thursday":  []string{"8005"},
-	"friday":    []string{"8005"},
-	"saturday":  []string{"8006", "8007"},
-	"sunday":    []string{"8006"},
-}
-
 // getTimetableForStation returns a list of trains that stop at a given station
 // code and directions
 func (c *CaltrainClient) getTimetableForStation(stationCode, dir, weekday string) ([]TimetableRouteJourney, error) {
-	weekdayRefs := weekdayReferences[weekday]
-
 	allJourneys := []TimetableRouteJourney{}
 
 	for _, ttArray := range c.timetable {
 		for _, frame := range ttArray {
 			// Check the day reference
-			if !isInDayRef(weekdayRefs, frame.FrameValidityConditions.AvailabilityCondition.DayTypes.DayTypeRef.Ref) {
+			if !c.isForToday(weekday, frame.FrameValidityConditions.AvailabilityCondition.DayTypes.DayTypeRef.Ref) {
 				continue
 			}
 			// Checkc the direction
@@ -88,13 +74,12 @@ func (c *CaltrainClient) getTrainRoutesBetweenStations(src, dst, weekday string)
 		return nil, nil, fmt.Errorf("failed to get station code: %w", err)
 	}
 
-	weekdayRefs := weekdayReferences[weekday]
 	journeyN := []TimetableRouteJourney{}
 	journeyS := []TimetableRouteJourney{}
 	for line, ttArray := range c.timetable {
 		for _, frame := range ttArray {
 			// Check the day reference
-			if !isInDayRef(weekdayRefs, frame.FrameValidityConditions.AvailabilityCondition.DayTypes.DayTypeRef.Ref) {
+			if !c.isForToday(weekday, frame.FrameValidityConditions.AvailabilityCondition.DayTypes.DayTypeRef.Ref) {
 				continue
 			}
 			// convert `Bullet:N :Year Round Weekday (Weekday)` to `North`
@@ -120,10 +105,14 @@ func (c *CaltrainClient) getTrainRoutesBetweenStations(src, dst, weekday string)
 	return journeyN, journeyS, nil
 }
 
-// isInDayRef returns true if the value is in the slice day
-func isInDayRef(day []string, val string) bool {
-	for _, d := range day {
-		if d == val {
+// isForToday returns true if the frame is for the day
+func (c *CaltrainClient) isForToday(day string, ref string) bool {
+	weekdays, ok := c.dayService[ref]
+	if !ok {
+		return false
+	}
+	for _, d := range weekdays {
+		if d == day {
 			return true
 		}
 	}

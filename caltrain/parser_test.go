@@ -148,7 +148,7 @@ func TestParseTimetable(t *testing.T) {
 				t.Fatalf("Could not read test data for %s: %v", tt.name, err)
 			}
 
-			_, err = parseTimetable(data)
+			_, _, err = parseTimetable(data)
 			if err != nil && tt.err == nil {
 				t.Fatalf("Failed to get timetable for %s: %v", tt.name, err)
 			} else if err == nil && tt.err != nil {

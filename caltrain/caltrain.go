@@ -20,10 +20,11 @@ type Caltrain interface {
 }
 
 type CaltrainClient struct {
-	timetable map[string][]TimetableFrame // map of line type to slice of service journeys
-	ttLock    sync.RWMutex                // lock in case someone tries to access it during and update
-	stations  map[string]station          // station information map
-	useCache  bool                        // set by calling the SetupCache method
+	timetable  map[string][]TimetableFrame // map of line type to slice of service journeys
+	dayService map[string][]string         // map of id to days of the week that the id corresponds to
+	ttLock     sync.RWMutex                // lock in case someone tries to access it during and update
+	stations   map[string]station          // station information map
+	useCache   bool                        // set by calling the SetupCache method
 
 	key string // API key for 511.org
 
@@ -36,6 +37,7 @@ type CaltrainClient struct {
 func New(key string) *CaltrainClient {
 	return &CaltrainClient{
 		timetable:      make(map[string][]TimetableFrame),
+		dayService:     make(map[string][]string),
 		key:            key,
 		stations:       getStations(),
 		DelayThreshold: defaultDelayThreshold,
@@ -179,11 +181,17 @@ func (c *CaltrainClient) UpdateTimeTable(ctx context.Context) error {
 			return fmt.Errorf("failed to make request: %w", err)
 		}
 
-		journeys, err := parseTimetable(data)
+		journeys, services, err := parseTimetable(data)
 		if err != nil {
 			return fmt.Errorf("failed to parse timetable: %w", err)
 		}
+		// store the timetable
 		c.timetable[line] = journeys
+
+		// overwrite the known data with the timetable's ServiceCalendarFrame
+		for key, value := range services {
+			c.dayService[key] = value
+		}
 	}
 
 	return nil

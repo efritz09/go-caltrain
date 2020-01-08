@@ -81,20 +81,30 @@ func getDelay(status monitoredCall) (time.Duration, time.Time) {
 }
 
 // parseTimetable returns a slice of TimetableFrames from the given raw data
-func parseTimetable(raw []byte) ([]TimetableFrame, error) {
+func parseTimetable(raw []byte) ([]TimetableFrame, map[string][]string, error) {
 	raw = bytes.TrimPrefix(raw, []byte("\xef\xbb\xbf"))
 	data := timetableJson{}
+	services := make(map[string][]string)
 	if err := json.Unmarshal(raw, &data); err != nil {
 		e := fmt.Errorf("failed to unmarshal: %w", err)
 		// Try using the alternative struct
 		altData := timetableJsonAlternate{}
 		if err := json.Unmarshal(raw, &altData); err != nil {
-			return nil, fmt.Errorf("failed to unmarshal alternative: %w", e)
+			return nil, nil, fmt.Errorf("failed to unmarshal alternative: %w", e)
 		}
 		frames := altData.Content.TimetableFrame
-		return frames, nil
+		// parse the service data with the alt data
+		sframe := altData.Content.ServiceCalendarFrame.DayTypes.DayType
+		days := strings.Split(strings.TrimSpace(strings.ToLower(sframe.Properties.PropertyOfDay.DaysOfWeek)), " ")
+		services[sframe.ID] = days
+		return frames, services, nil
 	} else {
 		frames := data.Content.TimetableFrame
-		return frames, nil
+		sframe := data.Content.ServiceCalendarFrame.DayTypes.DayType
+		for _, f := range sframe {
+			days := strings.Split(strings.TrimSpace(strings.ToLower(f.Properties.PropertyOfDay.DaysOfWeek)), " ")
+			services[f.ID] = days
+		}
+		return frames, services, nil
 	}
 }

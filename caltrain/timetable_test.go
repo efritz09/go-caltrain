@@ -148,6 +148,14 @@ func TestGetRouteForTrain(t *testing.T) {
 }
 
 func TestIsInDayRef(t *testing.T) {
+	c := New(fakeKey)
+	services := map[string][]string{
+		"8005": []string{"monday", "tuesday", "wednesday", "thursday", "friday"},
+		"8006": []string{"saturday", "sunday"},
+		"8007": []string{"saturday"},
+	}
+	c.dayService = services
+
 	tests := []struct {
 		day string
 		ref string
@@ -168,10 +176,9 @@ func TestIsInDayRef(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.day+"/"+tt.ref, func(t *testing.T) {
-			weekdayRef := weekdayReferences[tt.day]
-			val := isInDayRef(weekdayRef, tt.ref)
+			val := c.isForToday(tt.day, tt.ref)
 			if val != tt.exp {
-				t.Fatalf("isInDayRef unexpectedly returned %t", val)
+				t.Fatalf("isForToday unexpectedly returned %t", val)
 			}
 
 		})
