@@ -37,7 +37,7 @@ func (c *MockCaltrain) GetTrainsBetweenStations(ctx context.Context, src, dst st
 	if c.GetTrainsBetweenStationsFunc != nil {
 		return c.GetTrainsBetweenStationsFunc(ctx, src, dst)
 	}
-	return nil, nil, nil
+	return nil, nil
 }
 
 func (c *MockCaltrain) SetupCache(expire time.Duration) {}
