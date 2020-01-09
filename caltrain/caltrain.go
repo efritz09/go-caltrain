@@ -17,7 +17,7 @@ type Caltrain interface {
 	GetTrainsBetweenStations(ctx context.Context, src, dst string) ([]*Route, []*Route, error)
 	GetStations() []string
 	SetupCache(time.Duration)
-	Initialize(context.Context)
+	Initialize(context.Context) error
 	UpdateStations(context.Context) error
 	UpdateTimeTable(context.Context) error
 }
