@@ -12,6 +12,62 @@ const (
 	fakeKey = "ericisgreat"
 )
 
+func TestGetStations(t *testing.T) {
+	ctx := context.Background()
+	c := New(fakeKey)
+	m := &MockAPIClient{}
+	m.GetResultFilePath = "testdata/stations.json"
+	c.APIClient = m
+	if err := c.UpdateStations(ctx); err != nil {
+		t.Fatalf("Unexpected error loading stations: %v", err)
+	}
+
+	exp := map[string]struct{}{
+		Station22ndStreet:   struct{}{},
+		StationAtherton:     struct{}{},
+		StationBayshore:     struct{}{},
+		StationBelmont:      struct{}{},
+		StationBlossomHill:  struct{}{},
+		StationBroadway:     struct{}{},
+		StationBurlingame:   struct{}{},
+		StationCalAve:       struct{}{},
+		StationCapitol:      struct{}{},
+		StationCollegePark:  struct{}{},
+		StationGilroy:       struct{}{},
+		StationHaywardPark:  struct{}{},
+		StationHillsdale:    struct{}{},
+		StationLawrence:     struct{}{},
+		StationMenloPark:    struct{}{},
+		StationMillbrae:     struct{}{},
+		StationMorganHill:   struct{}{},
+		StationMountainView: struct{}{},
+		StationPaloAlto:     struct{}{},
+		StationRedwoodCity:  struct{}{},
+		StationSanAntonio:   struct{}{},
+		StationSanBruno:     struct{}{},
+		StationSanCarlos:    struct{}{},
+		StationSanFrancisco: struct{}{},
+		StationSanJose:      struct{}{},
+		StationSanMartin:    struct{}{},
+		StationSanMateo:     struct{}{},
+		StationSantaClara:   struct{}{},
+		StationSouthSF:      struct{}{},
+		StationStanford:     struct{}{},
+		StationSunnyvale:    struct{}{},
+		StationTamien:       struct{}{},
+	}
+
+	stations := c.GetStations()
+	if len(exp) != len(stations) {
+		t.Fatalf("incorrect number of stations")
+	}
+	for _, st := range stations {
+		if _, ok := exp[st]; !ok {
+			t.Fatalf("unexpected station: %s", st)
+		}
+	}
+}
+
 func TestGetTrainRoute(t *testing.T) {
 	ctx := context.Background()
 	c := New(fakeKey)

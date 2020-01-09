@@ -181,7 +181,7 @@ func (c *CaltrainClient) Initialize(ctx context.Context) error {
 	if err := c.UpdateStations(ctx); err != nil {
 		return err
 	}
-	return c.UpdateStations(ctx)
+	return c.UpdateTimeTable(ctx)
 }
 
 // UpdateTimeTable should be called once per day to update the day's timetable
