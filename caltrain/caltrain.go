@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"sort"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 )
@@ -16,14 +17,17 @@ type Caltrain interface {
 	GetTrainsBetweenStations(ctx context.Context, src, dst string) ([]*Route, []*Route, error)
 	GetStations() []string
 	SetupCache(time.Duration)
+	Initialize(context.Context)
+	UpdateStations(context.Context) error
 	UpdateTimeTable(context.Context) error
 }
 
 type CaltrainClient struct {
 	timetable  map[string][]TimetableFrame // map of line type to slice of service journeys
 	dayService map[string][]string         // map of id to days of the week that the id corresponds to
-	ttLock     sync.RWMutex                // lock in case someone tries to access it during and update
-	stations   map[string]station          // station information map
+	ttLock     sync.RWMutex                // lock in case someone tries to access the timetable during and update
+	stations   map[string]*station         // station information map
+	sLock      sync.RWMutex                // lock in case someone tries to access the stations during and update
 	useCache   bool                        // set by calling the SetupCache method
 
 	key string // API key for 511.org
@@ -39,7 +43,6 @@ func New(key string) *CaltrainClient {
 		timetable:      make(map[string][]TimetableFrame),
 		dayService:     make(map[string][]string),
 		key:            key,
-		stations:       getStations(),
 		DelayThreshold: defaultDelayThreshold,
 		APIClient:      NewClient(),
 		Updater:        NewUpdater(),
@@ -87,9 +90,11 @@ func (c *CaltrainClient) SetupCache(expire time.Duration) {
 // GetStations returns a list of station names
 func (c *CaltrainClient) GetStations() []string {
 	ret := []string{}
+	c.sLock.RLock()
 	for k := range c.stations {
 		ret = append(ret, k)
 	}
+	c.sLock.RUnlock()
 	sort.Strings(ret)
 	return ret
 }
@@ -145,15 +150,15 @@ func (c *CaltrainClient) GetStationStatus(ctx context.Context, stationName strin
 		"api_key":  c.key,
 	}
 
-	// cache key is stationURL plus the stop code
+	// cache key is stationStatusURL plus the stop code
 	if c.useCache {
-		data, ok := c.Cache.get(stationURL + code)
+		data, ok := c.Cache.get(stationStatusURL + code)
 		if ok {
 			return getTrains(data)
 		}
 	}
 
-	data, err := c.APIClient.Get(ctx, stationURL, query)
+	data, err := c.APIClient.Get(ctx, stationStatusURL, query)
 	if err != nil {
 		return nil, fmt.Errorf("failed to make request: %w", err)
 	}
@@ -165,9 +170,18 @@ func (c *CaltrainClient) GetStationStatus(ctx context.Context, stationName strin
 	}
 
 	if c.useCache {
-		c.Cache.set(stationURL+code, data)
+		c.Cache.set(stationStatusURL+code, data)
 	}
 	return trains, nil
+}
+
+// Initialize calls the methods to get the timetable and stations, and any
+// other required info before the package can run properly
+func (c *CaltrainClient) Initialize(ctx context.Context) error {
+	if err := c.UpdateStations(ctx); err != nil {
+		return err
+	}
+	return c.UpdateStations(ctx)
 }
 
 // UpdateTimeTable should be called once per day to update the day's timetable
@@ -203,9 +217,33 @@ func (c *CaltrainClient) UpdateTimeTable(ctx context.Context) error {
 	return nil
 }
 
+// UpdateStations calls the api to get a station list
+func (c *CaltrainClient) UpdateStations(ctx context.Context) error {
+	c.sLock.Lock()
+	defer c.sLock.Unlock()
+
+	query := map[string]string{
+		"operator_id": "CT",
+		"api_key":     c.key,
+	}
+	data, err := c.APIClient.Get(ctx, stationsURL, query)
+	if err != nil {
+		return fmt.Errorf("failed to make request: %w", err)
+	}
+
+	stations, err := parseStations(data)
+	if err != nil {
+		return fmt.Errorf("failed to parse stations: %w", err)
+	}
+	c.stations = stations
+	return nil
+}
+
 // getStationCode returns the code for a given station and direction
 func (c *CaltrainClient) getStationCode(st, dir string) (string, error) {
 	// first validate the direction
+	c.sLock.RLock()
+	defer c.sLock.RUnlock()
 	station, ok := c.stations[st]
 	if !ok {
 		return "", fmt.Errorf("unknown station %s", st)
@@ -318,4 +356,28 @@ func (c *CaltrainClient) journeyToRoute(r TimetableRouteJourney) (*Route, error)
 		route.Stops = append(route.Stops, t)
 	}
 	return route, nil
+}
+
+// TODO: unit test this
+func (c *CaltrainClient) getStationFromCode(code string) string {
+	c.sLock.RLock()
+	defer c.sLock.RUnlock()
+	for name, st := range c.stations {
+		if st.northCode == code || st.southCode == code {
+			return name
+		}
+	}
+	return ""
+}
+
+// getDirFromChar returns the proper direction string for a given character.
+// HasPrefix is used in case the "char" has whitespace
+func getDirFromChar(c string) string {
+	if strings.HasPrefix(c, "N") {
+		return North
+	} else if strings.HasPrefix(c, "S") {
+		return South
+	} else {
+		return ""
+	}
 }

@@ -111,6 +111,8 @@ func parseTimetable(raw []byte) ([]TimetableFrame, map[string][]string, error) {
 	}
 }
 
+// parseStations returns a map of station name to station struct, parsing the
+// north and south codes
 func parseStations(raw []byte) (map[string]*station, error) {
 	raw = bytes.TrimPrefix(raw, []byte("\xef\xbb\xbf"))
 	data := stationJson{}
@@ -142,12 +144,11 @@ func parseStations(raw []byte) (map[string]*station, error) {
 		}
 	}
 
-	for k, v := range ret {
-		fmt.Println(k, v.northCode, v.southCode)
-	}
 	return ret, nil
 }
 
+// addDirectionToStation is a helper function to add the code to the proper
+// direction in the station struct
 func addDirectionToStation(s *station, id string) error {
 	if dir, err := isCodeNorth(id); err != nil {
 		return fmt.Errorf("failed to parse stations: %w", err)
@@ -159,6 +160,7 @@ func addDirectionToStation(s *station, id string) error {
 	return nil
 }
 
+// isCodeNorth returns true if the code is for a north station
 func isCodeNorth(code string) (bool, error) {
 	lastChar := code[len(code)-1:]
 	i, err := strconv.Atoi(lastChar)

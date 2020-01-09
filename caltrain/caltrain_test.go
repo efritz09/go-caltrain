@@ -18,9 +18,12 @@ func TestGetTrainRoute(t *testing.T) {
 	m := &MockAPIClient{}
 	m.GetResultFilePath = "testdata/bulletSchedule.json"
 	c.APIClient = m
-	err := c.UpdateTimeTable(ctx)
-	if err != nil {
+	if err := c.UpdateTimeTable(ctx); err != nil {
 		t.Fatalf("Unexpected error loading timetable: %v", err)
+	}
+	m.GetResultFilePath = "testdata/stations.json"
+	if err := c.UpdateStations(ctx); err != nil {
+		t.Fatalf("Unexpected error loading stations: %v", err)
 	}
 	// c.UpdateTimeTable currently populates each line with bulletSchedule.
 	// remove the other instances
@@ -67,9 +70,12 @@ func TestGetTrainsBetweenStations(t *testing.T) {
 	m := &MockAPIClient{}
 	m.GetResultFilePath = "testdata/bulletSchedule.json"
 	c.APIClient = m
-	err := c.UpdateTimeTable(ctx)
-	if err != nil {
+	if err := c.UpdateTimeTable(ctx); err != nil {
 		t.Fatalf("Unexpected error loading timetable: %v", err)
+	}
+	m.GetResultFilePath = "testdata/stations.json"
+	if err := c.UpdateStations(ctx); err != nil {
+		t.Fatalf("Unexpected error loading stations: %v", err)
 	}
 	// c.UpdateTimeTable currently populates each line with bulletSchedule.
 	// remove the other instances
@@ -202,8 +208,12 @@ func TestGetStationStatus(t *testing.T) {
 	ctx := context.Background()
 	c := New(fakeKey)
 	m := &MockAPIClient{}
-	m.GetResultFilePath = "testdata/parseHillsdaleNorth.json"
+	m.GetResultFilePath = "testdata/stations.json"
 	c.APIClient = m
+	if err := c.UpdateStations(ctx); err != nil {
+		t.Fatalf("Unexpected error loading stations: %v", err)
+	}
+	m.GetResultFilePath = "testdata/parseHillsdaleNorth.json"
 	_, err := c.GetStationStatus(ctx, StationHillsdale, North)
 	if err != nil {
 		t.Fatalf("Unexpected error: %v", err)
@@ -214,8 +224,12 @@ func TestGetStationStatusCache(t *testing.T) {
 	ctx := context.Background()
 	c := New(fakeKey)
 	m := &MockAPIClient{}
-	m.GetResultFilePath = "testdata/parseHillsdaleNorth.json"
+	m.GetResultFilePath = "testdata/stations.json"
 	c.APIClient = m
+	if err := c.UpdateStations(ctx); err != nil {
+		t.Fatalf("Unexpected error loading stations: %v", err)
+	}
+	m.GetResultFilePath = "testdata/parseHillsdaleNorth.json"
 	c.SetupCache(DefaultCacheTimeout)
 
 	cache := make(map[string][]byte)
@@ -301,9 +315,15 @@ func TestUpdateTimeTable(t *testing.T) {
 
 // Simple test to ensure the code runs
 func TestGetStationTimetable(t *testing.T) {
+	ctx := context.Background()
 	c := New(fakeKey)
 	m := &MockAPIClient{}
+	m.GetResultFilePath = "testdata/stations.json"
 	c.APIClient = m
+	if err := c.UpdateStations(ctx); err != nil {
+		t.Fatalf("Unexpected error loading stations: %v", err)
+	}
+
 	_, err := c.GetStationTimetable(StationHillsdale, North)
 	if err != nil {
 		t.Fatalf("Unexpected error: %v", err)

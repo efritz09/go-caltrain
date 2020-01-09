@@ -2,7 +2,6 @@ package caltrain
 
 import (
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"os"
 	"reflect"
@@ -169,12 +168,49 @@ func TestParseStations(t *testing.T) {
 		t.Fatalf("Could not read test data: %v", err)
 	}
 
+	exp := map[string]*station{
+		Station22ndStreet:   &station{name: Station22ndStreet, northCode: "70021", southCode: "70022"},
+		StationAtherton:     &station{name: StationAtherton, northCode: "70151", southCode: "70152"},
+		StationBayshore:     &station{name: StationBayshore, northCode: "70031", southCode: "70032"},
+		StationBelmont:      &station{name: StationBelmont, northCode: "70121", southCode: "70122"},
+		StationBlossomHill:  &station{name: StationBlossomHill, northCode: "70291", southCode: "70292"},
+		StationBroadway:     &station{name: StationBroadway, northCode: "70071", southCode: "70072"},
+		StationBurlingame:   &station{name: StationBurlingame, northCode: "70081", southCode: "70082"},
+		StationCalAve:       &station{name: StationCalAve, northCode: "70191", southCode: "70192"},
+		StationCapitol:      &station{name: StationCapitol, northCode: "70281", southCode: "70282"},
+		StationCollegePark:  &station{name: StationCollegePark, northCode: "70251", southCode: "70252"},
+		StationGilroy:       &station{name: StationGilroy, northCode: "70321", southCode: "70322"},
+		StationHaywardPark:  &station{name: StationHaywardPark, northCode: "70101", southCode: "70102"},
+		StationHillsdale:    &station{name: StationHillsdale, northCode: "70111", southCode: "70112"},
+		StationLawrence:     &station{name: StationLawrence, northCode: "70231", southCode: "70232"},
+		StationMenloPark:    &station{name: StationMenloPark, northCode: "70161", southCode: "70162"},
+		StationMillbrae:     &station{name: StationMillbrae, northCode: "70061", southCode: "70062"},
+		StationMorganHill:   &station{name: StationMorganHill, northCode: "70301", southCode: "70302"},
+		StationMountainView: &station{name: StationMountainView, northCode: "70211", southCode: "70212"},
+		StationPaloAlto:     &station{name: StationPaloAlto, northCode: "70171", southCode: "70172"},
+		StationRedwoodCity:  &station{name: StationRedwoodCity, northCode: "70141", southCode: "70142"},
+		StationSanAntonio:   &station{name: StationSanAntonio, northCode: "70201", southCode: "70202"},
+		StationSanBruno:     &station{name: StationSanBruno, northCode: "70051", southCode: "70052"},
+		StationSanCarlos:    &station{name: StationSanCarlos, northCode: "70131", southCode: "70132"},
+		StationSanFrancisco: &station{name: StationSanFrancisco, northCode: "70011", southCode: "70012"},
+		StationSanJose:      &station{name: StationSanJose, northCode: "70261", southCode: "70262"},
+		StationSanMartin:    &station{name: StationSanMartin, northCode: "70311", southCode: "70312"},
+		StationSanMateo:     &station{name: StationSanMateo, northCode: "70091", southCode: "70092"},
+		StationSantaClara:   &station{name: StationSantaClara, northCode: "70241", southCode: "70242"},
+		StationSouthSF:      &station{name: StationSouthSF, northCode: "70041", southCode: "70042"},
+		StationSunnyvale:    &station{name: StationSunnyvale, northCode: "70221", southCode: "70222"},
+		StationTamien:       &station{name: StationTamien, northCode: "70271", southCode: "70272"},
+		StationStanford:     &station{name: StationStanford, northCode: "2537740", southCode: "2537744"},
+	}
+
 	s, err := parseStations(data)
-	fmt.Printf("%T\n", s)
 	if err != nil {
 		t.Fatalf("failed to get stations: %v", err)
 	}
 
+	if !reflect.DeepEqual(s, exp) {
+		t.Fatalf("station parsing failed.\nexpected %v\nreceived %v", exp, s)
+	}
 }
 
 // assertEqual compares two Train slices for the same elements

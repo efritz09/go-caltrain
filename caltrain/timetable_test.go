@@ -17,6 +17,10 @@ func TestGetTimetableForStation(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Unexpected error loading timetable: %v", err)
 	}
+	m.GetResultFilePath = "testdata/stations.json"
+	if err := c.UpdateStations(ctx); err != nil {
+		t.Fatalf("Unexpected error loading stations: %v", err)
+	}
 	// c.UpdateTimeTable currently populates each line with bulletSchedule.
 	// remove the other instances
 	delete(c.timetable, Limited)
@@ -65,6 +69,10 @@ func TestGetTrainRoutesBetweenStations(t *testing.T) {
 	err := c.UpdateTimeTable(ctx)
 	if err != nil {
 		t.Fatalf("Unexpected error loading timetable: %v", err)
+	}
+	m.GetResultFilePath = "testdata/stations.json"
+	if err := c.UpdateStations(ctx); err != nil {
+		t.Fatalf("Unexpected error loading stations: %v", err)
 	}
 	// c.UpdateTimeTable currently populates each line with bulletSchedule.
 	// remove the other instances
@@ -116,6 +124,10 @@ func TestGetRouteForTrain(t *testing.T) {
 	err := c.UpdateTimeTable(ctx)
 	if err != nil {
 		t.Fatalf("Unexpected error loading timetable: %v", err)
+	}
+	m.GetResultFilePath = "testdata/stations.json"
+	if err := c.UpdateStations(ctx); err != nil {
+		t.Fatalf("Unexpected error loading stations: %v", err)
 	}
 	// c.UpdateTimeTable currently populates each line with bulletSchedule.
 	// remove the other instances
