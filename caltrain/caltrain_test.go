@@ -160,18 +160,26 @@ func TestGetTrainsBetweenStations(t *testing.T) {
 			u.Weekday = tt.day
 			c.Updater = u
 
-			n, s, err := c.GetTrainsBetweenStations(ctx, tt.src, tt.dst)
+			// verify north
+			d1, err := c.GetTrainsBetweenStations(ctx, tt.src, tt.dst)
 			if err != nil && tt.err == nil {
 				t.Fatalf("Failed to get train routes for %s: %v", name, err)
 			} else if err == nil && tt.err != nil {
 				t.Fatalf("getTrainRoutesBetweenStations improperly succeeded for %s", name)
 			}
-
-			if len(n) != tt.numN {
-				t.Fatalf("Incorrect routes North. Expected %d, recieved %d", tt.numN, len(n))
+			if len(d1) != tt.numN {
+				t.Fatalf("Incorrect routes North. Expected %d, recieved %d", tt.numN, len(d1))
 			}
-			if len(s) != tt.numS {
-				t.Fatalf("Incorrect routes North. Expected %d, recieved %d", tt.numS, len(s))
+
+			// verify south
+			d2, err := c.GetTrainsBetweenStations(ctx, tt.dst, tt.src)
+			if err != nil && tt.err == nil {
+				t.Fatalf("Failed to get train routes for %s: %v", name, err)
+			} else if err == nil && tt.err != nil {
+				t.Fatalf("getTrainRoutesBetweenStations improperly succeeded for %s", name)
+			}
+			if len(d2) != tt.numS {
+				t.Fatalf("Incorrect routes North. Expected %d, recieved %d", tt.numS, len(d2))
 			}
 		})
 	}

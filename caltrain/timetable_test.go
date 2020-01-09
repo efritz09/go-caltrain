@@ -97,18 +97,26 @@ func TestGetTrainRoutesBetweenStations(t *testing.T) {
 	for _, tt := range tests {
 		name := tt.src + "_" + tt.dst
 		t.Run(name, func(t *testing.T) {
-			n, s, err := c.getTrainRoutesBetweenStations(tt.src, tt.dst, tt.day)
+			// test north
+			d1, err := c.getTrainRoutesBetweenStations(tt.src, tt.dst, tt.day)
 			if err != nil && tt.err == nil {
 				t.Fatalf("Failed to get train routes for %s: %v", name, err)
 			} else if err == nil && tt.err != nil {
 				t.Fatalf("getTrainRoutesBetweenStations improperly succeeded for %s", name)
 			}
-
-			if len(n) != tt.numN {
-				t.Fatalf("Incorrect routes North. Expected %d, recieved %d", tt.numN, len(n))
+			if len(d1) != tt.numN {
+				t.Fatalf("Incorrect routes North. Expected %d, recieved %d", tt.numN, len(d1))
 			}
-			if len(s) != tt.numS {
-				t.Fatalf("Incorrect routes North. Expected %d, recieved %d", tt.numS, len(s))
+
+			// test south
+			d2, err := c.getTrainRoutesBetweenStations(tt.dst, tt.src, tt.day)
+			if err != nil && tt.err == nil {
+				t.Fatalf("Failed to get train routes for %s: %v", name, err)
+			} else if err == nil && tt.err != nil {
+				t.Fatalf("getTrainRoutesBetweenStations improperly succeeded for %s", name)
+			}
+			if len(d2) != tt.numS {
+				t.Fatalf("Incorrect routes North. Expected %d, recieved %d", tt.numS, len(d2))
 			}
 		})
 	}

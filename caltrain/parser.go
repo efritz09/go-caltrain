@@ -131,13 +131,27 @@ func parseStations(raw []byte) (map[string]*station, error) {
 		}
 		name := strings.Split(stop.Name, " Caltrain")[0]
 		if st, ok := ret[name]; !ok {
-			// create a new station
-			newStation := &station{name: name}
+			// create a new station with location
+			lat, err := strconv.ParseFloat(stop.Location.Latitude, 64)
+			if err != nil {
+				return nil, fmt.Errorf("failed to parse location for %s: %w", name, err)
+			}
+			lon, err := strconv.ParseFloat(stop.Location.Longitude, 64)
+			if err != nil {
+				return nil, fmt.Errorf("failed to parse location for %s: %w", name, err)
+			}
+			newStation := &station{
+				name:      name,
+				latitude:  lat,
+				longitude: lon,
+			}
 			if err := addDirectionToStation(newStation, stop.ID); err != nil {
 				return nil, fmt.Errorf("failed to parse stations: %w", err)
 			}
 			ret[name] = newStation
 		} else {
+			// the location difference between the north and south side is
+			// negligable and we can ignore it
 			if err := addDirectionToStation(st, stop.ID); err != nil {
 				return nil, fmt.Errorf("failed to parse stations: %w", err)
 			}

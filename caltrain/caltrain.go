@@ -79,6 +79,8 @@ type station struct {
 	name      string
 	northCode string
 	southCode string
+	latitude  float64
+	longitude float64
 }
 
 // SetupCache defines enables use of endpoint caching
@@ -258,6 +260,28 @@ func (c *CaltrainClient) getStationCode(st, dir string) (string, error) {
 	}
 }
 
+// getRouteDirection returns the proper station codes for a route given a
+// source and destination station name
+func (c *CaltrainClient) getRouteCodes(src, dst string) (string, string, error) {
+	c.sLock.RLock()
+	defer c.sLock.RUnlock()
+	srcSt, ok := c.stations[src]
+	if !ok {
+		return "", "", fmt.Errorf("unknown station %s", src)
+	}
+	dstSt, ok := c.stations[dst]
+	if !ok {
+		return "", "", fmt.Errorf("unknown station %s", dst)
+	}
+
+	// if the source is greater than destination, it's moving south
+	if srcSt.latitude > dstSt.latitude {
+		return srcSt.southCode, dstSt.southCode, nil
+	} else {
+		return srcSt.northCode, dstSt.northCode, nil
+	}
+}
+
 // GetStationTimetable returns the routes that stop at a given station in the
 // given direction
 func (c *CaltrainClient) GetStationTimetable(st, dir string) ([]TimetableRouteJourney, error) {
@@ -289,38 +313,29 @@ func (c *CaltrainClient) GetTrainRoute(trainNum string) (*Route, error) {
 	return c.journeyToRoute(journey)
 }
 
-// GetTrainsBetweenStations returns two slices. The first is routes going north
-// and the second is routes going south. All routes are for the entire day
-func (c *CaltrainClient) GetTrainsBetweenStations(ctx context.Context, src, dst string) ([]*Route, []*Route, error) {
+// GetTrainsBetweenStations a slice of routes from src to dst
+func (c *CaltrainClient) GetTrainsBetweenStations(ctx context.Context, src, dst string) ([]*Route, error) {
 	c.ttLock.RLock()
 	defer c.ttLock.RUnlock()
 	weekday, err := c.Updater.GetWeekday(timezone)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
-	journeyN, journeyS, err := c.getTrainRoutesBetweenStations(src, dst, weekday)
+	journeys, err := c.getTrainRoutesBetweenStations(src, dst, weekday)
 	if err != nil {
-		return nil, nil, fmt.Errorf("failed to get Train Routes: %w", err)
+		return nil, fmt.Errorf("failed to get Train Routes: %w", err)
 	}
 
-	routeN := make([]*Route, len(journeyN))
-	routeS := make([]*Route, len(journeyS))
-	for i, journey := range journeyN {
+	routes := make([]*Route, len(journeys))
+	for i, journey := range journeys {
 		r, err := c.journeyToRoute(journey)
 		if err != nil {
-			return routeN, routeS, fmt.Errorf("failed to get Train Routes: %w", err)
+			return routes, fmt.Errorf("failed to get Train Routes: %w", err)
 		}
-		routeN[i] = r
+		routes[i] = r
 	}
-	for i, journey := range journeyS {
-		r, err := c.journeyToRoute(journey)
-		if err != nil {
-			return routeN, routeS, fmt.Errorf("failed to get Train Routes: %w", err)
-		}
-		routeS[i] = r
-	}
-	return routeN, routeS, nil
+	return routes, nil
 }
 
 // journeyToRoute converts a TimetableRouteJourney into a Route

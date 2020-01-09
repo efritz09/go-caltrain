@@ -54,55 +54,33 @@ func (c *CaltrainClient) getRouteForTrain(trainNum string) (TimetableRouteJourne
 	return TimetableRouteJourney{}, fmt.Errorf("No routes found for train %s", trainNum)
 }
 
-// getTrainRoutesBetweenStations returns two maps of line: TimetableRouteJourney
-// the first is the routes north, the second is routes south
-func (c *CaltrainClient) getTrainRoutesBetweenStations(src, dst, weekday string) ([]TimetableRouteJourney, []TimetableRouteJourney, error) {
-	srcN, err := c.getStationCode(src, North)
+// getTrainRoutesBetweenStations returns a slice of routes from src to dst on a
+// given weekday
+func (c *CaltrainClient) getTrainRoutesBetweenStations(src, dst, weekday string) ([]TimetableRouteJourney, error) {
+	sCode, dCode, err := c.getRouteCodes(src, dst)
+	fmt.Println(src, sCode, dst, dCode)
 	if err != nil {
-		return nil, nil, fmt.Errorf("failed to get station code: %w", err)
-	}
-	dstN, err := c.getStationCode(dst, North)
-	if err != nil {
-		return nil, nil, fmt.Errorf("failed to get station code: %w", err)
-	}
-	srcS, err := c.getStationCode(src, South)
-	if err != nil {
-		return nil, nil, fmt.Errorf("failed to get station code: %w", err)
-	}
-	dstS, err := c.getStationCode(dst, South)
-	if err != nil {
-		return nil, nil, fmt.Errorf("failed to get station code: %w", err)
+		return nil, fmt.Errorf("failed to get station codes: %w", err)
 	}
 
-	journeyN := []TimetableRouteJourney{}
-	journeyS := []TimetableRouteJourney{}
+	routes := []TimetableRouteJourney{}
 	for line, ttArray := range c.timetable {
 		for _, frame := range ttArray {
 			// Check the day reference
 			if !c.isForToday(weekday, frame.FrameValidityConditions.AvailabilityCondition.DayTypes.DayTypeRef.Ref) {
 				continue
 			}
-			// convert `Bullet:N :Year Round Weekday (Weekday)` to `North`
-			dir := getDirFromChar(strings.Split(frame.Name, ":")[1])
-			// if it's north, check that both srcN and dstN are there
-			// same for south
+
 			journeys := frame.VehicleJourneys.TimetableRouteJourney
 			for _, journey := range journeys {
-				if dir == North {
-					if areStationsInJourney(srcN, dstN, journey) {
-						journey.Line = line
-						journeyN = append(journeyN, journey)
-					}
-				} else if dir == South {
-					if areStationsInJourney(srcS, dstS, journey) {
-						journey.Line = line
-						journeyS = append(journeyS, journey)
-					}
+				if areStationsInJourney(sCode, dCode, journey) {
+					journey.Line = line
+					routes = append(routes, journey)
 				}
 			}
 		}
 	}
-	return journeyN, journeyS, nil
+	return routes, nil
 }
 
 // isForToday returns true if the frame is for the day

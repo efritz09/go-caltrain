@@ -208,8 +208,21 @@ func TestParseStations(t *testing.T) {
 		t.Fatalf("failed to get stations: %v", err)
 	}
 
-	if !reflect.DeepEqual(s, exp) {
-		t.Fatalf("station parsing failed.\nexpected %v\nreceived %v", exp, s)
+	if len(s) != len(exp) {
+		t.Fatalf("length mismatch")
+	}
+
+	for k, v := range exp {
+		st, ok := s[k]
+		if !ok {
+			t.Fatalf("missing station %s", k)
+		}
+		if st.northCode != v.northCode {
+			t.Fatalf("conflicting northCodes: %s vs %s", v.northCode, st.northCode)
+		}
+		if st.southCode != v.southCode {
+			t.Fatalf("conflicting southCodes: %s vs %s", v.southCode, st.southCode)
+		}
 	}
 }
 
