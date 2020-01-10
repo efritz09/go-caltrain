@@ -357,11 +357,13 @@ func (c *CaltrainClient) journeyToRoute(r TimetableRouteJourney) (*Route, error)
 		if err != nil {
 			return route, fmt.Errorf("could not parse timem from %s: %w", s.Arrival.Time, err)
 		}
-		dep, err := time.Parse("15:04:05", s.Departure.Time)
-		if err != nil {
-			return route, fmt.Errorf("could not parse timem from %s: %w", s.Departure.Time, err)
+		if s.Arrival.DaysOffset == "1" {
+			arr = arr.Add(24 * time.Hour)
 		}
-
+		dep, err := time.Parse("15:04:05", s.Departure.Time)
+		if s.Departure.DaysOffset == "1" {
+			dep = dep.Add(24 * time.Hour)
+		}
 		t := TrainStop{
 			Order:     order,
 			Station:   c.getStationFromCode(s.ScheduledStopPointRef.Ref),
