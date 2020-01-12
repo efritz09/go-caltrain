@@ -10,8 +10,7 @@ import (
 )
 
 const (
-	timeLayout = "2006-01-02T15:04:05Z"
-	northVal   = 1
+	northVal = 1
 )
 
 // parseDelays returns a slice of TrainsStatus for all trains that are delayed
@@ -159,6 +158,17 @@ func parseStations(raw []byte) (map[string]*station, error) {
 	}
 
 	return ret, nil
+}
+
+// parseHolidays
+// TODO: implement
+func parseHolidays(raw []byte) error {
+	raw = bytes.TrimPrefix(raw, []byte("\xef\xbb\xbf"))
+	data := holidayJson{}
+	if err := json.Unmarshal(raw, &data); err != nil {
+		return fmt.Errorf("failed to unmarshal: %w", err)
+	}
+	return nil
 }
 
 // addDirectionToStation is a helper function to add the code to the proper

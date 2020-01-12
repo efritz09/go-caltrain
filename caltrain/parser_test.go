@@ -226,6 +226,22 @@ func TestParseStations(t *testing.T) {
 	}
 }
 
+func TestParseHolidays(t *testing.T) {
+	f, err := os.Open("testdata/holiday.json")
+	if err != nil {
+		t.Fatalf("Could not open test data: %v", err)
+	}
+	data, err := ioutil.ReadAll(f)
+	if err != nil {
+		t.Fatalf("Could not read test data: %v", err)
+	}
+
+	err = parseHolidays(data)
+	if err != nil {
+		t.Fatalf("Failed to parse holidays: %v", err)
+	}
+}
+
 // assertEqual compares two TrainStatus slices for the same elements
 func assertEqual(exp, test []TrainStatus) bool {
 	if len(exp) != len(test) {

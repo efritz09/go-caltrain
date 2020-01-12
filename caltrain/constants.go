@@ -1,13 +1,10 @@
 package caltrain
 
 const (
-	baseURL          = "http://api.511.org/transit/"
 	delayURL         = "http://api.511.org/transit/StopMonitoring"
 	stationsURL      = "http://api.511.org/transit/stops"
 	stationStatusURL = "http://api.511.org/transit/StopMonitoring"
 	timetableURL     = "http://api.511.org/transit/timetable"
-
-	timezone = "America/Los_Angeles"
 
 	North = "North"
 	South = "South"
