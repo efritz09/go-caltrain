@@ -10,6 +10,7 @@ type MockCaltrain struct {
 	GetStationStatusFunc         func(context.Context, string, string) ([]Train, error)
 	GetTrainsBetweenStationsFunc func(context.Context, string, string) ([]*Route, error)
 	GetStationsFunc              func() []string
+	GetDirectionFunc             func(src, dst string) (error, string)
 }
 
 func (c *MockCaltrain) GetDelays(ctx context.Context) ([]Train, error) {
@@ -47,3 +48,10 @@ func (c *MockCaltrain) UpdateTimeTable(ctx context.Context) error { return nil }
 func (c *MockCaltrain) UpdateStations(ctx context.Context) error { return nil }
 
 func (c *MockCaltrain) Initialize(ctx context.Context) error { return nil }
+
+func (c *MockCaltrain) GetDirectionFromSrcToDst(src, dst string) (string, error) {
+	if c.GetDirectionFunc != nil {
+		return c.GetDirectionFunc(src, dst)
+	}
+	return North, nil
+}
