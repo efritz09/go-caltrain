@@ -14,7 +14,7 @@ import (
 type Caltrain interface {
 	GetDelays(context.Context) ([]Train, error)
 	GetStationStatus(context.Context, string, string) ([]Train, error)
-	GetTrainsBetweenStations(ctx context.Context, src, dst string) ([]*Route, error)
+	GetTrainsBetweenStations(ctx context.Context, src, dst string, weekday time.Weekday) ([]*Route, error)
 	GetDirectionFromSrcToDst(src, dst string) (string, error)
 	GetStations() []string
 	SetupCache(time.Duration)
@@ -35,7 +35,7 @@ type CaltrainClient struct {
 
 	DelayThreshold time.Duration // delay time to allow before warning user
 	APIClient      APIClient     // API client for making caltrain queries. Default APIClient511
-	Updater        Updater       // interface for applying real world updates, such as the day of the week
+	// Updater        Updater       // interface for applying real world updates, such as the day of the week
 	Cache          Cache         // interface for caching recent request results
 }
 
@@ -46,7 +46,7 @@ func New(key string) *CaltrainClient {
 		key:            key,
 		DelayThreshold: defaultDelayThreshold,
 		APIClient:      NewClient(),
-		Updater:        NewUpdater(),
+		// Updater:        NewUpdater(),
 	}
 }
 
@@ -314,7 +314,8 @@ func (c *CaltrainClient) getRouteCodes(src, dst string) (string, string, error) 
 
 // GetStationTimetable returns the routes that stop at a given station in the
 // given direction
-func (c *CaltrainClient) GetStationTimetable(st, dir string) ([]TimetableRouteJourney, error) {
+// TODO: export this in the interface???
+func (c *CaltrainClient) GetStationTimetable(st, dir string, weekday time.Weekday) ([]TimetableRouteJourney, error) {
 	c.ttLock.RLock()
 	defer c.ttLock.RUnlock()
 
@@ -323,12 +324,7 @@ func (c *CaltrainClient) GetStationTimetable(st, dir string) ([]TimetableRouteJo
 		return nil, err
 	}
 
-	weekday, err := c.Updater.GetWeekday(timezone)
-	if err != nil {
-		return nil, err
-	}
-
-	return c.getTimetableForStation(code, dir, weekday)
+	return c.getTimetableForStation(code, dir, strings.ToLower(weekday.String()))
 
 }
 
@@ -344,15 +340,11 @@ func (c *CaltrainClient) GetTrainRoute(trainNum string) (*Route, error) {
 }
 
 // GetTrainsBetweenStations a slice of routes from src to dst
-func (c *CaltrainClient) GetTrainsBetweenStations(ctx context.Context, src, dst string) ([]*Route, error) {
+func (c *CaltrainClient) GetTrainsBetweenStations(ctx context.Context, src, dst string, weekday time.Weekday) ([]*Route, error) {
 	c.ttLock.RLock()
 	defer c.ttLock.RUnlock()
-	weekday, err := c.Updater.GetWeekday(timezone)
-	if err != nil {
-		return nil, err
-	}
 
-	journeys, err := c.getTrainRoutesBetweenStations(src, dst, weekday)
+	journeys, err := c.getTrainRoutesBetweenStations(src, dst, strings.ToLower(weekday.String()))
 	if err != nil {
 		return nil, fmt.Errorf("failed to get Train Routes: %w", err)
 	}

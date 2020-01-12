@@ -143,25 +143,21 @@ func TestGetTrainsBetweenStations(t *testing.T) {
 		dst  string
 		numN int // len of array for now
 		numS int
-		day  string
+		day  time.Weekday
 		err  error
 	}{
-		{src: StationHillsdale, dst: StationPaloAlto, numN: 5, numS: 5, day: "monday", err: nil},
-		{src: StationSanJose, dst: StationSanFrancisco, numN: 11, numS: 11, day: "monday", err: nil},
-		{src: StationSanJose, dst: StationSanFrancisco, numN: 2, numS: 2, day: "sunday", err: nil},
-		{src: StationHillsdale, dst: StationHaywardPark, numN: 0, numS: 0, day: "monday", err: nil},
-		{src: StationSanFrancisco, dst: "BadSation", numN: 0, numS: 0, day: "monday", err: errors.New("")},
+		{src: StationHillsdale, dst: StationPaloAlto, numN: 5, numS: 5, day: time.Monday, err: nil},
+		{src: StationSanJose, dst: StationSanFrancisco, numN: 11, numS: 11, day: time.Monday, err: nil},
+		{src: StationSanJose, dst: StationSanFrancisco, numN: 2, numS: 2, day: time.Sunday, err: nil},
+		{src: StationHillsdale, dst: StationHaywardPark, numN: 0, numS: 0, day: time.Monday, err: nil},
+		{src: StationSanFrancisco, dst: "BadSation", numN: 0, numS: 0, day: time.Monday, err: errors.New("")},
 	}
 
 	for _, tt := range tests {
 		name := tt.src + "_" + tt.dst
 		t.Run(name, func(t *testing.T) {
-			u := &MockUpdater{}
-			u.Weekday = tt.day
-			c.Updater = u
-
 			// verify north
-			d1, err := c.GetTrainsBetweenStations(ctx, tt.src, tt.dst)
+			d1, err := c.GetTrainsBetweenStations(ctx, tt.src, tt.dst, tt.day)
 			if err != nil && tt.err == nil {
 				t.Fatalf("Failed to get train routes for %s: %v", name, err)
 			} else if err == nil && tt.err != nil {
@@ -172,7 +168,7 @@ func TestGetTrainsBetweenStations(t *testing.T) {
 			}
 
 			// verify south
-			d2, err := c.GetTrainsBetweenStations(ctx, tt.dst, tt.src)
+			d2, err := c.GetTrainsBetweenStations(ctx, tt.dst, tt.src, tt.day)
 			if err != nil && tt.err == nil {
 				t.Fatalf("Failed to get train routes for %s: %v", name, err)
 			} else if err == nil && tt.err != nil {
@@ -388,7 +384,7 @@ func TestGetStationTimetable(t *testing.T) {
 		t.Fatalf("Unexpected error loading stations: %v", err)
 	}
 
-	_, err := c.GetStationTimetable(StationHillsdale, North)
+	_, err := c.GetStationTimetable(StationHillsdale, North, time.Monday)
 	if err != nil {
 		t.Fatalf("Unexpected error: %v", err)
 	}
