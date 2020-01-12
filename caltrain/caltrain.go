@@ -15,6 +15,7 @@ type Caltrain interface {
 	GetDelays(context.Context) ([]Train, error)
 	GetStationStatus(context.Context, string, string) ([]Train, error)
 	GetTrainsBetweenStations(ctx context.Context, src, dst string) ([]*Route, error)
+	GetDirectionFromSrcToDst(src, dst string) (string, error)
 	GetStations() []string
 	SetupCache(time.Duration)
 	Initialize(context.Context) error
@@ -99,6 +100,30 @@ func (c *CaltrainClient) GetStations() []string {
 	c.sLock.RUnlock()
 	sort.Strings(ret)
 	return ret
+}
+
+// GetDirectionFromSrcToDst returns North or South given a src and dst station
+// TODO: unit test
+func (c *CaltrainClient) GetDirectionFromSrcToDst(src, dst string) (string, error) {
+	if src == dst {
+		return "", fmt.Errorf("The stations are the same: %s to %s", src, dst)
+	}
+	s, ok := stationOrder[src]
+	if !ok {
+		return "", fmt.Errorf("Unknown station: %s", src)
+	}
+	d, ok := stationOrder[dst]
+	if !ok {
+		return "", fmt.Errorf("Unknown station: %s", dst)
+	}
+
+	if s < d {
+		return South, nil
+	} else if s > d {
+		return North, nil
+	} else {
+		return "", fmt.Errorf("Could not determine direction from %s to %s", src, dst)
+	}
 }
 
 func (c *CaltrainClient) GetTimetable() {
@@ -274,8 +299,13 @@ func (c *CaltrainClient) getRouteCodes(src, dst string) (string, string, error) 
 		return "", "", fmt.Errorf("unknown station %s", dst)
 	}
 
+	dir, err := c.GetDirectionFromSrcToDst(src, dst)
+	if err != nil {
+		return "", "", err
+	}
+
 	// if the source is greater than destination, it's moving south
-	if srcSt.latitude > dstSt.latitude {
+	if dir == South {
 		return srcSt.southCode, dstSt.southCode, nil
 	} else {
 		return srcSt.northCode, dstSt.northCode, nil

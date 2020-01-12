@@ -57,3 +57,39 @@ const (
 	StationSunnyvale    = "Sunnyvale"
 	StationTamien       = "Tamien"
 )
+
+// stationOrder is a map of the station name to it's order from North to South
+var stationOrder = map[string]int{
+	StationSanFrancisco: 0,
+	Station22ndStreet:   1,
+	StationBayshore:     2,
+	StationSouthSF:      3,
+	StationSanBruno:     4,
+	StationMillbrae:     5,
+	StationBroadway:     6,
+	StationBurlingame:   7,
+	StationSanMateo:     8,
+	StationHaywardPark:  9,
+	StationHillsdale:    10,
+	StationBelmont:      11,
+	StationSanCarlos:    12,
+	StationRedwoodCity:  13,
+	StationAtherton:     14,
+	StationMenloPark:    15,
+	StationPaloAlto:     16,
+	StationStanford:     17,
+	StationCalAve:       18,
+	StationSanAntonio:   19,
+	StationMountainView: 20,
+	StationSunnyvale:    21,
+	StationLawrence:     22,
+	StationSantaClara:   23,
+	StationCollegePark:  24,
+	StationSanJose:      25,
+	StationTamien:       26,
+	StationCapitol:      27,
+	StationBlossomHill:  28,
+	StationMorganHill:   29,
+	StationSanMartin:    30,
+	StationGilroy:       31,
+}
