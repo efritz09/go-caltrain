@@ -10,7 +10,7 @@ type MockCaltrain struct {
 	GetStationStatusFunc         func(context.Context, string, string) ([]Train, error)
 	GetTrainsBetweenStationsFunc func(context.Context, string, string) ([]*Route, error)
 	GetStationsFunc              func() []string
-	GetDirectionFunc             func(src, dst string) (error, string)
+	GetDirectionFunc             func(src, dst string) (string, error)
 }
 
 func (c *MockCaltrain) GetDelays(ctx context.Context) ([]Train, error) {
