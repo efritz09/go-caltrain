@@ -66,6 +66,10 @@ func getTrains(raw []byte) ([]TrainStatus, error) {
 func getDelay(status monitoredCall) (time.Duration, time.Time) {
 	arrival := status.AimedArrivalTime
 	expected := status.ExpectedArrivalTime
+	// if arrival is null, the train hasn't left the starting station yet
+	if arrival.IsZero() {
+		return 0, expected
+	}
 	if expected.IsZero() {
 		// ExpectedArrivalTime can be null if the train is at it's starting station
 		expected = status.ExpectedDepartureTime
