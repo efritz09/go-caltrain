@@ -6,21 +6,21 @@ import (
 )
 
 type MockCaltrain struct {
-	GetDelaysFunc                func(context.Context) ([]Train, error)
-	GetStationStatusFunc         func(context.Context, string, string) ([]Train, error)
+	GetDelaysFunc                func(context.Context, time.Duration) ([]TrainStatus, error)
+	GetStationStatusFunc         func(context.Context, string, string) ([]TrainStatus, error)
 	GetTrainsBetweenStationsFunc func(context.Context, string, string, time.Weekday) ([]*Route, error)
 	GetStationsFunc              func() []string
 	GetDirectionFunc             func(src, dst string) (string, error)
 }
 
-func (c *MockCaltrain) GetDelays(ctx context.Context) ([]Train, error) {
+func (c *MockCaltrain) GetDelays(ctx context.Context, d time.Duration) ([]TrainStatus, error) {
 	if c.GetDelaysFunc != nil {
-		return c.GetDelaysFunc(ctx)
+		return c.GetDelaysFunc(ctx, d)
 	}
 	return nil, nil
 }
 
-func (c *MockCaltrain) GetStationStatus(ctx context.Context, stationName string, direction string) ([]Train, error) {
+func (c *MockCaltrain) GetStationStatus(ctx context.Context, stationName string, direction string) ([]TrainStatus, error) {
 	if c.GetStationStatusFunc != nil {
 		return c.GetStationStatusFunc(ctx, stationName, direction)
 	}

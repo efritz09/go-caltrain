@@ -1,17 +1,11 @@
 package caltrain
 
-import (
-	"time"
-)
-
 const (
 	baseURL          = "http://api.511.org/transit/"
 	delayURL         = "http://api.511.org/transit/StopMonitoring"
 	stationsURL      = "http://api.511.org/transit/stops"
 	stationStatusURL = "http://api.511.org/transit/StopMonitoring"
 	timetableURL     = "http://api.511.org/transit/timetable"
-
-	defaultDelayThreshold = 10 * time.Minute
 
 	timezone = "America/Los_Angeles"
 

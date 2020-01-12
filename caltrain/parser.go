@@ -16,12 +16,12 @@ const (
 
 // parseDelays returns a slice of TrainsStatus for all trains that are delayed
 // more than the threshold argument
-func parseDelays(raw []byte, threshold time.Duration) ([]Train, error) {
+func parseDelays(raw []byte, threshold time.Duration) ([]TrainStatus, error) {
 	trains, err := getTrains(raw)
 	if err != nil {
 		return nil, err
 	}
-	delayedTrains := []Train{}
+	delayedTrains := []TrainStatus{}
 	for _, t := range trains {
 		if t.Delay > threshold {
 			delayedTrains = append(delayedTrains, t)
@@ -31,7 +31,7 @@ func parseDelays(raw []byte, threshold time.Duration) ([]Train, error) {
 }
 
 // getTrains unmarshals the json blob and returns a slice of trains
-func getTrains(raw []byte) ([]Train, error) {
+func getTrains(raw []byte) ([]TrainStatus, error) {
 	data := trainStatusJson{}
 	// trim some problematic characters: https://stackoverflow.com/questions/31398044/got-error-invalid-character-%C3%AF-looking-for-beginning-of-value-from-json-unmar
 	raw = bytes.TrimPrefix(raw, []byte("\xef\xbb\xbf"))
@@ -39,7 +39,7 @@ func getTrains(raw []byte) ([]Train, error) {
 		return nil, fmt.Errorf("failed to unmarshal: %w", err)
 	}
 
-	ret := []Train{}
+	ret := []TrainStatus{}
 	trains := data.ServiceDelivery.StopMonitoringDelivery.MonitoredStopVisit
 	for _, t := range trains {
 		train := t.MonitoredVehicleJourney
@@ -48,8 +48,8 @@ func getTrains(raw []byte) ([]Train, error) {
 		if delay < 0 {
 			delay = 0
 		}
-		newTrain := Train{
-			Number:    train.FramedVehicleJourneyRef.DatedVehicleJourneyRef,
+		newTrain := TrainStatus{
+			TrainNum:  train.FramedVehicleJourneyRef.DatedVehicleJourneyRef,
 			NextStop:  strings.Split(status.StopPointName, " Caltrain")[0],
 			Direction: train.DirectionRef,
 			Delay:     delay,

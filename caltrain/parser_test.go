@@ -15,22 +15,22 @@ func TestParseDelays(t *testing.T) {
 	tests := []struct {
 		name     string
 		data     string
-		expected []Train
+		expected []TrainStatus
 		err      error
 	}{
 		{
 			name: "DelayData1",
 			data: "testdata/parseDelayData1.json",
-			expected: []Train{
-				Train{Number: "258", NextStop: StationSunnyvale, Direction: South, Delay: delay1, Arrival: time.Date(2019, time.December, 25, 0, 58, 10, 0, time.UTC), Line: Limited},
-				Train{Number: "263", NextStop: StationPaloAlto, Direction: North, Delay: delay2, Arrival: time.Date(2019, time.December, 25, 0, 50, 01, 0, time.UTC), Line: Limited},
+			expected: []TrainStatus{
+				TrainStatus{TrainNum: "258", NextStop: StationSunnyvale, Direction: South, Delay: delay1, Arrival: time.Date(2019, time.December, 25, 0, 58, 10, 0, time.UTC), Line: Limited},
+				TrainStatus{TrainNum: "263", NextStop: StationPaloAlto, Direction: North, Delay: delay2, Arrival: time.Date(2019, time.December, 25, 0, 50, 01, 0, time.UTC), Line: Limited},
 			},
 			err: nil,
 		},
 		{
 			name:     "DelayData2",
 			data:     "testdata/parseDelayData2.json",
-			expected: []Train{},
+			expected: []TrainStatus{},
 			err:      nil,
 		},
 	}
@@ -63,30 +63,30 @@ func TestGetTrains(t *testing.T) {
 	tests := []struct {
 		name     string
 		data     string // relative file location
-		expected []Train
+		expected []TrainStatus
 		err      error
 	}{
 		{
 			name: "HillsdaleSouth",
 			data: "testdata/parseHillsdaleSouth.json",
-			expected: []Train{
-				Train{Number: "436", NextStop: StationHillsdale, Direction: South, Delay: 0, Arrival: time.Date(2019, time.December, 30, 3, 6, 57, 0, time.UTC), Line: Local},
-				Train{Number: "804", NextStop: StationHillsdale, Direction: South, Delay: 0, Arrival: time.Date(2019, time.December, 30, 3, 59, 45, 0, time.UTC), Line: Bullet},
+			expected: []TrainStatus{
+				TrainStatus{TrainNum: "436", NextStop: StationHillsdale, Direction: South, Delay: 0, Arrival: time.Date(2019, time.December, 30, 3, 6, 57, 0, time.UTC), Line: Local},
+				TrainStatus{TrainNum: "804", NextStop: StationHillsdale, Direction: South, Delay: 0, Arrival: time.Date(2019, time.December, 30, 3, 59, 45, 0, time.UTC), Line: Bullet},
 			},
 			err: nil,
 		},
 		{
 			name: "HillsdaleNorth",
 			data: "testdata/parseHillsdaleNorth.json",
-			expected: []Train{
-				Train{Number: "437", NextStop: StationHillsdale, Direction: North, Delay: 0, Arrival: time.Date(2019, time.December, 30, 4, 4, 45, 0, time.UTC), Line: Local},
+			expected: []TrainStatus{
+				TrainStatus{TrainNum: "437", NextStop: StationHillsdale, Direction: North, Delay: 0, Arrival: time.Date(2019, time.December, 30, 4, 4, 45, 0, time.UTC), Line: Local},
 			},
 			err: nil,
 		},
 		{
 			name:     "HillsdaleNorthBad",
 			data:     "testdata/parseHillsdaleNorthBad.json",
-			expected: []Train{},
+			expected: []TrainStatus{},
 			err:      errors.New(""),
 		},
 	}
@@ -226,14 +226,14 @@ func TestParseStations(t *testing.T) {
 	}
 }
 
-// assertEqual compares two Train slices for the same elements
-func assertEqual(exp, test []Train) bool {
+// assertEqual compares two TrainStatus slices for the same elements
+func assertEqual(exp, test []TrainStatus) bool {
 	if len(exp) != len(test) {
 		return false
 	}
 	// populate a map with number of instances
-	m1 := make(map[Train]int)
-	m2 := make(map[Train]int)
+	m1 := make(map[TrainStatus]int)
+	m2 := make(map[TrainStatus]int)
 	for _, k := range exp {
 		m1[k]++
 	}

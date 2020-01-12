@@ -9,7 +9,8 @@ import (
 )
 
 const (
-	fakeKey = "ericisgreat"
+	fakeKey               = "ericisgreat"
+	defaultDelayThreshold = 10 * time.Minute
 )
 
 func TestGetStations(t *testing.T) {
@@ -201,7 +202,7 @@ func TestGetDelays(t *testing.T) {
 			m := &MockAPIClient{}
 			m.GetResultFilePath = tt.data
 			c.APIClient = m
-			d, err := c.GetDelays(ctx)
+			d, err := c.GetDelays(ctx, defaultDelayThreshold)
 			if err != nil && tt.err == nil {
 				t.Fatalf("Failed to get train delays for %s: %v", tt.name, err)
 			} else if err == nil && tt.err != nil {
@@ -236,7 +237,7 @@ func TestGetDelaysCache(t *testing.T) {
 	if len(cache) != 0 {
 		t.Fatalf("Cache is not empty: %v", cache)
 	}
-	d, err := c.GetDelays(ctx)
+	d, err := c.GetDelays(ctx, defaultDelayThreshold)
 	if err != nil {
 		t.Fatalf("Failed to get train delays for %v", err)
 	}
@@ -249,7 +250,7 @@ func TestGetDelaysCache(t *testing.T) {
 		t.Fatalf("Cache does not have only 1 key: %v", cache)
 	}
 	// run it again
-	d, err = c.GetDelays(ctx)
+	d, err = c.GetDelays(ctx, defaultDelayThreshold)
 	if err != nil {
 		t.Fatalf("Failed to get train delays for %v", err)
 	}

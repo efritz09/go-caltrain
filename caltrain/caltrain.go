@@ -12,15 +12,41 @@ import (
 )
 
 type Caltrain interface {
-	GetDelays(context.Context) ([]Train, error)
-	GetStationStatus(context.Context, string, string) ([]Train, error)
-	GetTrainsBetweenStations(ctx context.Context, src, dst string, weekday time.Weekday) ([]*Route, error)
-	GetDirectionFromSrcToDst(src, dst string) (string, error)
-	GetStations() []string
-	SetupCache(time.Duration)
+	// Initialize makes the 511.org API calls to populate the stations and
+	// timetable. It calls UpdateStations and UpdateTimetable.
 	Initialize(context.Context) error
+
+	// SetupCache enables the use of API caching to prevent going over the API
+	// limit. Users set the caching expire time.
+	SetupCache(time.Duration)
+
+	// UpdateStations makes an API call to refresh the station information.
+	// This should only need to be called during Initialization.
 	UpdateStations(context.Context) error
+
+	// UpdateTimeTable makes an API call to refresh the timetable data. This
+	// should be called periodically to ensure correct information.
 	UpdateTimeTable(context.Context) error
+
+	// GetDelays makes an API call and returns a slice of TrainStatus who's
+	// delay into their next station is greater than the time.Duration argument
+	GetDelays(context.Context, time.Duration) ([]TrainStatus, error)
+
+	// GetStationStatus makes an API call and returns a slice of TrainsStatus
+	// who have a status reported for the given station and direction.
+	GetStationStatus(ctx context.Context, stationName, dir string) ([]TrainStatus, error)
+
+	// GetTrainsBetweenStations returns a slice of Routes that go from src to
+	// dst on the given weekday. It uses the cached timetable and does not make
+	// an API call
+	GetTrainsBetweenStations(ctx context.Context, src, dst string, weekday time.Weekday) ([]*Route, error)
+
+	// GetDirectionFromSrcToDst returns the direction the train would go to get
+	// from src to dst. Value is either North or South
+	GetDirectionFromSrcToDst(src, dst string) (string, error)
+
+	// GetStations returns a slice of all known stations in alphanumeric order
+	GetStations() []string
 }
 
 type CaltrainClient struct {
@@ -33,9 +59,7 @@ type CaltrainClient struct {
 
 	key string // API key for 511.org
 
-	DelayThreshold time.Duration // delay time to allow before warning user
 	APIClient      APIClient     // API client for making caltrain queries. Default APIClient511
-	// Updater        Updater       // interface for applying real world updates, such as the day of the week
 	Cache          Cache         // interface for caching recent request results
 }
 
@@ -44,20 +68,18 @@ func New(key string) *CaltrainClient {
 		timetable:      make(map[string][]TimetableFrame),
 		dayService:     make(map[string][]string),
 		key:            key,
-		DelayThreshold: defaultDelayThreshold,
 		APIClient:      NewClient(),
-		// Updater:        NewUpdater(),
 	}
 }
 
 // Information on the current train status
-type Train struct {
-	Number    string        // train number
-	NextStop  string        // stop for information
+type TrainStatus struct {
+	TrainNum    string        // train number
 	Direction string        // North or South
+	Line      string        // bullet, limited, etc.
 	Delay     time.Duration // time behind schedule
 	Arrival   time.Time     // expected arrival time at NextStop
-	Line      string        // bullet, limited, etc.
+	NextStop  string        // stop for information
 }
 
 // Stops for a given train
@@ -82,124 +104,6 @@ type station struct {
 	southCode string
 	latitude  float64
 	longitude float64
-}
-
-// SetupCache defines enables use of endpoint caching
-func (c *CaltrainClient) SetupCache(expire time.Duration) {
-	c.Cache = NewCache(expire)
-	c.useCache = true
-}
-
-// GetStations returns a list of station names
-func (c *CaltrainClient) GetStations() []string {
-	ret := []string{}
-	c.sLock.RLock()
-	for k := range c.stations {
-		ret = append(ret, k)
-	}
-	c.sLock.RUnlock()
-	sort.Strings(ret)
-	return ret
-}
-
-// GetDirectionFromSrcToDst returns North or South given a src and dst station
-// TODO: unit test
-func (c *CaltrainClient) GetDirectionFromSrcToDst(src, dst string) (string, error) {
-	if src == dst {
-		return "", fmt.Errorf("The stations are the same: %s to %s", src, dst)
-	}
-	s, ok := stationOrder[src]
-	if !ok {
-		return "", fmt.Errorf("Unknown station: %s", src)
-	}
-	d, ok := stationOrder[dst]
-	if !ok {
-		return "", fmt.Errorf("Unknown station: %s", dst)
-	}
-
-	if s < d {
-		return South, nil
-	} else if s > d {
-		return North, nil
-	} else {
-		return "", fmt.Errorf("Could not determine direction from %s to %s", src, dst)
-	}
-}
-
-func (c *CaltrainClient) GetTimetable() {
-	c.ttLock.Lock()
-	defer c.ttLock.Unlock()
-	// TODO: return something useful?
-	fmt.Printf("%+v\n", c.timetable)
-}
-
-// GetDelays returns a list of delayed trains and their information
-func (c *CaltrainClient) GetDelays(ctx context.Context) ([]Train, error) {
-	query := map[string]string{
-		"agency":  "CT",
-		"api_key": c.key,
-	}
-
-	if c.useCache {
-		data, ok := c.Cache.get(delayURL)
-		if ok {
-			return parseDelays(data, c.DelayThreshold)
-		}
-	}
-
-	data, err := c.APIClient.Get(ctx, delayURL, query)
-	if err != nil {
-		return nil, fmt.Errorf("failed to make request: %w", err)
-	}
-
-	// Now parse the body json string
-	trains, err := parseDelays(data, c.DelayThreshold)
-	if err != nil {
-		return nil, fmt.Errorf("failed to parse delay data: %w", err)
-	}
-
-	if c.useCache {
-		c.Cache.set(delayURL, data)
-	}
-	return trains, nil
-}
-
-// GetStationStatus returns the status of upcoming trains for a given station
-// and direction. Direction should be caltrain.North or caltrain.South
-func (c *CaltrainClient) GetStationStatus(ctx context.Context, stationName string, direction string) ([]Train, error) {
-	code, err := c.getStationCode(stationName, direction)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get station code: %w", err)
-	}
-	query := map[string]string{
-		"agency":   "CT",
-		"stopCode": code,
-		"api_key":  c.key,
-	}
-
-	// cache key is stationStatusURL plus the stop code
-	if c.useCache {
-		data, ok := c.Cache.get(stationStatusURL + code)
-		if ok {
-			return getTrains(data)
-		}
-	}
-
-	data, err := c.APIClient.Get(ctx, stationStatusURL, query)
-	if err != nil {
-		return nil, fmt.Errorf("failed to make request: %w", err)
-	}
-
-	// Now parse the body json string
-	trains, err := getTrains(data)
-	if err != nil {
-		return nil, fmt.Errorf("failed to parse trains: %w", err)
-	}
-
-	if c.useCache {
-		c.Cache.set(stationStatusURL+code, data)
-	}
-	return trains, nil
 }
 
 // Initialize calls the methods to get the timetable and stations, and any
@@ -266,6 +170,166 @@ func (c *CaltrainClient) UpdateStations(ctx context.Context) error {
 	return nil
 }
 
+// SetupCache defines enables use of endpoint caching
+func (c *CaltrainClient) SetupCache(expire time.Duration) {
+	c.Cache = NewCache(expire)
+	c.useCache = true
+}
+
+// GetDelays returns a list of delayed trains and their information
+func (c *CaltrainClient) GetDelays(ctx context.Context, threshold time.Duration) ([]TrainStatus, error) {
+	query := map[string]string{
+		"agency":  "CT",
+		"api_key": c.key,
+	}
+
+	if c.useCache {
+		data, ok := c.Cache.get(delayURL)
+		if ok {
+			return parseDelays(data, threshold)
+		}
+	}
+
+	data, err := c.APIClient.Get(ctx, delayURL, query)
+	if err != nil {
+		return nil, fmt.Errorf("failed to make request: %w", err)
+	}
+
+	// Now parse the body json string
+	trains, err := parseDelays(data, threshold)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse delay data: %w", err)
+	}
+
+	if c.useCache {
+		c.Cache.set(delayURL, data)
+	}
+	return trains, nil
+}
+
+// GetStationStatus returns the status of upcoming trains for a given station
+// and direction. Direction should be caltrain.North or caltrain.South
+func (c *CaltrainClient) GetStationStatus(ctx context.Context, stationName string, direction string) ([]TrainStatus, error) {
+	code, err := c.getStationCode(stationName, direction)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get station code: %w", err)
+	}
+	query := map[string]string{
+		"agency":   "CT",
+		"stopCode": code,
+		"api_key":  c.key,
+	}
+
+	// cache key is stationStatusURL plus the stop code
+	if c.useCache {
+		data, ok := c.Cache.get(stationStatusURL + code)
+		if ok {
+			return getTrains(data)
+		}
+	}
+
+	data, err := c.APIClient.Get(ctx, stationStatusURL, query)
+	if err != nil {
+		return nil, fmt.Errorf("failed to make request: %w", err)
+	}
+
+	// Now parse the body json string
+	trains, err := getTrains(data)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse trains: %w", err)
+	}
+
+	if c.useCache {
+		c.Cache.set(stationStatusURL+code, data)
+	}
+	return trains, nil
+}
+
+// GetTrainsBetweenStations a slice of routes from src to dst
+func (c *CaltrainClient) GetTrainsBetweenStations(ctx context.Context, src, dst string, weekday time.Weekday) ([]*Route, error) {
+	c.ttLock.RLock()
+	defer c.ttLock.RUnlock()
+
+	journeys, err := c.getTrainRoutesBetweenStations(src, dst, strings.ToLower(weekday.String()))
+	if err != nil {
+		return nil, fmt.Errorf("failed to get Train Routes: %w", err)
+	}
+
+	routes := make([]*Route, len(journeys))
+	for i, journey := range journeys {
+		r, err := c.journeyToRoute(journey)
+		if err != nil {
+			return routes, fmt.Errorf("failed to get Train Routes: %w", err)
+		}
+		routes[i] = r
+	}
+	return routes, nil
+}
+
+// GetDirectionFromSrcToDst returns North or South given a src and dst station
+// TODO: unit test
+func (c *CaltrainClient) GetDirectionFromSrcToDst(src, dst string) (string, error) {
+	if src == dst {
+		return "", fmt.Errorf("The stations are the same: %s to %s", src, dst)
+	}
+	s, ok := stationOrder[src]
+	if !ok {
+		return "", fmt.Errorf("Unknown station: %s", src)
+	}
+	d, ok := stationOrder[dst]
+	if !ok {
+		return "", fmt.Errorf("Unknown station: %s", dst)
+	}
+
+	if s < d {
+		return South, nil
+	} else if s > d {
+		return North, nil
+	} else {
+		return "", fmt.Errorf("Could not determine direction from %s to %s", src, dst)
+	}
+}
+
+// GetStations returns a list of station names
+func (c *CaltrainClient) GetStations() []string {
+	ret := []string{}
+	c.sLock.RLock()
+	for k := range c.stations {
+		ret = append(ret, k)
+	}
+	c.sLock.RUnlock()
+	sort.Strings(ret)
+	return ret
+}
+
+// GetStationTimetable returns the routes that stop at a given station in the
+// given direction
+// TODO: export this in the interface???
+func (c *CaltrainClient) GetStationTimetable(st, dir string, weekday time.Weekday) ([]TimetableRouteJourney, error) {
+	c.ttLock.RLock()
+	defer c.ttLock.RUnlock()
+
+	code, err := c.getStationCode(st, dir)
+	if err != nil {
+		return nil, err
+	}
+
+	return c.getTimetableForStation(code, dir, strings.ToLower(weekday.String()))
+
+}
+
+// GetTrainRoute returns the Route struct for a given train
+// TODO: export this in the interface???
+func (c *CaltrainClient) GetTrainRoute(trainNum string) (*Route, error) {
+	c.ttLock.RLock()
+	defer c.ttLock.RUnlock()
+	journey, err := c.getRouteForTrain(trainNum)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get Train Route: %w", err)
+	}
+	return c.journeyToRoute(journey)
+}
+
 // getStationCode returns the code for a given station and direction
 func (c *CaltrainClient) getStationCode(st, dir string) (string, error) {
 	// first validate the direction
@@ -312,54 +376,6 @@ func (c *CaltrainClient) getRouteCodes(src, dst string) (string, string, error) 
 	}
 }
 
-// GetStationTimetable returns the routes that stop at a given station in the
-// given direction
-// TODO: export this in the interface???
-func (c *CaltrainClient) GetStationTimetable(st, dir string, weekday time.Weekday) ([]TimetableRouteJourney, error) {
-	c.ttLock.RLock()
-	defer c.ttLock.RUnlock()
-
-	code, err := c.getStationCode(st, dir)
-	if err != nil {
-		return nil, err
-	}
-
-	return c.getTimetableForStation(code, dir, strings.ToLower(weekday.String()))
-
-}
-
-// GetTrainRoute returns the Route struct for a given train
-func (c *CaltrainClient) GetTrainRoute(trainNum string) (*Route, error) {
-	c.ttLock.RLock()
-	defer c.ttLock.RUnlock()
-	journey, err := c.getRouteForTrain(trainNum)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get Train Route: %w", err)
-	}
-	return c.journeyToRoute(journey)
-}
-
-// GetTrainsBetweenStations a slice of routes from src to dst
-func (c *CaltrainClient) GetTrainsBetweenStations(ctx context.Context, src, dst string, weekday time.Weekday) ([]*Route, error) {
-	c.ttLock.RLock()
-	defer c.ttLock.RUnlock()
-
-	journeys, err := c.getTrainRoutesBetweenStations(src, dst, strings.ToLower(weekday.String()))
-	if err != nil {
-		return nil, fmt.Errorf("failed to get Train Routes: %w", err)
-	}
-
-	routes := make([]*Route, len(journeys))
-	for i, journey := range journeys {
-		r, err := c.journeyToRoute(journey)
-		if err != nil {
-			return routes, fmt.Errorf("failed to get Train Routes: %w", err)
-		}
-		routes[i] = r
-	}
-	return routes, nil
-}
-
 // journeyToRoute converts a TimetableRouteJourney into a Route
 func (c *CaltrainClient) journeyToRoute(r TimetableRouteJourney) (*Route, error) {
 	route := &Route{
@@ -397,6 +413,7 @@ func (c *CaltrainClient) journeyToRoute(r TimetableRouteJourney) (*Route, error)
 	return route, nil
 }
 
+// getStationFromCode returns the station name associated with the code
 // TODO: unit test this
 func (c *CaltrainClient) getStationFromCode(code string) string {
 	c.sLock.RLock()
