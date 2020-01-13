@@ -40,10 +40,16 @@ type Caltrain interface {
 	// who have a status reported for the given station and direction.
 	GetStationStatus(ctx context.Context, stationName, dir string) ([]TrainStatus, error)
 
-	// GetTrainsBetweenStations returns a slice of Routes that go from src to
-	// dst on the given weekday. It uses the cached timetable and does not make
-	// an API call
-	GetTrainsBetweenStations(ctx context.Context, src, dst string, weekday time.Weekday) ([]*Route, error)
+	// GetTrainsBetweenStationsForWeekday returns a slice of Routes that travel
+	// from src to dst on the given weekday. It uses the cached timetable and
+	// does not make an API call
+	GetTrainsBetweenStationsForWeekday(ctx context.Context, src, dst string, weekday time.Weekday) ([]*Route, error)
+
+	// GetTrainsBetweenStationsForDate returns a slice of Routes that travel
+	// from src to dst for a given date. It uses the cached timetable and does
+	// not make an API call. It checks against the known holidays. Date must be
+	// in the correct time zone
+	GetTrainsBetweenStationsForDate(ctx context.Context, src, dst string, date time.Time) ([]*Route, error)
 
 	// GetDirectionFromSrcToDst returns the direction the train would go to get
 	// from src to dst. Value is either North or South
@@ -51,6 +57,9 @@ type Caltrain interface {
 
 	// GetStations returns a slice of all known stations in alphanumeric order
 	GetStations() []string
+
+	// IsHoliday returns true if the date passed in is a holiday
+	IsHoliday(time.Time) bool
 }
 
 type CaltrainClient struct {
@@ -58,28 +67,30 @@ type CaltrainClient struct {
 	dayService map[string][]string         // map of id to days of the week that the id corresponds to
 	ttLock     sync.RWMutex                // lock in case someone tries to access the timetable during and update
 	stations   map[string]*station         // station information map
-	holidays   []time.Time // slice of days that are on a holiday schedule
+	holidays   []time.Time                 // slice of days that are on a holiday schedule
 	sLock      sync.RWMutex                // lock in case someone tries to access the stations during and update
 	useCache   bool                        // set by calling the SetupCache method
+	tz         *time.Location              // constant America/LosAngeles time
+	key        string                      // API key for 511.org
 
-	key string // API key for 511.org
-
-	APIClient      APIClient     // API client for making caltrain queries. Default APIClient511
-	Cache          Cache         // interface for caching recent request results
+	APIClient APIClient // API client for making caltrain queries. Default APIClient511
+	Cache     Cache     // interface for caching recent request results
 }
 
 func New(key string) *CaltrainClient {
+	tz, _ := time.LoadLocation("America/Los_Angeles")
 	return &CaltrainClient{
-		timetable:      make(map[string][]TimetableFrame),
-		dayService:     make(map[string][]string),
-		key:            key,
-		APIClient:      NewClient(),
+		timetable:  make(map[string][]TimetableFrame),
+		dayService: make(map[string][]string),
+		key:        key,
+		tz:         tz,
+		APIClient:  NewClient(),
 	}
 }
 
 // Information on the current train status
 type TrainStatus struct {
-	TrainNum    string        // train number
+	TrainNum  string        // train number
 	Direction string        // North or South
 	Line      string        // bullet, limited, etc.
 	Delay     time.Duration // time behind schedule
@@ -197,9 +208,8 @@ func (c *CaltrainClient) UpdateHolidays(ctx context.Context) error {
 		return fmt.Errorf("failed to parse holidays: %w", err)
 	}
 	c.holidays = holidays
-	return nil 
+	return nil
 }
-
 
 // SetupCache defines enables use of endpoint caching
 func (c *CaltrainClient) SetupCache(expire time.Duration) {
@@ -276,12 +286,12 @@ func (c *CaltrainClient) GetStationStatus(ctx context.Context, stationName strin
 	return trains, nil
 }
 
-// GetTrainsBetweenStations a slice of routes from src to dst
-func (c *CaltrainClient) GetTrainsBetweenStations(ctx context.Context, src, dst string, weekday time.Weekday) ([]*Route, error) {
+// GetTrainsBetweenStationsForWeekday a slice of routes from src to dst
+func (c *CaltrainClient) GetTrainsBetweenStationsForWeekday(ctx context.Context, src, dst string, weekday time.Weekday) ([]*Route, error) {
 	c.ttLock.RLock()
 	defer c.ttLock.RUnlock()
 
-	journeys, err := c.getTrainRoutesBetweenStations(src, dst, strings.ToLower(weekday.String()))
+	journeys, err := c.getTrainRoutesBetweenStations(src, dst, weekday)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get Train Routes: %w", err)
 	}
@@ -295,6 +305,15 @@ func (c *CaltrainClient) GetTrainsBetweenStations(ctx context.Context, src, dst 
 		routes[i] = r
 	}
 	return routes, nil
+}
+
+// GetTrainsBetweenStationsForDate checks if the date is a holiday, then calls
+// GetTrainsBetweenStationsForWeekday with the appropriate weekday value
+func (c *CaltrainClient) GetTrainsBetweenStationsForDate(ctx context.Context, src, dst string, date time.Time) ([]*Route, error) {
+	if c.IsHoliday(date) {
+		return c.GetTrainsBetweenStationsForWeekday(ctx, src, dst, time.Sunday)
+	}
+	return c.GetTrainsBetweenStationsForWeekday(ctx, src, dst, date.Weekday())
 }
 
 // GetDirectionFromSrcToDst returns North or South given a src and dst station
@@ -333,6 +352,19 @@ func (c *CaltrainClient) GetStations() []string {
 	return ret
 }
 
+// IsHoliday returns true if the date passed in is a holiday
+func (c *CaltrainClient) IsHoliday(date time.Time) bool {
+	d := date.Truncate(24 * time.Hour)
+	c.sLock.RLock()
+	defer c.sLock.RUnlock()
+	for _, h := range c.holidays {
+		if d.Equal(h.Truncate(24 * time.Hour)) {
+			return true
+		}
+	}
+	return false
+}
+
 // GetStationTimetable returns the routes that stop at a given station in the
 // given direction
 // TODO: export this in the interface???
@@ -345,7 +377,9 @@ func (c *CaltrainClient) GetStationTimetable(st, dir string, weekday time.Weekda
 		return nil, err
 	}
 
-	return c.getTimetableForStation(code, dir, strings.ToLower(weekday.String()))
+	// TODO: holiday?
+
+	return c.getTimetableForStation(code, dir, weekday)
 
 }
 

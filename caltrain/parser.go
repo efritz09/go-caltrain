@@ -75,6 +75,7 @@ func getDelay(status monitoredCall) (time.Duration, time.Time) {
 		expected = status.ExpectedDepartureTime
 	}
 
+	// We can use UTC because the API returns UTC time for live updates
 	now := time.Now()
 	// The API can mess up the aimed arrival time. If the arrival time is
 	// earlier than the current time, use the ExpectedDepartureTime
