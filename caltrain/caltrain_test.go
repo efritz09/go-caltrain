@@ -9,8 +9,65 @@ import (
 )
 
 const (
-	fakeKey = "ericisgreat"
+	fakeKey               = "ericisgreat"
+	defaultDelayThreshold = 10 * time.Minute
 )
+
+func TestGetStations(t *testing.T) {
+	ctx := context.Background()
+	c := New(fakeKey)
+	m := &MockAPIClient{}
+	m.GetResultFilePath = "testdata/stations.json"
+	c.APIClient = m
+	if err := c.UpdateStations(ctx); err != nil {
+		t.Fatalf("Unexpected error loading stations: %v", err)
+	}
+
+	exp := map[string]struct{}{
+		Station22ndStreet:   struct{}{},
+		StationAtherton:     struct{}{},
+		StationBayshore:     struct{}{},
+		StationBelmont:      struct{}{},
+		StationBlossomHill:  struct{}{},
+		StationBroadway:     struct{}{},
+		StationBurlingame:   struct{}{},
+		StationCalAve:       struct{}{},
+		StationCapitol:      struct{}{},
+		StationCollegePark:  struct{}{},
+		StationGilroy:       struct{}{},
+		StationHaywardPark:  struct{}{},
+		StationHillsdale:    struct{}{},
+		StationLawrence:     struct{}{},
+		StationMenloPark:    struct{}{},
+		StationMillbrae:     struct{}{},
+		StationMorganHill:   struct{}{},
+		StationMountainView: struct{}{},
+		StationPaloAlto:     struct{}{},
+		StationRedwoodCity:  struct{}{},
+		StationSanAntonio:   struct{}{},
+		StationSanBruno:     struct{}{},
+		StationSanCarlos:    struct{}{},
+		StationSanFrancisco: struct{}{},
+		StationSanJose:      struct{}{},
+		StationSanMartin:    struct{}{},
+		StationSanMateo:     struct{}{},
+		StationSantaClara:   struct{}{},
+		StationSouthSF:      struct{}{},
+		StationStanford:     struct{}{},
+		StationSunnyvale:    struct{}{},
+		StationTamien:       struct{}{},
+	}
+
+	stations := c.GetStations()
+	if len(exp) != len(stations) {
+		t.Fatalf("incorrect number of stations")
+	}
+	for _, st := range stations {
+		if _, ok := exp[st]; !ok {
+			t.Fatalf("unexpected station: %s", st)
+		}
+	}
+}
 
 func TestGetTrainRoute(t *testing.T) {
 	ctx := context.Background()
@@ -18,9 +75,12 @@ func TestGetTrainRoute(t *testing.T) {
 	m := &MockAPIClient{}
 	m.GetResultFilePath = "testdata/bulletSchedule.json"
 	c.APIClient = m
-	err := c.UpdateTimeTable(ctx)
-	if err != nil {
+	if err := c.UpdateTimeTable(ctx); err != nil {
 		t.Fatalf("Unexpected error loading timetable: %v", err)
+	}
+	m.GetResultFilePath = "testdata/stations.json"
+	if err := c.UpdateStations(ctx); err != nil {
+		t.Fatalf("Unexpected error loading stations: %v", err)
 	}
 	// c.UpdateTimeTable currently populates each line with bulletSchedule.
 	// remove the other instances
@@ -67,9 +127,12 @@ func TestGetTrainsBetweenStations(t *testing.T) {
 	m := &MockAPIClient{}
 	m.GetResultFilePath = "testdata/bulletSchedule.json"
 	c.APIClient = m
-	err := c.UpdateTimeTable(ctx)
-	if err != nil {
+	if err := c.UpdateTimeTable(ctx); err != nil {
 		t.Fatalf("Unexpected error loading timetable: %v", err)
+	}
+	m.GetResultFilePath = "testdata/stations.json"
+	if err := c.UpdateStations(ctx); err != nil {
+		t.Fatalf("Unexpected error loading stations: %v", err)
 	}
 	// c.UpdateTimeTable currently populates each line with bulletSchedule.
 	// remove the other instances
@@ -81,35 +144,39 @@ func TestGetTrainsBetweenStations(t *testing.T) {
 		dst  string
 		numN int // len of array for now
 		numS int
-		day  string
+		day  time.Weekday
 		err  error
 	}{
-		{src: StationHillsdale, dst: StationPaloAlto, numN: 5, numS: 5, day: "monday", err: nil},
-		{src: StationSanJose, dst: StationSanFrancisco, numN: 11, numS: 11, day: "monday", err: nil},
-		{src: StationSanJose, dst: StationSanFrancisco, numN: 2, numS: 2, day: "sunday", err: nil},
-		{src: StationHillsdale, dst: StationHaywardPark, numN: 0, numS: 0, day: "monday", err: nil},
-		{src: StationSanFrancisco, dst: "BadSation", numN: 0, numS: 0, day: "monday", err: errors.New("")},
+		{src: StationHillsdale, dst: StationPaloAlto, numN: 5, numS: 5, day: time.Monday, err: nil},
+		{src: StationSanJose, dst: StationSanFrancisco, numN: 11, numS: 11, day: time.Monday, err: nil},
+		{src: StationSanJose, dst: StationSanFrancisco, numN: 2, numS: 2, day: time.Sunday, err: nil},
+		{src: StationHillsdale, dst: StationHaywardPark, numN: 0, numS: 0, day: time.Monday, err: nil},
+		{src: StationSanFrancisco, dst: "BadSation", numN: 0, numS: 0, day: time.Monday, err: errors.New("")},
 	}
 
 	for _, tt := range tests {
 		name := tt.src + "_" + tt.dst
 		t.Run(name, func(t *testing.T) {
-			u := &MockUpdater{}
-			u.Weekday = tt.day
-			c.Updater = u
-
-			n, s, err := c.GetTrainsBetweenStations(ctx, tt.src, tt.dst)
+			// verify north
+			d1, err := c.GetTrainsBetweenStations(ctx, tt.src, tt.dst, tt.day)
 			if err != nil && tt.err == nil {
 				t.Fatalf("Failed to get train routes for %s: %v", name, err)
 			} else if err == nil && tt.err != nil {
 				t.Fatalf("getTrainRoutesBetweenStations improperly succeeded for %s", name)
 			}
-
-			if len(n) != tt.numN {
-				t.Fatalf("Incorrect routes North. Expected %d, recieved %d", tt.numN, len(n))
+			if len(d1) != tt.numN {
+				t.Fatalf("Incorrect routes North. Expected %d, recieved %d", tt.numN, len(d1))
 			}
-			if len(s) != tt.numS {
-				t.Fatalf("Incorrect routes North. Expected %d, recieved %d", tt.numS, len(s))
+
+			// verify south
+			d2, err := c.GetTrainsBetweenStations(ctx, tt.dst, tt.src, tt.day)
+			if err != nil && tt.err == nil {
+				t.Fatalf("Failed to get train routes for %s: %v", name, err)
+			} else if err == nil && tt.err != nil {
+				t.Fatalf("getTrainRoutesBetweenStations improperly succeeded for %s", name)
+			}
+			if len(d2) != tt.numS {
+				t.Fatalf("Incorrect routes North. Expected %d, recieved %d", tt.numS, len(d2))
 			}
 		})
 	}
@@ -135,7 +202,7 @@ func TestGetDelays(t *testing.T) {
 			m := &MockAPIClient{}
 			m.GetResultFilePath = tt.data
 			c.APIClient = m
-			d, err := c.GetDelays(ctx)
+			d, err := c.GetDelays(ctx, defaultDelayThreshold)
 			if err != nil && tt.err == nil {
 				t.Fatalf("Failed to get train delays for %s: %v", tt.name, err)
 			} else if err == nil && tt.err != nil {
@@ -170,7 +237,7 @@ func TestGetDelaysCache(t *testing.T) {
 	if len(cache) != 0 {
 		t.Fatalf("Cache is not empty: %v", cache)
 	}
-	d, err := c.GetDelays(ctx)
+	d, err := c.GetDelays(ctx, defaultDelayThreshold)
 	if err != nil {
 		t.Fatalf("Failed to get train delays for %v", err)
 	}
@@ -183,7 +250,7 @@ func TestGetDelaysCache(t *testing.T) {
 		t.Fatalf("Cache does not have only 1 key: %v", cache)
 	}
 	// run it again
-	d, err = c.GetDelays(ctx)
+	d, err = c.GetDelays(ctx, defaultDelayThreshold)
 	if err != nil {
 		t.Fatalf("Failed to get train delays for %v", err)
 	}
@@ -202,8 +269,12 @@ func TestGetStationStatus(t *testing.T) {
 	ctx := context.Background()
 	c := New(fakeKey)
 	m := &MockAPIClient{}
-	m.GetResultFilePath = "testdata/parseHillsdaleNorth.json"
+	m.GetResultFilePath = "testdata/stations.json"
 	c.APIClient = m
+	if err := c.UpdateStations(ctx); err != nil {
+		t.Fatalf("Unexpected error loading stations: %v", err)
+	}
+	m.GetResultFilePath = "testdata/parseHillsdaleNorth.json"
 	_, err := c.GetStationStatus(ctx, StationHillsdale, North)
 	if err != nil {
 		t.Fatalf("Unexpected error: %v", err)
@@ -214,8 +285,12 @@ func TestGetStationStatusCache(t *testing.T) {
 	ctx := context.Background()
 	c := New(fakeKey)
 	m := &MockAPIClient{}
-	m.GetResultFilePath = "testdata/parseHillsdaleNorth.json"
+	m.GetResultFilePath = "testdata/stations.json"
 	c.APIClient = m
+	if err := c.UpdateStations(ctx); err != nil {
+		t.Fatalf("Unexpected error loading stations: %v", err)
+	}
+	m.GetResultFilePath = "testdata/parseHillsdaleNorth.json"
 	c.SetupCache(DefaultCacheTimeout)
 
 	cache := make(map[string][]byte)
@@ -301,10 +376,16 @@ func TestUpdateTimeTable(t *testing.T) {
 
 // Simple test to ensure the code runs
 func TestGetStationTimetable(t *testing.T) {
+	ctx := context.Background()
 	c := New(fakeKey)
 	m := &MockAPIClient{}
+	m.GetResultFilePath = "testdata/stations.json"
 	c.APIClient = m
-	_, err := c.GetStationTimetable(StationHillsdale, North)
+	if err := c.UpdateStations(ctx); err != nil {
+		t.Fatalf("Unexpected error loading stations: %v", err)
+	}
+
+	_, err := c.GetStationTimetable(StationHillsdale, North, time.Monday)
 	if err != nil {
 		t.Fatalf("Unexpected error: %v", err)
 	}

@@ -17,6 +17,10 @@ func TestGetTimetableForStation(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Unexpected error loading timetable: %v", err)
 	}
+	m.GetResultFilePath = "testdata/stations.json"
+	if err := c.UpdateStations(ctx); err != nil {
+		t.Fatalf("Unexpected error loading stations: %v", err)
+	}
 	// c.UpdateTimeTable currently populates each line with bulletSchedule.
 	// remove the other instances
 	delete(c.timetable, Limited)
@@ -66,6 +70,10 @@ func TestGetTrainRoutesBetweenStations(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Unexpected error loading timetable: %v", err)
 	}
+	m.GetResultFilePath = "testdata/stations.json"
+	if err := c.UpdateStations(ctx); err != nil {
+		t.Fatalf("Unexpected error loading stations: %v", err)
+	}
 	// c.UpdateTimeTable currently populates each line with bulletSchedule.
 	// remove the other instances
 	delete(c.timetable, Limited)
@@ -89,18 +97,26 @@ func TestGetTrainRoutesBetweenStations(t *testing.T) {
 	for _, tt := range tests {
 		name := tt.src + "_" + tt.dst
 		t.Run(name, func(t *testing.T) {
-			n, s, err := c.getTrainRoutesBetweenStations(tt.src, tt.dst, tt.day)
+			// test north
+			d1, err := c.getTrainRoutesBetweenStations(tt.src, tt.dst, tt.day)
 			if err != nil && tt.err == nil {
 				t.Fatalf("Failed to get train routes for %s: %v", name, err)
 			} else if err == nil && tt.err != nil {
 				t.Fatalf("getTrainRoutesBetweenStations improperly succeeded for %s", name)
 			}
-
-			if len(n) != tt.numN {
-				t.Fatalf("Incorrect routes North. Expected %d, recieved %d", tt.numN, len(n))
+			if len(d1) != tt.numN {
+				t.Fatalf("Incorrect routes North. Expected %d, recieved %d", tt.numN, len(d1))
 			}
-			if len(s) != tt.numS {
-				t.Fatalf("Incorrect routes North. Expected %d, recieved %d", tt.numS, len(s))
+
+			// test south
+			d2, err := c.getTrainRoutesBetweenStations(tt.dst, tt.src, tt.day)
+			if err != nil && tt.err == nil {
+				t.Fatalf("Failed to get train routes for %s: %v", name, err)
+			} else if err == nil && tt.err != nil {
+				t.Fatalf("getTrainRoutesBetweenStations improperly succeeded for %s", name)
+			}
+			if len(d2) != tt.numS {
+				t.Fatalf("Incorrect routes North. Expected %d, recieved %d", tt.numS, len(d2))
 			}
 		})
 	}
@@ -116,6 +132,10 @@ func TestGetRouteForTrain(t *testing.T) {
 	err := c.UpdateTimeTable(ctx)
 	if err != nil {
 		t.Fatalf("Unexpected error loading timetable: %v", err)
+	}
+	m.GetResultFilePath = "testdata/stations.json"
+	if err := c.UpdateStations(ctx); err != nil {
+		t.Fatalf("Unexpected error loading stations: %v", err)
 	}
 	// c.UpdateTimeTable currently populates each line with bulletSchedule.
 	// remove the other instances
@@ -148,6 +168,14 @@ func TestGetRouteForTrain(t *testing.T) {
 }
 
 func TestIsInDayRef(t *testing.T) {
+	c := New(fakeKey)
+	services := map[string][]string{
+		"8005": []string{"monday", "tuesday", "wednesday", "thursday", "friday"},
+		"8006": []string{"saturday", "sunday"},
+		"8007": []string{"saturday"},
+	}
+	c.dayService = services
+
 	tests := []struct {
 		day string
 		ref string
@@ -168,10 +196,9 @@ func TestIsInDayRef(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.day+"/"+tt.ref, func(t *testing.T) {
-			weekdayRef := weekdayReferences[tt.day]
-			val := isInDayRef(weekdayRef, tt.ref)
+			val := c.isForToday(tt.day, tt.ref)
 			if val != tt.exp {
-				t.Fatalf("isInDayRef unexpectedly returned %t", val)
+				t.Fatalf("isForToday unexpectedly returned %t", val)
 			}
 
 		})

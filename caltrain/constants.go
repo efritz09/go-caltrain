@@ -1,19 +1,10 @@
 package caltrain
 
-import (
-	"strings"
-	"time"
-)
-
 const (
-	baseURL      = "http://api.511.org/transit/"
-	delayURL     = "http://api.511.org/transit/StopMonitoring"
-	stationURL   = "http://api.511.org/transit/StopMonitoring"
-	timetableURL = "http://api.511.org/transit/timetable"
-
-	defaultDelayThreshold = 10 * time.Minute
-
-	timezone = "America/Los_Angeles"
+	delayURL         = "http://api.511.org/transit/StopMonitoring"
+	stationsURL      = "http://api.511.org/transit/stops"
+	stationStatusURL = "http://api.511.org/transit/StopMonitoring"
+	timetableURL     = "http://api.511.org/transit/timetable"
 
 	North = "North"
 	South = "South"
@@ -53,80 +44,43 @@ const (
 	StationSanMateo     = "San Mateo"
 	StationSantaClara   = "Santa Clara"
 	StationSouthSF      = "South San Francisco"
+	StationStanford     = "Stanford"
 	StationSunnyvale    = "Sunnyvale"
 	StationTamien       = "Tamien"
 )
 
-type station struct {
-	name       string
-	directions map[string]string
-}
-
-// newStation creates a new station struct with the name and direction values
-func newStation(name string, n, s string) station {
-	return station{
-		name:       name,
-		directions: map[string]string{North: n, South: s},
-	}
-}
-
-// getStations returns a Stations struct with a map of station name to station information
-func getStations() map[string]station {
-	return map[string]station{
-		Station22ndStreet:   newStation(Station22ndStreet, "70021", "70022"),
-		StationAtherton:     newStation(StationAtherton, "70151", "70152"),
-		StationBayshore:     newStation(StationBayshore, "70031", "70032"),
-		StationBelmont:      newStation(StationBelmont, "70121", "70122"),
-		StationBlossomHill:  newStation(StationBlossomHill, "70291", "70292"),
-		StationBroadway:     newStation(StationBroadway, "70071", "70072"),
-		StationBurlingame:   newStation(StationBurlingame, "70081", "70082"),
-		StationCalAve:       newStation(StationCalAve, "70191", "70192"),
-		StationCapitol:      newStation(StationCapitol, "70281", "70282"),
-		StationCollegePark:  newStation(StationCollegePark, "70251", "70252"),
-		StationGilroy:       newStation(StationGilroy, "70321", "70322"),
-		StationHaywardPark:  newStation(StationHaywardPark, "70101", "70102"),
-		StationHillsdale:    newStation(StationHillsdale, "70111", "70112"),
-		StationLawrence:     newStation(StationLawrence, "70231", "70232"),
-		StationMenloPark:    newStation(StationMenloPark, "70161", "70162"),
-		StationMillbrae:     newStation(StationMillbrae, "70061", "70062"),
-		StationMorganHill:   newStation(StationMorganHill, "70301", "70302"),
-		StationMountainView: newStation(StationMountainView, "70211", "70212"),
-		StationPaloAlto:     newStation(StationPaloAlto, "70171", "70172"),
-		StationRedwoodCity:  newStation(StationRedwoodCity, "70141", "70142"),
-		StationSanAntonio:   newStation(StationSanAntonio, "70201", "70202"),
-		StationSanBruno:     newStation(StationSanBruno, "70051", "70052"),
-		StationSanCarlos:    newStation(StationSanCarlos, "70131", "70132"),
-		StationSanFrancisco: newStation(StationSanFrancisco, "70011", "70012"),
-		StationSanJose:      newStation(StationSanJose, "70261", "70262"),
-		StationSanMartin:    newStation(StationSanMartin, "70311", "70312"),
-		StationSanMateo:     newStation(StationSanMateo, "70091", "70092"),
-		StationSantaClara:   newStation(StationSantaClara, "70241", "70242"),
-		StationSouthSF:      newStation(StationSouthSF, "70041", "70042"),
-		StationSunnyvale:    newStation(StationSunnyvale, "70221", "70222"),
-		StationTamien:       newStation(StationTamien, "70271", "70272"),
-	}
-}
-
-// TODO: unit test this
-func (c *CaltrainClient) getStationFromCode(code string) string {
-	for name, st := range c.stations {
-		for _, c := range st.directions {
-			if c == code {
-				return name
-			}
-		}
-	}
-	return ""
-}
-
-// getDirFromChar returns the proper direction string for a given character.
-// HasPrefix is used in case the "char" has whitespace
-func getDirFromChar(c string) string {
-	if strings.HasPrefix(c, "N") {
-		return North
-	} else if strings.HasPrefix(c, "S") {
-		return South
-	} else {
-		return ""
-	}
+// stationOrder is a map of the station name to it's order from North to South
+var stationOrder = map[string]int{
+	StationSanFrancisco: 0,
+	Station22ndStreet:   1,
+	StationBayshore:     2,
+	StationSouthSF:      3,
+	StationSanBruno:     4,
+	StationMillbrae:     5,
+	StationBroadway:     6,
+	StationBurlingame:   7,
+	StationSanMateo:     8,
+	StationHaywardPark:  9,
+	StationHillsdale:    10,
+	StationBelmont:      11,
+	StationSanCarlos:    12,
+	StationRedwoodCity:  13,
+	StationAtherton:     14,
+	StationMenloPark:    15,
+	StationPaloAlto:     16,
+	StationStanford:     17,
+	StationCalAve:       18,
+	StationSanAntonio:   19,
+	StationMountainView: 20,
+	StationSunnyvale:    21,
+	StationLawrence:     22,
+	StationSantaClara:   23,
+	StationCollegePark:  24,
+	StationSanJose:      25,
+	StationTamien:       26,
+	StationCapitol:      27,
+	StationBlossomHill:  28,
+	StationMorganHill:   29,
+	StationSanMartin:    30,
+	StationGilroy:       31,
 }
