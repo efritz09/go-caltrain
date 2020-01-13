@@ -47,6 +47,8 @@ func (c *MockCaltrain) UpdateTimeTable(ctx context.Context) error { return nil }
 
 func (c *MockCaltrain) UpdateStations(ctx context.Context) error { return nil }
 
+func (c *MockCaltrain) UpdateHolidays(ctx context.Context) error { return nil }
+
 func (c *MockCaltrain) Initialize(ctx context.Context) error { return nil }
 
 func (c *MockCaltrain) GetDirectionFromSrcToDst(src, dst string) (string, error) {

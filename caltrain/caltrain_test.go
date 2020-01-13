@@ -390,3 +390,15 @@ func TestGetStationTimetable(t *testing.T) {
 		t.Fatalf("Unexpected error: %v", err)
 	}
 }
+
+// Simple test to ensure the code runs
+func TestUpdateHolidays(t *testing.T) {
+	ctx := context.Background()
+	c := New(fakeKey)
+	m := &MockAPIClient{}
+	m.GetResultFilePath = "testdata/holiday.json"
+	c.APIClient = m
+	if err := c.UpdateHolidays(ctx); err != nil {
+		t.Fatalf("Unexpected error loading stations: %v", err)
+	}
+}

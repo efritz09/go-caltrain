@@ -13,7 +13,7 @@ import (
 
 type Caltrain interface {
 	// Initialize makes the 511.org API calls to populate the stations and
-	// timetable. It calls UpdateStations and UpdateTimetable.
+	// timetable. It calls UpdateStations, UpdateTimetable, and UpdateHolidays
 	Initialize(context.Context) error
 
 	// SetupCache enables the use of API caching to prevent going over the API
@@ -27,6 +27,10 @@ type Caltrain interface {
 	// UpdateTimeTable makes an API call to refresh the timetable data. This
 	// should be called periodically to ensure correct information.
 	UpdateTimeTable(context.Context) error
+
+	// UpdateHolidays makes an API call to refresh the holiday data. This can
+	// be updated multiple times a year so this should be called periodically.
+	UpdateHolidays(context.Context) error
 
 	// GetDelays makes an API call and returns a slice of TrainStatus who's
 	// delay into their next station is greater than the time.Duration argument
@@ -54,6 +58,7 @@ type CaltrainClient struct {
 	dayService map[string][]string         // map of id to days of the week that the id corresponds to
 	ttLock     sync.RWMutex                // lock in case someone tries to access the timetable during and update
 	stations   map[string]*station         // station information map
+	holidays   []time.Time // slice of days that are on a holiday schedule
 	sLock      sync.RWMutex                // lock in case someone tries to access the stations during and update
 	useCache   bool                        // set by calling the SetupCache method
 
@@ -110,6 +115,9 @@ type station struct {
 // other required info before the package can run properly
 func (c *CaltrainClient) Initialize(ctx context.Context) error {
 	if err := c.UpdateStations(ctx); err != nil {
+		return err
+	}
+	if err := c.UpdateHolidays(ctx); err != nil {
 		return err
 	}
 	return c.UpdateTimeTable(ctx)
@@ -169,6 +177,29 @@ func (c *CaltrainClient) UpdateStations(ctx context.Context) error {
 	c.stations = stations
 	return nil
 }
+
+// UpdateHolidays calls the api to get upcoming holidays
+func (c *CaltrainClient) UpdateHolidays(ctx context.Context) error {
+	c.sLock.Lock()
+	defer c.sLock.Unlock()
+
+	query := map[string]string{
+		"operator_id": "CT",
+		"api_key":     c.key,
+	}
+	data, err := c.APIClient.Get(ctx, stationsURL, query)
+	if err != nil {
+		return fmt.Errorf("failed to make request: %w", err)
+	}
+
+	holidays, err := parseHolidays(data)
+	if err != nil {
+		return fmt.Errorf("failed to parse holidays: %w", err)
+	}
+	c.holidays = holidays
+	return nil 
+}
+
 
 // SetupCache defines enables use of endpoint caching
 func (c *CaltrainClient) SetupCache(expire time.Duration) {
