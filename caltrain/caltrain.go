@@ -198,7 +198,7 @@ func (c *CaltrainClient) UpdateHolidays(ctx context.Context) error {
 		"operator_id": "CT",
 		"api_key":     c.key,
 	}
-	data, err := c.APIClient.Get(ctx, stationsURL, query)
+	data, err := c.APIClient.Get(ctx, holidaysURL, query)
 	if err != nil {
 		return fmt.Errorf("failed to make request: %w", err)
 	}
