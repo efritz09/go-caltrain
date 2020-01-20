@@ -9,9 +9,6 @@ Go implementation to get live caltrain status using [511.org](https://511.org/)
 
 
 # TODOs:
-Add holiday parsing
-- Best option would be if the weekday is today, and the day is a holiday, return the holiday schedule
-
 Add travisCI or some other CI tool
 
 # Future Work
