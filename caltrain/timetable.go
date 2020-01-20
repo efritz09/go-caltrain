@@ -3,6 +3,7 @@ package caltrain
 import (
 	"fmt"
 	"strings"
+	"time"
 )
 
 // timetable.go contains helpers relating to the timetable. All functions must
@@ -10,8 +11,10 @@ import (
 
 // getTimetableForStation returns a list of trains that stop at a given station
 // code and directions
-func (c *CaltrainClient) getTimetableForStation(stationCode, dir, weekday string) ([]TimetableRouteJourney, error) {
+func (c *CaltrainClient) getTimetableForStation(stationCode, dir string, day time.Weekday) ([]TimetableRouteJourney, error) {
 	allJourneys := []TimetableRouteJourney{}
+
+	weekday := strings.ToLower(day.String())
 
 	for _, ttArray := range c.timetable {
 		for _, frame := range ttArray {
@@ -56,12 +59,14 @@ func (c *CaltrainClient) getRouteForTrain(trainNum string) (TimetableRouteJourne
 
 // getTrainRoutesBetweenStations returns a slice of routes from src to dst on a
 // given weekday
-func (c *CaltrainClient) getTrainRoutesBetweenStations(src, dst, weekday string) ([]TimetableRouteJourney, error) {
+func (c *CaltrainClient) getTrainRoutesBetweenStations(src, dst string, day time.Weekday) ([]TimetableRouteJourney, error) {
 	sCode, dCode, err := c.getRouteCodes(src, dst)
 	fmt.Println(src, sCode, dst, dCode)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get station codes: %w", err)
 	}
+
+	weekday := strings.ToLower(day.String())
 
 	routes := []TimetableRouteJourney{}
 	for line, ttArray := range c.timetable {

@@ -121,7 +121,7 @@ func TestGetTrainRoute(t *testing.T) {
 }
 
 // Simple test to ensure the code runs
-func TestGetTrainsBetweenStations(t *testing.T) {
+func TestGetTrainsBetweenStationsForWeekday(t *testing.T) {
 	ctx := context.Background()
 	c := New(fakeKey)
 	m := &MockAPIClient{}
@@ -158,28 +158,93 @@ func TestGetTrainsBetweenStations(t *testing.T) {
 		name := tt.src + "_" + tt.dst
 		t.Run(name, func(t *testing.T) {
 			// verify north
-			d1, err := c.GetTrainsBetweenStations(ctx, tt.src, tt.dst, tt.day)
+			d1, err := c.GetTrainsBetweenStationsForWeekday(ctx, tt.src, tt.dst, tt.day)
 			if err != nil && tt.err == nil {
 				t.Fatalf("Failed to get train routes for %s: %v", name, err)
 			} else if err == nil && tt.err != nil {
-				t.Fatalf("getTrainRoutesBetweenStations improperly succeeded for %s", name)
+				t.Fatalf("GetTrainsBetweenStationsForWeekday improperly succeeded for %s", name)
 			}
 			if len(d1) != tt.numN {
 				t.Fatalf("Incorrect routes North. Expected %d, recieved %d", tt.numN, len(d1))
 			}
 
 			// verify south
-			d2, err := c.GetTrainsBetweenStations(ctx, tt.dst, tt.src, tt.day)
+			d2, err := c.GetTrainsBetweenStationsForWeekday(ctx, tt.dst, tt.src, tt.day)
 			if err != nil && tt.err == nil {
 				t.Fatalf("Failed to get train routes for %s: %v", name, err)
 			} else if err == nil && tt.err != nil {
-				t.Fatalf("getTrainRoutesBetweenStations improperly succeeded for %s", name)
+				t.Fatalf("GetTrainsBetweenStationsForWeekday improperly succeeded for %s", name)
 			}
 			if len(d2) != tt.numS {
 				t.Fatalf("Incorrect routes North. Expected %d, recieved %d", tt.numS, len(d2))
 			}
 		})
 	}
+}
+
+// Simple test to ensure the code runs
+func TestGetTrainsBetweenStationsForDate(t *testing.T) {
+	ctx := context.Background()
+	c := New(fakeKey)
+	m := &MockAPIClient{}
+	m.GetResultFilePath = "testdata/bulletSchedule.json"
+	c.APIClient = m
+	if err := c.UpdateTimeTable(ctx); err != nil {
+		t.Fatalf("Unexpected error loading timetable: %v", err)
+	}
+	m.GetResultFilePath = "testdata/stations.json"
+	if err := c.UpdateStations(ctx); err != nil {
+		t.Fatalf("Unexpected error loading stations: %v", err)
+	}
+	m.GetResultFilePath = "testdata/holiday.json"
+	if err := c.UpdateHolidays(ctx); err != nil {
+		t.Fatalf("Unexpected error loading holidays: %v", err)
+	}
+	// c.UpdateTimeTable currently populates each line with bulletSchedule.
+	// remove the other instances
+	delete(c.timetable, Limited)
+	delete(c.timetable, Local)
+
+	tests := []struct {
+		name string
+		src  string
+		dst  string
+		numN int // len of array for now
+		numS int
+		day  time.Time
+		err  error
+	}{
+		{name: "Weekday-No-Holiday", src: StationSanJose, dst: StationSanFrancisco, numN: 11, numS: 11, day: time.Date(2019, time.November, 22, 0, 0, 0, 0, time.UTC), err: nil},
+		{name: "Holiday", src: StationSanJose, dst: StationSanFrancisco, numN: 2, numS: 2, day: time.Date(2019, time.November, 23, 0, 0, 0, 0, time.UTC), err: nil},
+		{name: "Error", src: StationSanFrancisco, dst: "BadSation", numN: 0, numS: 0, day: time.Date(2019, time.November, 23, 0, 0, 0, 0, time.UTC), err: errors.New("")},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// verify north
+			d1, err := c.GetTrainsBetweenStationsForDate(ctx, tt.src, tt.dst, tt.day)
+			if err != nil && tt.err == nil {
+				t.Fatalf("Failed to get train routes for %s: %v", tt.name, err)
+			} else if err == nil && tt.err != nil {
+				t.Fatalf("GetTrainsBetweenStationsForWeekday improperly succeeded for %s", tt.name)
+			}
+			if len(d1) != tt.numN {
+				t.Fatalf("Incorrect routes North. Expected %d, recieved %d", tt.numN, len(d1))
+			}
+
+			// verify south
+			d2, err := c.GetTrainsBetweenStationsForDate(ctx, tt.dst, tt.src, tt.day)
+			if err != nil && tt.err == nil {
+				t.Fatalf("Failed to get train routes for %s: %v", tt.name, err)
+			} else if err == nil && tt.err != nil {
+				t.Fatalf("GetTrainsBetweenStationsForWeekday improperly succeeded for %s", tt.name)
+			}
+			if len(d2) != tt.numS {
+				t.Fatalf("Incorrect routes North. Expected %d, recieved %d", tt.numS, len(d2))
+			}
+		})
+	}
+
 }
 
 // Simple test to ensure the code runs
@@ -389,4 +454,45 @@ func TestGetStationTimetable(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Unexpected error: %v", err)
 	}
+}
+
+// Simple test to ensure the code runs
+func TestUpdateHolidays(t *testing.T) {
+	ctx := context.Background()
+	c := New(fakeKey)
+	m := &MockAPIClient{}
+	m.GetResultFilePath = "testdata/holiday.json"
+	c.APIClient = m
+	if err := c.UpdateHolidays(ctx); err != nil {
+		t.Fatalf("Unexpected error loading holidays: %v", err)
+	}
+}
+
+func TestIsHoliday(t *testing.T) {
+	ctx := context.Background()
+	c := New(fakeKey)
+	m := &MockAPIClient{}
+	m.GetResultFilePath = "testdata/holiday.json"
+	c.APIClient = m
+	if err := c.UpdateHolidays(ctx); err != nil {
+		t.Fatalf("Unexpected error loading holidays: %v", err)
+	}
+
+	tests := []struct {
+		date time.Time
+		ret  bool
+	}{
+		{date: time.Date(2019, time.November, 23, 0, 0, 0, 0, time.UTC), ret: true},
+		{date: time.Date(2020, time.January, 20, 0, 0, 0, 0, time.UTC), ret: true},
+		{date: time.Date(2020, time.January, 2, 0, 0, 0, 0, time.UTC), ret: false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.date.String(), func(t *testing.T) {
+			h := c.IsHoliday(tt.date)
+			if h != tt.ret {
+				t.Fatalf("IsHoliday error. %s improperly returned %t", tt.date, h)
+			}
+		})
+	}
+
 }

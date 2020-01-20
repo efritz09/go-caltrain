@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"testing"
+	"time"
 )
 
 func TestGetTimetableForStation(t *testing.T) {
@@ -29,17 +30,17 @@ func TestGetTimetableForStation(t *testing.T) {
 	tests := []struct {
 		station  string
 		dir      string
-		day      string
+		day      time.Weekday
 		expected int // length of array for now, should be []TimetableRouteJourney
 	}{
-		{station: StationHillsdale, dir: North, day: "monday", expected: 5},
-		{station: StationHillsdale, dir: North, day: "sunday", expected: 2},
-		{station: StationHillsdale, dir: South, day: "monday", expected: 5},
-		{station: StationHillsdale, dir: South, day: "sunday", expected: 2},
+		{station: StationHillsdale, dir: North, day: time.Monday, expected: 5},
+		{station: StationHillsdale, dir: North, day: time.Sunday, expected: 2},
+		{station: StationHillsdale, dir: South, day: time.Monday, expected: 5},
+		{station: StationHillsdale, dir: South, day: time.Sunday, expected: 2},
 	}
 
 	for _, tt := range tests {
-		name := tt.station + "/" + tt.dir + "/" + tt.day
+		name := tt.station + "/" + tt.dir + "/" + tt.day.String()
 		t.Run(name, func(t *testing.T) {
 			code, err := c.getStationCode(StationHillsdale, tt.dir)
 			if err != nil {
@@ -84,14 +85,14 @@ func TestGetTrainRoutesBetweenStations(t *testing.T) {
 		dst  string
 		numN int // len of array for now
 		numS int
-		day  string
+		day  time.Weekday
 		err  error
 	}{
-		{src: StationHillsdale, dst: StationPaloAlto, numN: 5, numS: 5, day: "monday", err: nil},
-		{src: StationSanJose, dst: StationSanFrancisco, numN: 11, numS: 11, day: "monday", err: nil},
-		{src: StationSanJose, dst: StationSanFrancisco, numN: 2, numS: 2, day: "sunday", err: nil},
-		{src: StationHillsdale, dst: StationHaywardPark, numN: 0, numS: 0, day: "monday", err: nil},
-		{src: StationSanFrancisco, dst: "BadSation", numN: 0, numS: 0, day: "monday", err: errors.New("")},
+		{src: StationHillsdale, dst: StationPaloAlto, numN: 5, numS: 5, day: time.Monday, err: nil},
+		{src: StationSanJose, dst: StationSanFrancisco, numN: 11, numS: 11, day: time.Monday, err: nil},
+		{src: StationSanJose, dst: StationSanFrancisco, numN: 2, numS: 2, day: time.Sunday, err: nil},
+		{src: StationHillsdale, dst: StationHaywardPark, numN: 0, numS: 0, day: time.Monday, err: nil},
+		{src: StationSanFrancisco, dst: "BadSation", numN: 0, numS: 0, day: time.Monday, err: errors.New("")},
 	}
 
 	for _, tt := range tests {

@@ -52,7 +52,7 @@ func TestParseDelays(t *testing.T) {
 				t.Fatalf("getTrains improperly succeeded for %s", tt.name)
 			}
 
-			if !assertEqual(tt.expected, delays) {
+			if !assertTrainStatusEqual(tt.expected, delays) {
 				t.Fatalf("Unexpected delays for %s\nexpected: %v\nreceived: %v", tt.name, tt.expected, delays)
 			}
 		})
@@ -108,7 +108,7 @@ func TestGetTrains(t *testing.T) {
 				t.Fatalf("getTrains improperly succeeded for %s", tt.name)
 			}
 
-			if !assertEqual(tt.expected, trains) {
+			if !assertTrainStatusEqual(tt.expected, trains) {
 				t.Fatalf("Unexpected trains for %s\nexpected: %v\nreceived: %v", tt.name, tt.expected, trains)
 			}
 		})
@@ -236,14 +236,41 @@ func TestParseHolidays(t *testing.T) {
 		t.Fatalf("Could not read test data: %v", err)
 	}
 
-	err = parseHolidays(data)
+	exp := []time.Time{
+		time.Date(2019, time.November, 23, 0, 0, 0, 0, time.UTC),
+		time.Date(2019, time.November, 24, 0, 0, 0, 0, time.UTC),
+		time.Date(2019, time.November, 28, 0, 0, 0, 0, time.UTC),
+		time.Date(2019, time.November, 29, 0, 0, 0, 0, time.UTC),
+		time.Date(2019, time.December, 25, 0, 0, 0, 0, time.UTC),
+		time.Date(2020, time.January, 1, 0, 0, 0, 0, time.UTC),
+		time.Date(2020, time.January, 20, 0, 0, 0, 0, time.UTC),
+		time.Date(2020, time.February, 17, 0, 0, 0, 0, time.UTC),
+	}
+
+	holidays, err := parseHolidays(data)
 	if err != nil {
 		t.Fatalf("Failed to parse holidays: %v", err)
 	}
+
+	if len(exp) != len(holidays) {
+		t.Fatalf("Unexpected holidays\nexpected: %v\nreceived: %v", exp, holidays)
+	}
+
+	m1 := make(map[time.Time]int)
+	m2 := make(map[time.Time]int)
+	for _, k := range exp {
+		m1[k]++
+	}
+	for _, k := range holidays {
+		m2[k]++
+	}
+	if !reflect.DeepEqual(m1, m2) {
+		t.Fatalf("Unexpected holidays\nexpected: %v\nreceived: %v", exp, holidays)
+	}
 }
 
-// assertEqual compares two TrainStatus slices for the same elements
-func assertEqual(exp, test []TrainStatus) bool {
+// assertTrainStatusEqual compares two TrainStatus slices for the same elements
+func assertTrainStatusEqual(exp, test []TrainStatus) bool {
 	if len(exp) != len(test) {
 		return false
 	}

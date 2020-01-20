@@ -4,13 +4,11 @@ Go implementation to get live caltrain status using [511.org](https://511.org/)
 
 # Testing and linting
 `golangci-lint run ./...`
+
 `go test ./... -race -cover -count=1 -coverprofile=c.out`
 
 
 # TODOs:
-Add holiday parsing
-- Best option would be if the weekday is today, and the day is a holiday, return the holiday schedule
-
 Add travisCI or some other CI tool
 
 # Future Work

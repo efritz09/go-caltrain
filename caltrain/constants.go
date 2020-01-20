@@ -5,6 +5,7 @@ const (
 	stationsURL      = "http://api.511.org/transit/stops"
 	stationStatusURL = "http://api.511.org/transit/StopMonitoring"
 	timetableURL     = "http://api.511.org/transit/timetable"
+	holidaysURL      = "http://api.511.org/transit/holidays"
 
 	North = "North"
 	South = "South"

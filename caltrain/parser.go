@@ -75,6 +75,7 @@ func getDelay(status monitoredCall) (time.Duration, time.Time) {
 		expected = status.ExpectedDepartureTime
 	}
 
+	// We can use UTC because the API returns UTC time for live updates
 	now := time.Now()
 	// The API can mess up the aimed arrival time. If the arrival time is
 	// earlier than the current time, use the ExpectedDepartureTime
@@ -132,7 +133,7 @@ func parseStations(raw []byte) (map[string]*station, error) {
 		if strings.HasSuffix(stop.Name, "Station") {
 			continue
 		}
-		name := strings.Split(stop.Name, " Caltrain")[0]
+		name := strings.TrimSuffix(stop.Name, " Caltrain")
 		if st, ok := ret[name]; !ok {
 			// create a new station with location
 			lat, err := strconv.ParseFloat(stop.Location.Latitude, 64)
@@ -164,15 +165,27 @@ func parseStations(raw []byte) (map[string]*station, error) {
 	return ret, nil
 }
 
-// parseHolidays
-// TODO: implement
-func parseHolidays(raw []byte) error {
+// parseHolidays returns a slice of dates that are holidays
+func parseHolidays(raw []byte) ([]time.Time, error) {
 	raw = bytes.TrimPrefix(raw, []byte("\xef\xbb\xbf"))
 	data := holidayJson{}
 	if err := json.Unmarshal(raw, &data); err != nil {
-		return fmt.Errorf("failed to unmarshal: %w", err)
+		return nil, fmt.Errorf("failed to unmarshal: %w", err)
 	}
-	return nil
+
+	holidays := data.Content.AvailabilityConditions
+	ret := make([]time.Time, len(holidays))
+
+	for i, holiday := range holidays {
+		id := strings.TrimPrefix(holiday.ID, "CT:")
+		date, err := time.Parse("2006-01-02", id)
+		if err != nil {
+			return ret, fmt.Errorf("failed to parse time value %s: %w", id, err)
+		}
+		ret[i] = date
+	}
+
+	return ret, nil
 }
 
 // addDirectionToStation is a helper function to add the code to the proper
