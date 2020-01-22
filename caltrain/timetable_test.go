@@ -11,7 +11,7 @@ func TestGetTimetableForStation(t *testing.T) {
 	// Load the timetable for only the bullet schedule
 	ctx := context.Background()
 	c := New(fakeKey)
-	m := &MockAPIClient{}
+	m := &APIClientMock{}
 	m.GetResultFilePath = "testdata/bulletSchedule.json"
 	c.APIClient = m
 	err := c.UpdateTimeTable(ctx)
@@ -28,8 +28,8 @@ func TestGetTimetableForStation(t *testing.T) {
 	delete(c.timetable, Local)
 
 	tests := []struct {
-		station  string
-		dir      string
+		station  Station
+		dir      Direction
 		day      time.Weekday
 		expected int // length of array for now, should be []TimetableRouteJourney
 	}{
@@ -40,7 +40,7 @@ func TestGetTimetableForStation(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		name := tt.station + "/" + tt.dir + "/" + tt.day.String()
+		name := tt.station.String() + "/" + tt.dir.String() + "/" + tt.day.String()
 		t.Run(name, func(t *testing.T) {
 			code, err := c.getStationCode(StationHillsdale, tt.dir)
 			if err != nil {
@@ -64,7 +64,7 @@ func TestGetTrainRoutesBetweenStations(t *testing.T) {
 	// Load the timetable for only the bullet schedule
 	ctx := context.Background()
 	c := New(fakeKey)
-	m := &MockAPIClient{}
+	m := &APIClientMock{}
 	m.GetResultFilePath = "testdata/bulletSchedule.json"
 	c.APIClient = m
 	err := c.UpdateTimeTable(ctx)
@@ -81,8 +81,8 @@ func TestGetTrainRoutesBetweenStations(t *testing.T) {
 	delete(c.timetable, Local)
 
 	tests := []struct {
-		src  string
-		dst  string
+		src  Station
+		dst  Station
 		numN int // len of array for now
 		numS int
 		day  time.Weekday
@@ -96,7 +96,7 @@ func TestGetTrainRoutesBetweenStations(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		name := tt.src + "_" + tt.dst
+		name := tt.src.String() + "_" + tt.dst.String()
 		t.Run(name, func(t *testing.T) {
 			// test north
 			d1, err := c.getTrainRoutesBetweenStations(tt.src, tt.dst, tt.day)
@@ -127,7 +127,7 @@ func TestGetRouteForTrain(t *testing.T) {
 	// Load the timetable for only the bullet schedule
 	ctx := context.Background()
 	c := New(fakeKey)
-	m := &MockAPIClient{}
+	m := &APIClientMock{}
 	m.GetResultFilePath = "testdata/bulletSchedule.json"
 	c.APIClient = m
 	err := c.UpdateTimeTable(ctx)
@@ -148,8 +148,8 @@ func TestGetRouteForTrain(t *testing.T) {
 		line  string
 		err   error
 	}{
-		{train: "801", line: Bullet, err: nil},
-		{train: "324", line: Bullet, err: nil},
+		{train: "801", line: "Bullet", err: nil},
+		{train: "324", line: "Bullet", err: nil},
 		{train: "101", line: "", err: errors.New("")},
 	}
 
@@ -209,7 +209,7 @@ func TestIsInDayRef(t *testing.T) {
 func TestIsMyDirection(t *testing.T) {
 	tests := []struct {
 		str string
-		dir string
+		dir Direction
 		exp bool
 	}{
 		{str: "Bullet:N :Year Round Weekday (Weekday)", dir: North, exp: true},
@@ -221,7 +221,7 @@ func TestIsMyDirection(t *testing.T) {
 		{str: "Limited:S :Year Round Weekday (Weekday)", dir: North, exp: false},
 	}
 	for _, tt := range tests {
-		t.Run(tt.str+"/"+tt.dir, func(t *testing.T) {
+		t.Run(tt.str+"/"+tt.dir.String(), func(t *testing.T) {
 			val := isMyDirection(tt.str, tt.dir)
 			if val != tt.exp {
 				t.Fatalf("isMyDirection unexpectedly returned %t", val)

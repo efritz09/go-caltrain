@@ -51,13 +51,13 @@ func (a *APIClient511) Get(ctx context.Context, url string, query map[string]str
 	return body, nil
 }
 
-type MockAPIClient struct {
+type APIClientMock struct {
 	GetResult         []byte
 	GetResultFilePath string
 }
 
 // Get returns either the value in a file or a defined byte array
-func (a *MockAPIClient) Get(ctx context.Context, url string, query map[string]string) ([]byte, error) {
+func (a *APIClientMock) Get(ctx context.Context, url string, query map[string]string) ([]byte, error) {
 	if a.GetResultFilePath != "" {
 		f, err := os.Open(a.GetResultFilePath)
 		if err != nil {

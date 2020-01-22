@@ -13,7 +13,7 @@ var d2 = []byte{4, 5, 6}
 var d3 = []byte{7, 8, 9}
 
 func TestCache(t *testing.T) {
-	c := NewCache(DefaultCacheTimeout)
+	c := newCache(defaultCacheTimeout)
 
 	v1, ok := c.get("a")
 	if ok || v1 != nil {
@@ -54,7 +54,7 @@ func TestCache(t *testing.T) {
 }
 
 func TestExpiration(t *testing.T) {
-	c := NewCache(DefaultCacheTimeout)
+	c := newCache(defaultCacheTimeout)
 	mock := clock.NewMock()
 	c.clock = mock
 
@@ -62,7 +62,7 @@ func TestExpiration(t *testing.T) {
 	c.set("b", d2)
 
 	// increment the time to less than the default
-	mock.Add(DefaultCacheTimeout - 3*time.Second)
+	mock.Add(defaultCacheTimeout - 3*time.Second)
 	if v1, ok := c.get("a"); !ok {
 		t.Error("'a' was not found")
 	} else if !bytes.Equal(v1, d1) {
@@ -74,7 +74,7 @@ func TestExpiration(t *testing.T) {
 		t.Errorf("unexpected value for 'b': Expected %b, recieved %b", d2, v2)
 	}
 
-	mock.Add(DefaultCacheTimeout)
+	mock.Add(defaultCacheTimeout)
 
 	if v1, ok := c.get("a"); ok {
 		t.Error("'a' has not timed out")
@@ -89,7 +89,7 @@ func TestExpiration(t *testing.T) {
 }
 
 func TestReplacement(t *testing.T) {
-	c := NewCache(DefaultCacheTimeout)
+	c := newCache(defaultCacheTimeout)
 	mock := clock.NewMock()
 	c.clock = mock
 
@@ -97,7 +97,7 @@ func TestReplacement(t *testing.T) {
 	c.set("b", d2)
 
 	// increment the time to less than the default
-	mock.Add(DefaultCacheTimeout - 3*time.Second)
+	mock.Add(defaultCacheTimeout - 3*time.Second)
 	if v1, ok := c.get("a"); !ok {
 		t.Error("'a' was not found")
 	} else if !bytes.Equal(v1, d1) {
@@ -113,7 +113,7 @@ func TestReplacement(t *testing.T) {
 	c.set("b", d3)
 
 	// expire 'a', but not 'b'
-	mock.Add(DefaultCacheTimeout)
+	mock.Add(defaultCacheTimeout)
 	if v1, ok := c.get("a"); ok {
 		t.Error("'a' has not timed out")
 	} else if v1 != nil {
@@ -127,7 +127,7 @@ func TestReplacement(t *testing.T) {
 }
 
 func TestClearCache(t *testing.T) {
-	c := NewCache(DefaultCacheTimeout)
+	c := newCache(defaultCacheTimeout)
 
 	c.set("a", d1)
 	c.set("b", d2)
