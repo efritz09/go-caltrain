@@ -151,7 +151,7 @@ func TestGetTrainsBetweenStationsForWeekday(t *testing.T) {
 		{src: StationSanJose, dst: StationSanFrancisco, numN: 11, numS: 11, day: time.Monday, err: nil},
 		{src: StationSanJose, dst: StationSanFrancisco, numN: 2, numS: 2, day: time.Sunday, err: nil},
 		{src: StationHillsdale, dst: StationHaywardPark, numN: 0, numS: 0, day: time.Monday, err: nil},
-		{src: StationSanFrancisco, dst: "BadSation", numN: 0, numS: 0, day: time.Monday, err: errors.New("")},
+		{src: StationSanFrancisco, dst: 9999, numN: 0, numS: 0, day: time.Monday, err: errors.New("")},
 	}
 
 	for _, tt := range tests {
@@ -216,7 +216,7 @@ func TestGetTrainsBetweenStationsForDate(t *testing.T) {
 	}{
 		{name: "Weekday-No-Holiday", src: StationSanJose, dst: StationSanFrancisco, numN: 11, numS: 11, day: time.Date(2019, time.November, 22, 0, 0, 0, 0, time.UTC), err: nil},
 		{name: "Holiday", src: StationSanJose, dst: StationSanFrancisco, numN: 2, numS: 2, day: time.Date(2019, time.November, 23, 0, 0, 0, 0, time.UTC), err: nil},
-		{name: "Error", src: StationSanFrancisco, dst: "BadSation", numN: 0, numS: 0, day: time.Date(2019, time.November, 23, 0, 0, 0, 0, time.UTC), err: errors.New("")},
+		{name: "Error", src: StationSanFrancisco, dst: 999, numN: 0, numS: 0, day: time.Date(2019, time.November, 23, 0, 0, 0, 0, time.UTC), err: errors.New("")},
 	}
 
 	for _, tt := range tests {

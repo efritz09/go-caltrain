@@ -92,7 +92,7 @@ func TestGetTrainRoutesBetweenStations(t *testing.T) {
 		{src: StationSanJose, dst: StationSanFrancisco, numN: 11, numS: 11, day: time.Monday, err: nil},
 		{src: StationSanJose, dst: StationSanFrancisco, numN: 2, numS: 2, day: time.Sunday, err: nil},
 		{src: StationHillsdale, dst: StationHaywardPark, numN: 0, numS: 0, day: time.Monday, err: nil},
-		{src: StationSanFrancisco, dst: "BadSation", numN: 0, numS: 0, day: time.Monday, err: errors.New("")},
+		{src: StationSanFrancisco, dst: 999, numN: 0, numS: 0, day: time.Monday, err: errors.New("")},
 	}
 
 	for _, tt := range tests {

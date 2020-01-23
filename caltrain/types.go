@@ -43,21 +43,94 @@ type stationInfo struct {
 }
 
 // A Station specifies a recognized Caltrain station
-type Station string
+type Station int
+
+// This ordering is also the station order from north to south along the line
+const (
+	StationSanFrancisco Station = iota // "San Francisco"
+	Station22ndStreet                  // "22nd Street"
+	StationBayshore                    // "Bayshore"
+	StationSouthSF                     // "South San Francisco"
+	StationSanBruno                    // "San Bruno"
+	StationMillbrae                    // "Millbrae"
+	StationBroadway                    // "Broadway"
+	StationBurlingame                  // "Burlingame"
+	StationSanMateo                    // "San Mateo"
+	StationHaywardPark                 // "Hayward Park"
+	StationHillsdale                   // "Hillsdale"
+	StationBelmont                     // "Belmont"
+	StationSanCarlos                   // "San Carlos"
+	StationRedwoodCity                 // "Redwood City"
+	StationAtherton                    // "Atherton"
+	StationMenloPark                   // "Menlo Park"
+	StationPaloAlto                    // "Palo Alto"
+	StationStanford                    // "Stanford"
+	StationCalAve                      // "California Ave"
+	StationSanAntonio                  // "San Antonio"
+	StationMountainView                // "Mountain View"
+	StationSunnyvale                   // "Sunnyvale"
+	StationLawrence                    // "Lawrence"
+	StationSantaClara                  // "Santa Clara"
+	StationCollegePark                 // "College Park"
+	StationSanJose                     // "San Jose Diridon"
+	StationTamien                      // "Tamien"
+	StationCapitol                     // "Capitol"
+	StationBlossomHill                 // "Blossom Hill"
+	StationMorganHill                  // "Morgan Hill"
+	StationSanMartin                   // "San Martin"
+	StationGilroy                      // "Gilroy"
+)
+
+var stations = map[Station]string{
+	StationSanFrancisco: "San Francisco",
+	Station22ndStreet:   "22nd Street",
+	StationBayshore:     "Bayshore",
+	StationSouthSF:      "South San Francisco",
+	StationSanBruno:     "San Bruno",
+	StationMillbrae:     "Millbrae",
+	StationBroadway:     "Broadway",
+	StationBurlingame:   "Burlingame",
+	StationSanMateo:     "San Mateo",
+	StationHaywardPark:  "Hayward Park",
+	StationHillsdale:    "Hillsdale",
+	StationBelmont:      "Belmont",
+	StationSanCarlos:    "San Carlos",
+	StationRedwoodCity:  "Redwood City",
+	StationAtherton:     "Atherton",
+	StationMenloPark:    "Menlo Park",
+	StationPaloAlto:     "Palo Alto",
+	StationStanford:     "Stanford",
+	StationCalAve:       "California Ave",
+	StationSanAntonio:   "San Antonio",
+	StationMountainView: "Mountain View",
+	StationSunnyvale:    "Sunnyvale",
+	StationLawrence:     "Lawrence",
+	StationSantaClara:   "Santa Clara",
+	StationCollegePark:  "College Park",
+	StationSanJose:      "San Jose Diridon",
+	StationTamien:       "Tamien",
+	StationCapitol:      "Capitol",
+	StationBlossomHill:  "Blossom Hill",
+	StationMorganHill:   "Morgan Hill",
+	StationSanMartin:    "San Martin",
+	StationGilroy:       "Gilroy",
+}
 
 // String returns the string name of the station
 func (s Station) String() string {
-	return string(s)
+	return stations[s]
 }
 
 // ParseStation returns a Station from the string passed in. If the string is
 // not a recognized station, it will return an error
 func ParseStation(s string) (Station, error) {
-	st := Station(s)
-	if _, ok := stationOrder[st]; !ok {
-		return "", fmt.Errorf("%s is not a recognized station", s)
+	l := strings.ToLower(s)
+	for k, v := range stations {
+		if strings.ToLower(v) == l {
+			return k, nil
+		}
 	}
-	return st, nil
+	return 0, fmt.Errorf("%s is not a recognized station", s)
 }
 
 // A Direction specifies a Caltrain route direction (North or South)

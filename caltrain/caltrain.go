@@ -11,6 +11,14 @@ import (
 	"time"
 )
 
+const (
+	delayURL         = "http://api.511.org/transit/StopMonitoring"
+	stationsURL      = "http://api.511.org/transit/stops"
+	stationStatusURL = "http://api.511.org/transit/StopMonitoring"
+	timetableURL     = "http://api.511.org/transit/timetable"
+	holidaysURL      = "http://api.511.org/transit/holidays"
+)
+
 type Caltrain interface {
 	// Initialize makes the 511.org API calls to populate the stations and
 	// timetable. It calls UpdateStations, UpdateTimetable, and UpdateHolidays
@@ -289,29 +297,24 @@ func (c *CaltrainClient) GetDirectionFromSrcToDst(src, dst Station) (Direction, 
 	if src == dst {
 		return dir, fmt.Errorf("The stations are the same: %s to %s", src, dst)
 	}
-	s, ok := stationOrder[src]
-	if !ok {
-		return dir, fmt.Errorf("Unknown station: %s", src)
-	}
-	d, ok := stationOrder[dst]
-	if !ok {
-		return dir, fmt.Errorf("Unknown station: %s", dst)
-	}
-
-	if s < d {
-		return South, nil
-	} else if s > d {
+	// Station is an int, with the southern station having a larger value than
+	// the northern station
+	if src > dst {
 		return North, nil
+	} else if dst > src {
+		return South, nil
 	} else {
-		return dir, fmt.Errorf("Could not determine direction from %s to %s", src, dst)
+		return dir, fmt.Errorf("could not determine direction from %s to %s", src, dst)
 	}
 }
 
 // GetStations returns a slice of all recognized stations
 func (c *CaltrainClient) GetStations() []Station {
-	ret := []Station{}
-	for k := range stationOrder {
-		ret = append(ret, k)
+	ret := make([]Station, len(stations))
+	i := 0
+	for k := range stations {
+		ret[i] = k
+		i++
 	}
 	return ret
 }
@@ -457,7 +460,7 @@ func (c *CaltrainClient) getStationFromCode(code string) Station {
 			return name
 		}
 	}
-	return ""
+	return 0
 }
 
 // getDirFromChar returns the proper direction string for a given character.
