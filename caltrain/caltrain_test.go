@@ -14,15 +14,6 @@ const (
 )
 
 func TestGetStations(t *testing.T) {
-	ctx := context.Background()
-	c := New(fakeKey)
-	m := &APIClientMock{}
-	m.GetResultFilePath = "testdata/stations.json"
-	c.APIClient = m
-	if err := c.UpdateStations(ctx); err != nil {
-		t.Fatalf("Unexpected error loading stations: %v", err)
-	}
-
 	exp := map[Station]struct{}{
 		Station22ndStreet:   struct{}{},
 		StationAtherton:     struct{}{},
@@ -57,8 +48,7 @@ func TestGetStations(t *testing.T) {
 		StationSunnyvale:    struct{}{},
 		StationTamien:       struct{}{},
 	}
-
-	stations := c.GetStations()
+	stations := GetStations()
 	if len(exp) != len(stations) {
 		t.Fatalf("incorrect number of stations")
 	}
@@ -72,7 +62,7 @@ func TestGetStations(t *testing.T) {
 func TestGetTrainRoute(t *testing.T) {
 	ctx := context.Background()
 	c := New(fakeKey)
-	m := &APIClientMock{}
+	m := &apiClientMock{}
 	m.GetResultFilePath = "testdata/bulletSchedule.json"
 	c.APIClient = m
 	if err := c.UpdateTimeTable(ctx); err != nil {
@@ -124,7 +114,7 @@ func TestGetTrainRoute(t *testing.T) {
 func TestGetTrainsBetweenStationsForWeekday(t *testing.T) {
 	ctx := context.Background()
 	c := New(fakeKey)
-	m := &APIClientMock{}
+	m := &apiClientMock{}
 	m.GetResultFilePath = "testdata/bulletSchedule.json"
 	c.APIClient = m
 	if err := c.UpdateTimeTable(ctx); err != nil {
@@ -186,7 +176,7 @@ func TestGetTrainsBetweenStationsForWeekday(t *testing.T) {
 func TestGetTrainsBetweenStationsForDate(t *testing.T) {
 	ctx := context.Background()
 	c := New(fakeKey)
-	m := &APIClientMock{}
+	m := &apiClientMock{}
 	m.GetResultFilePath = "testdata/bulletSchedule.json"
 	c.APIClient = m
 	if err := c.UpdateTimeTable(ctx); err != nil {
@@ -264,7 +254,7 @@ func TestGetDelays(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			m := &APIClientMock{}
+			m := &apiClientMock{}
 			m.GetResultFilePath = tt.data
 			c.APIClient = m
 			d, err := c.GetDelays(ctx, defaultDelayThreshold)
@@ -284,7 +274,7 @@ func TestGetDelays(t *testing.T) {
 func TestGetDelaysCache(t *testing.T) {
 	ctx := context.Background()
 	c := New(fakeKey)
-	m := &APIClientMock{}
+	m := &apiClientMock{}
 	m.GetResultFilePath = "testdata/parseDelayData1.json"
 	c.APIClient = m
 	c.SetupCache(defaultCacheTimeout)
@@ -333,7 +323,7 @@ func TestGetDelaysCache(t *testing.T) {
 func TestGetStationStatus(t *testing.T) {
 	ctx := context.Background()
 	c := New(fakeKey)
-	m := &APIClientMock{}
+	m := &apiClientMock{}
 	m.GetResultFilePath = "testdata/stations.json"
 	c.APIClient = m
 	if err := c.UpdateStations(ctx); err != nil {
@@ -349,7 +339,7 @@ func TestGetStationStatus(t *testing.T) {
 func TestGetStationStatusCache(t *testing.T) {
 	ctx := context.Background()
 	c := New(fakeKey)
-	m := &APIClientMock{}
+	m := &apiClientMock{}
 	m.GetResultFilePath = "testdata/stations.json"
 	c.APIClient = m
 	if err := c.UpdateStations(ctx); err != nil {
@@ -428,7 +418,7 @@ func TestUpdateTimeTable(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := New(fakeKey)
-			m := &APIClientMock{}
+			m := &apiClientMock{}
 			m.GetResultFilePath = tt.filepath
 			c.APIClient = m
 			err := c.UpdateTimeTable(ctx)
@@ -443,14 +433,14 @@ func TestUpdateTimeTable(t *testing.T) {
 func TestGetStationTimetable(t *testing.T) {
 	ctx := context.Background()
 	c := New(fakeKey)
-	m := &APIClientMock{}
+	m := &apiClientMock{}
 	m.GetResultFilePath = "testdata/stations.json"
 	c.APIClient = m
 	if err := c.UpdateStations(ctx); err != nil {
 		t.Fatalf("Unexpected error loading stations: %v", err)
 	}
 
-	_, err := c.GetStationTimetable(StationHillsdale, North, time.Monday)
+	_, err := c.getStationTimetable(StationHillsdale, North, time.Monday)
 	if err != nil {
 		t.Fatalf("Unexpected error: %v", err)
 	}
@@ -460,7 +450,7 @@ func TestGetStationTimetable(t *testing.T) {
 func TestUpdateHolidays(t *testing.T) {
 	ctx := context.Background()
 	c := New(fakeKey)
-	m := &APIClientMock{}
+	m := &apiClientMock{}
 	m.GetResultFilePath = "testdata/holiday.json"
 	c.APIClient = m
 	if err := c.UpdateHolidays(ctx); err != nil {
@@ -471,7 +461,7 @@ func TestUpdateHolidays(t *testing.T) {
 func TestIsHoliday(t *testing.T) {
 	ctx := context.Background()
 	c := New(fakeKey)
-	m := &APIClientMock{}
+	m := &apiClientMock{}
 	m.GetResultFilePath = "testdata/holiday.json"
 	c.APIClient = m
 	if err := c.UpdateHolidays(ctx); err != nil {

@@ -8,17 +8,20 @@ import (
 	"os"
 )
 
+// APIClient is an interface for making requests
 type APIClient interface {
 	Get(ctx context.Context, url string, query map[string]string) ([]byte, error)
 }
 
+// APIClient511 implements APIClient with 511.org requests
 type APIClient511 struct{}
 
+// NewClient returns an instance of the APIClient511 struct
 func NewClient() *APIClient511 {
 	return &APIClient511{}
 }
 
-// Get returns the body of the request
+// Get makes a GET request to the 511.org API and returns the request body
 func (a *APIClient511) Get(ctx context.Context, url string, query map[string]string) ([]byte, error) {
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
@@ -51,13 +54,13 @@ func (a *APIClient511) Get(ctx context.Context, url string, query map[string]str
 	return body, nil
 }
 
-type APIClientMock struct {
+type apiClientMock struct {
 	GetResult         []byte
 	GetResultFilePath string
 }
 
 // Get returns either the value in a file or a defined byte array
-func (a *APIClientMock) Get(ctx context.Context, url string, query map[string]string) ([]byte, error) {
+func (a *apiClientMock) Get(ctx context.Context, url string, query map[string]string) ([]byte, error) {
 	if a.GetResultFilePath != "" {
 		f, err := os.Open(a.GetResultFilePath)
 		if err != nil {

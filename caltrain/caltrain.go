@@ -1,5 +1,21 @@
 // Package caltrain provides an API for querying Caltrain timetables and live
 // train statuses using the API provided by https://511.org/
+//
+// Really need to check formatting
+//
+// Features:
+// - Getting a slice of delayed trains across the fleet
+// - Getting a slice of upcoming trains for a given station with their live
+// expected arrival times reported
+// - Getting the train routes between stations
+// - Caching to reduce 511.org API calls
+//
+// Caching:
+// The free API keys provided by 511.org have a 60 request/hour limit. To help
+// prevent going over that limit, a simple cache is available that will keep
+// the response for a given request for the time specified, using SetupCache.
+//
+// Check miekg/dns for how they did the example thing
 package caltrain
 
 import (
@@ -19,6 +35,9 @@ const (
 	holidaysURL      = "http://api.511.org/transit/holidays"
 )
 
+// Caltrain is an interface for querying information about the caltrain
+// schedule, getting route information between stations, or getting live train
+// status updates
 type Caltrain interface {
 	// Initialize makes the 511.org API calls to populate the stations and
 	// timetable. It calls UpdateStations, UpdateTimetable, and UpdateHolidays
@@ -70,8 +89,9 @@ type Caltrain interface {
 	IsHoliday(time.Time) bool
 }
 
+// CaltrainClient implements Caltrain
 type CaltrainClient struct {
-	timetable  map[Line][]TimetableFrame // map of line type to slice of service journeys
+	timetable  map[Line][]timetableFrame // map of line type to slice of service journeys
 	dayService map[string][]string       // map of id to days of the week that the id corresponds to
 	ttLock     sync.RWMutex              // lock in case someone tries to access the timetable during and update
 	stations   map[Station]*stationInfo  // station information map
@@ -85,10 +105,11 @@ type CaltrainClient struct {
 	APIClient APIClient // API client for making caltrain queries. Default APIClient511
 }
 
+// New returns an instantiated CaltrainClient struct
 func New(key string) *CaltrainClient {
 	tz, _ := time.LoadLocation("America/Los_Angeles")
 	return &CaltrainClient{
-		timetable:  make(map[Line][]TimetableFrame),
+		timetable:  make(map[Line][]timetableFrame),
 		dayService: make(map[string][]string),
 		key:        key,
 		tz:         tz,
@@ -290,35 +311,6 @@ func (c *CaltrainClient) GetTrainsBetweenStationsForDate(ctx context.Context, sr
 	return c.GetTrainsBetweenStationsForWeekday(ctx, src, dst, date.Weekday())
 }
 
-// GetDirectionFromSrcToDst returns North or South given a src and dst station
-// TODO: unit test
-func (c *CaltrainClient) GetDirectionFromSrcToDst(src, dst Station) (Direction, error) {
-	var dir Direction
-	if src == dst {
-		return dir, fmt.Errorf("The stations are the same: %s to %s", src, dst)
-	}
-	// Station is an int, with the southern station having a larger value than
-	// the northern station
-	if src > dst {
-		return North, nil
-	} else if dst > src {
-		return South, nil
-	} else {
-		return dir, fmt.Errorf("could not determine direction from %s to %s", src, dst)
-	}
-}
-
-// GetStations returns a slice of all recognized stations
-func (c *CaltrainClient) GetStations() []Station {
-	ret := make([]Station, len(stations))
-	i := 0
-	for k := range stations {
-		ret[i] = k
-		i++
-	}
-	return ret
-}
-
 // IsHoliday returns true if the date passed in is a holiday
 func (c *CaltrainClient) IsHoliday(date time.Time) bool {
 	d := date.Truncate(24 * time.Hour)
@@ -332,10 +324,10 @@ func (c *CaltrainClient) IsHoliday(date time.Time) bool {
 	return false
 }
 
-// GetStationTimetable returns the routes that stop at a given station in the
+// getStationTimetable returns the routes that stop at a given station in the
 // given direction
 // TODO: export this in the interface???
-func (c *CaltrainClient) GetStationTimetable(st Station, dir Direction, weekday time.Weekday) ([]TimetableRouteJourney, error) {
+func (c *CaltrainClient) getStationTimetable(st Station, dir Direction, weekday time.Weekday) ([]timetableRouteJourney, error) {
 	c.ttLock.RLock()
 	defer c.ttLock.RUnlock()
 
@@ -395,7 +387,7 @@ func (c *CaltrainClient) getRouteCodes(src, dst Station) (string, string, error)
 		return "", "", fmt.Errorf("unknown station %s", dst)
 	}
 
-	dir, err := c.GetDirectionFromSrcToDst(src, dst)
+	dir, err := GetDirectionFromSrcToDst(src, dst)
 	if err != nil {
 		return "", "", err
 	}
@@ -408,8 +400,8 @@ func (c *CaltrainClient) getRouteCodes(src, dst Station) (string, string, error)
 	}
 }
 
-// journeyToRoute converts a TimetableRouteJourney into a Route
-func (c *CaltrainClient) journeyToRoute(r TimetableRouteJourney) (*Route, error) {
+// journeyToRoute converts a timetableRouteJourney into a Route
+func (c *CaltrainClient) journeyToRoute(r timetableRouteJourney) (*Route, error) {
 	line, _ := ParseLine(r.Line)
 
 	route := &Route{
@@ -448,6 +440,35 @@ func (c *CaltrainClient) journeyToRoute(r TimetableRouteJourney) (*Route, error)
 		route.Stops = append(route.Stops, t)
 	}
 	return route, nil
+}
+
+// GetDirectionFromSrcToDst returns North or South given a source and
+// destination station
+func GetDirectionFromSrcToDst(src, dst Station) (Direction, error) {
+	var dir Direction
+	if src == dst {
+		return dir, fmt.Errorf("The stations are the same: %s to %s", src, dst)
+	}
+	// Station is an int, with the southern station having a larger value than
+	// the northern station
+	if src > dst {
+		return North, nil
+	} else if dst > src {
+		return South, nil
+	} else {
+		return dir, fmt.Errorf("could not determine direction from %s to %s", src, dst)
+	}
+}
+
+// GetStations returns a slice of all recognized stations
+func GetStations() []Station {
+	ret := make([]Station, len(stations))
+	i := 0
+	for k := range stations {
+		ret[i] = k
+		i++
+	}
+	return ret
 }
 
 // getStationFromCode returns the station name associated with the code

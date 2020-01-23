@@ -11,7 +11,7 @@ func TestGetTimetableForStation(t *testing.T) {
 	// Load the timetable for only the bullet schedule
 	ctx := context.Background()
 	c := New(fakeKey)
-	m := &APIClientMock{}
+	m := &apiClientMock{}
 	m.GetResultFilePath = "testdata/bulletSchedule.json"
 	c.APIClient = m
 	err := c.UpdateTimeTable(ctx)
@@ -31,7 +31,7 @@ func TestGetTimetableForStation(t *testing.T) {
 		station  Station
 		dir      Direction
 		day      time.Weekday
-		expected int // length of array for now, should be []TimetableRouteJourney
+		expected int // length of array for now, should be []timetableRouteJourney
 	}{
 		{station: StationHillsdale, dir: North, day: time.Monday, expected: 5},
 		{station: StationHillsdale, dir: North, day: time.Sunday, expected: 2},
@@ -64,7 +64,7 @@ func TestGetTrainRoutesBetweenStations(t *testing.T) {
 	// Load the timetable for only the bullet schedule
 	ctx := context.Background()
 	c := New(fakeKey)
-	m := &APIClientMock{}
+	m := &apiClientMock{}
 	m.GetResultFilePath = "testdata/bulletSchedule.json"
 	c.APIClient = m
 	err := c.UpdateTimeTable(ctx)
@@ -127,7 +127,7 @@ func TestGetRouteForTrain(t *testing.T) {
 	// Load the timetable for only the bullet schedule
 	ctx := context.Background()
 	c := New(fakeKey)
-	m := &APIClientMock{}
+	m := &apiClientMock{}
 	m.GetResultFilePath = "testdata/bulletSchedule.json"
 	c.APIClient = m
 	err := c.UpdateTimeTable(ctx)

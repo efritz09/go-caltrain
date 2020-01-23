@@ -45,7 +45,8 @@ type stationInfo struct {
 // A Station specifies a recognized Caltrain station
 type Station int
 
-// This ordering is also the station order from north to south along the line
+// The constant ordering is also the station order from north to south along
+// the line
 const (
 	StationSanFrancisco Station = iota // "San Francisco"
 	Station22ndStreet                  // "22nd Street"
@@ -116,7 +117,8 @@ var stations = map[Station]string{
 	StationGilroy:       "Gilroy",
 }
 
-// String returns the string name of the station
+// String returns the string name of the station. String values are show in
+// the Station constant definition
 func (s Station) String() string {
 	return stations[s]
 }
@@ -137,8 +139,8 @@ func ParseStation(s string) (Station, error) {
 type Direction int
 
 const (
-	North Direction = iota
-	South
+	North Direction = iota // "North"
+	South                  // "South"
 )
 
 var directions = [...]string{
@@ -146,7 +148,8 @@ var directions = [...]string{
 	"South",
 }
 
-// String returns the string name of the direction
+// String returns the string name of the direction. String values are show in
+// the Direction constant definition
 func (d Direction) String() string {
 	if North <= d && d <= South {
 		return directions[d]
@@ -171,9 +174,9 @@ func ParseDirection(d string) (Direction, error) {
 type Line int
 
 const (
-	Bullet Line = iota
-	Limited
-	Local
+	Bullet  Line = iota // "Bullet"
+	Limited             // "Limited"
+	Local               // "Local"
 )
 
 var lines = [...]string{
@@ -182,7 +185,8 @@ var lines = [...]string{
 	"Local",
 }
 
-// String returns the string name of the line
+// String returns the string name of the line. String values are show in the
+// Line constant definition
 func (l Line) String() string {
 	if Bullet <= l && l <= Local {
 		return lines[l]

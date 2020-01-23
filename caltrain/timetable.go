@@ -11,8 +11,8 @@ import (
 
 // getTimetableForStation returns a list of trains that stop at a given station
 // code and directions
-func (c *CaltrainClient) getTimetableForStation(stationCode string, dir Direction, day time.Weekday) ([]TimetableRouteJourney, error) {
-	allJourneys := []TimetableRouteJourney{}
+func (c *CaltrainClient) getTimetableForStation(stationCode string, dir Direction, day time.Weekday) ([]timetableRouteJourney, error) {
+	allJourneys := []timetableRouteJourney{}
 
 	weekday := strings.ToLower(day.String())
 
@@ -40,7 +40,7 @@ func (c *CaltrainClient) getTimetableForStation(stationCode string, dir Directio
 
 // getRouteForTrain returns a TimetableRouteJourney and the route's line for
 // the given train number
-func (c *CaltrainClient) getRouteForTrain(trainNum string) (TimetableRouteJourney, error) {
+func (c *CaltrainClient) getRouteForTrain(trainNum string) (timetableRouteJourney, error) {
 	// TODO: the train number has metadata on the line type, and the day, it
 	// could save time to use that to limit the search
 	for line, ttArray := range c.timetable {
@@ -54,12 +54,12 @@ func (c *CaltrainClient) getRouteForTrain(trainNum string) (TimetableRouteJourne
 			}
 		}
 	}
-	return TimetableRouteJourney{}, fmt.Errorf("No routes found for train %s", trainNum)
+	return timetableRouteJourney{}, fmt.Errorf("No routes found for train %s", trainNum)
 }
 
 // getTrainRoutesBetweenStations returns a slice of routes from src to dst on a
 // given weekday
-func (c *CaltrainClient) getTrainRoutesBetweenStations(src, dst Station, day time.Weekday) ([]TimetableRouteJourney, error) {
+func (c *CaltrainClient) getTrainRoutesBetweenStations(src, dst Station, day time.Weekday) ([]timetableRouteJourney, error) {
 	sCode, dCode, err := c.getRouteCodes(src, dst)
 	fmt.Println(src, sCode, dst, dCode)
 	if err != nil {
@@ -68,7 +68,7 @@ func (c *CaltrainClient) getTrainRoutesBetweenStations(src, dst Station, day tim
 
 	weekday := strings.ToLower(day.String())
 
-	routes := []TimetableRouteJourney{}
+	routes := []timetableRouteJourney{}
 	for line, ttArray := range c.timetable {
 		for _, frame := range ttArray {
 			// Check the day reference
@@ -110,7 +110,7 @@ func isMyDirection(frame string, dir Direction) bool {
 }
 
 // TODO: unit test this
-func isStationInJourney(st string, journey TimetableRouteJourney) bool {
+func isStationInJourney(st string, journey timetableRouteJourney) bool {
 	for _, call := range journey.Calls.Call {
 		if call.ScheduledStopPointRef.Ref == st {
 			return true
@@ -120,7 +120,7 @@ func isStationInJourney(st string, journey TimetableRouteJourney) bool {
 }
 
 // TODO: unit test this
-func areStationsInJourney(src, dst string, journey TimetableRouteJourney) bool {
+func areStationsInJourney(src, dst string, journey timetableRouteJourney) bool {
 	srcT := false
 	dstT := false
 	for _, call := range journey.Calls.Call {

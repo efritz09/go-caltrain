@@ -5,13 +5,13 @@ type stationJson struct {
 		ResponseTimestamp string `json:"ResponseTimestamp"`
 		DataObjects       struct {
 			ID                 string               `json:"id"`
-			ScheduledStopPoint []ScheduledStopPoint `json:"ScheduledStopPoint"`
+			ScheduledStopPoint []scheduledStopPoint `json:"ScheduledStopPoint"`
 			StopAreas          interface{}          `json:"stopAreas"`
 		} `json:"dataObjects"`
 	} `json:"Contents"`
 }
 
-type ScheduledStopPoint struct {
+type scheduledStopPoint struct {
 	ID       string `json:"id"`
 	Name     string `json:"Name"`
 	Location struct {
