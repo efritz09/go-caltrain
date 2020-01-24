@@ -41,7 +41,21 @@ The free API keys provided by 511.org have a 60 request/hour limit. To help
 prevent going over that limit, a simple cache is available that will keep
 the response for a given request for the time specified, using SetupCache. If a
 request is denied due to the limit being reached, the calling method will
-return a <figure out custom error here> error
+return an APILimitError
+
+API Errors
+
+All calls that use the APIClient have the possibility of returning an APIError
+or an APILimitError. If caching is implemented and the APIClient call returns
+one of these errors, the method will return the stale cached value in addition
+to the error if it exists for the user to use if desired. If caching is not
+implemented or the request has not been cached, the value will be nil.
+
+TODO
+
+The whole API error cache thing is not implemented. It may be useful to add a
+timestamp value to the return structs so that the caching thing can let the
+user know how old the cached value is.
 
 */
 package caltrain

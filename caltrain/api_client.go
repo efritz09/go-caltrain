@@ -8,6 +8,30 @@ import (
 	"os"
 )
 
+var (
+	// APILimitError is returned on a failed API request when the failure
+	// reason is that the number of requests has exceeded the rate limit
+	APILimitError = &apiLimitError{}
+
+	// APIError is returned on a failed API request for any reason other
+	// than too many requests
+	APIError = &apiError{}
+)
+
+type apiLimitError struct{}
+
+func (a *apiLimitError) Error() string {
+	return "API call limit to 511.org has been reached"
+}
+
+type apiError struct {
+	status string
+}
+
+func (a *apiError) Error() string {
+	return fmt.Sprintf("API error: %s", a.status)
+}
+
 // APIClient is an interface for making requests
 type APIClient interface {
 	Get(ctx context.Context, url string, query map[string]string) ([]byte, error)
@@ -42,10 +66,22 @@ func (a *APIClient511) Get(ctx context.Context, url string, query map[string]str
 	if err != nil {
 		return nil, err
 	}
-	// TODO: check status codes first?
+
+	if resp.StatusCode != http.StatusOK {
+		// return a specific error for too many requests
+		if resp.StatusCode == http.StatusTooManyRequests {
+			return nil, &apiLimitError{}
+		} else {
+			return nil, &apiError{status: resp.Status}
+		}
+	}
 
 	// TODO: return the number of tries left? It exists in the header under
-	// the Ratelimit-Limit and Ratelimit-Remaining keys
+	// the Ratelimit-Limit and Ratelimit-Remaining keys. The api appears to
+	// have be volatile on how many remaining calls can be made
+	//
+	// remain, err := strconv.Atoi(resp.Header["Ratelimit-Remaining"][0])
+
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read body: %w", err)
