@@ -1,21 +1,3 @@
-// Package caltrain provides an API for querying Caltrain timetables and live
-// train statuses using the API provided by https://511.org/
-//
-// Really need to check formatting
-//
-// Features:
-// - Getting a slice of delayed trains across the fleet
-// - Getting a slice of upcoming trains for a given station with their live
-// expected arrival times reported
-// - Getting the train routes between stations
-// - Caching to reduce 511.org API calls
-//
-// Caching:
-// The free API keys provided by 511.org have a 60 request/hour limit. To help
-// prevent going over that limit, a simple cache is available that will keep
-// the response for a given request for the time specified, using SetupCache.
-//
-// Check miekg/dns for how they did the example thing
 package caltrain
 
 import (
