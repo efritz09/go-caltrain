@@ -24,7 +24,7 @@ func (c *CaltrainMock) GetDelays(ctx context.Context, d time.Duration) ([]TrainS
 }
 
 // GetDelays returns the GetStationStatusFunc if it exists. Default nil, nil
-func (c *CaltrainMock) GetStationStatus(ctx context.Context, stationName string, direction string) ([]TrainStatus, error) {
+func (c *CaltrainMock) GetStationStatus(ctx context.Context, stationName Station, direction Direction) ([]TrainStatus, error) {
 	if c.GetStationStatusFunc != nil {
 		return c.GetStationStatusFunc(ctx, stationName, direction)
 	}
@@ -33,7 +33,7 @@ func (c *CaltrainMock) GetStationStatus(ctx context.Context, stationName string,
 
 // GetDelays returns the GetTrainsBetweenStationsForWeekdayFunc if it exists.
 // Default nil, nil
-func (c *CaltrainMock) GetTrainsBetweenStationsForWeekday(ctx context.Context, src, dst string, weekday time.Weekday) ([]*Route, error) {
+func (c *CaltrainMock) GetTrainsBetweenStationsForWeekday(ctx context.Context, src, dst Station, weekday time.Weekday) ([]*Route, error) {
 	if c.GetTrainsBetweenStationsForWeekdayFunc != nil {
 		return c.GetTrainsBetweenStationsForWeekdayFunc(ctx, src, dst, weekday)
 	}
@@ -42,7 +42,7 @@ func (c *CaltrainMock) GetTrainsBetweenStationsForWeekday(ctx context.Context, s
 
 // GetDelays returns the GetTrainsBetweenStationsForDateFunc if it exists.
 // Default nil, nil
-func (c *CaltrainMock) GetTrainsBetweenStationsForDate(ctx context.Context, src, dst string, date time.Time) ([]*Route, error) {
+func (c *CaltrainMock) GetTrainsBetweenStationsForDate(ctx context.Context, src, dst Station, date time.Time) ([]*Route, error) {
 	if c.GetTrainsBetweenStationsForDateFunc != nil {
 		return c.GetTrainsBetweenStationsForDateFunc(ctx, src, dst, date)
 	}
