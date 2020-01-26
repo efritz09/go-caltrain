@@ -60,13 +60,6 @@ type Caltrain interface {
 	// in the correct time zone
 	GetTrainsBetweenStationsForDate(ctx context.Context, src, dst Station, date time.Time) ([]*Route, error)
 
-	// GetDirectionFromSrcToDst returns the direction the train would go to get
-	// from src to dst. Value is either North or South
-	GetDirectionFromSrcToDst(src, dst Station) (Direction, error)
-
-	// GetStations returns a slice of all known stations in alphanumeric order
-	GetStations() []Station
-
 	// IsHoliday returns true if the date passed in is a holiday
 	IsHoliday(time.Time) bool
 }
@@ -424,8 +417,21 @@ func (c *CaltrainClient) journeyToRoute(r timetableRouteJourney) (*Route, error)
 	return route, nil
 }
 
-// GetDirectionFromSrcToDst returns North or South given a source and
-// destination station
+// getStationFromCode returns the station name associated with the code
+// TODO: unit test this
+func (c *CaltrainClient) getStationFromCode(code string) Station {
+	c.sLock.RLock()
+	defer c.sLock.RUnlock()
+	for name, st := range c.stations {
+		if st.northCode == code || st.southCode == code {
+			return name
+		}
+	}
+	return 0
+}
+
+// GetDirectionFromSrcToDst returns the direction the train would go to get
+// from src to dst. Value is either North or South
 func GetDirectionFromSrcToDst(src, dst Station) (Direction, error) {
 	var dir Direction
 	if src == dst {
@@ -442,7 +448,8 @@ func GetDirectionFromSrcToDst(src, dst Station) (Direction, error) {
 	}
 }
 
-// GetStations returns a slice of all recognized stations
+// GetStations returns a slice of all recognized stations in order from North
+// to South
 func GetStations() []Station {
 	ret := make([]Station, len(stations))
 	i := 0
@@ -451,19 +458,6 @@ func GetStations() []Station {
 		i++
 	}
 	return ret
-}
-
-// getStationFromCode returns the station name associated with the code
-// TODO: unit test this
-func (c *CaltrainClient) getStationFromCode(code string) Station {
-	c.sLock.RLock()
-	defer c.sLock.RUnlock()
-	for name, st := range c.stations {
-		if st.northCode == code || st.southCode == code {
-			return name
-		}
-	}
-	return 0
 }
 
 // getDirFromChar returns the proper direction string for a given character.
