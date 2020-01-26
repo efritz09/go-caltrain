@@ -17,54 +17,9 @@ const (
 	holidaysURL      = "http://api.511.org/transit/holidays"
 )
 
-// Caltrain is an interface for querying information about the caltrain
-// schedule, getting route information between stations, or getting live train
+// CaltrainClient provides the means for querying information about caltrain
+// schedules, getting route information between stations, or getting live train
 // status updates
-type Caltrain interface {
-	// Initialize makes the 511.org API calls to populate the stations and
-	// timetable. It calls UpdateStations, UpdateTimetable, and UpdateHolidays
-	Initialize(ctx context.Context) error
-
-	// SetupCache enables the use of API caching to prevent going over the API
-	// limit. Users set the caching expire time.
-	SetupCache(cacheTimeout time.Duration)
-
-	// UpdateStations makes an API call to refresh the station information.
-	// This should only need to be called during Initialization.
-	UpdateStations(ctx context.Context) error
-
-	// UpdateTimeTable makes an API call to refresh the timetable data. This
-	// should be called periodically to ensure correct information.
-	UpdateTimeTable(cxt context.Context) error
-
-	// UpdateHolidays makes an API call to refresh the holiday data. This can
-	// be updated multiple times a year so this should be called periodically.
-	UpdateHolidays(cxt context.Context) error
-
-	// GetDelays makes an API call and returns a slice of TrainStatus who's
-	// delay into their next station is greater than the time.Duration argument
-	GetDelays(ctx context.Context, delayThreshold time.Duration) ([]TrainStatus, error)
-
-	// GetStationStatus makes an API call and returns a slice of TrainsStatus
-	// who have a status reported for the given station and direction.
-	GetStationStatus(ctx context.Context, stationName Station, dir Direction) ([]TrainStatus, error)
-
-	// GetTrainsBetweenStationsForWeekday returns a slice of Routes that travel
-	// from src to dst on the given weekday. It uses the cached timetable and
-	// does not make an API call
-	GetTrainsBetweenStationsForWeekday(ctx context.Context, src, dst Station, weekday time.Weekday) ([]*Route, error)
-
-	// GetTrainsBetweenStationsForDate returns a slice of Routes that travel
-	// from src to dst for a given date. It uses the cached timetable and does
-	// not make an API call. It checks against the known holidays. Date must be
-	// in the correct time zone
-	GetTrainsBetweenStationsForDate(ctx context.Context, src, dst Station, date time.Time) ([]*Route, error)
-
-	// IsHoliday returns true if the date passed in is a holiday
-	IsHoliday(time.Time) bool
-}
-
-// CaltrainClient implements Caltrain
 type CaltrainClient struct {
 	timetable  map[Line][]timetableFrame // map of line type to slice of service journeys
 	dayService map[string][]string       // map of id to days of the week that the id corresponds to
@@ -92,8 +47,8 @@ func New(key string) *CaltrainClient {
 	}
 }
 
-// Initialize calls the methods to get the timetable and stations, and any
-// other required info before the package can run properly
+// Initialize makes the 511.org API calls to populate the stations and
+// timetable. It calls UpdateStations, UpdateTimetable, and UpdateHolidays
 func (c *CaltrainClient) Initialize(ctx context.Context) error {
 	if err := c.UpdateStations(ctx); err != nil {
 		return err
@@ -104,7 +59,8 @@ func (c *CaltrainClient) Initialize(ctx context.Context) error {
 	return c.UpdateTimeTable(ctx)
 }
 
-// UpdateTimeTable should be called once per day to update the day's timetable
+// UpdateTimeTable makes an API call to refresh the timetable data. This
+// should be called periodically to ensure correct information.
 func (c *CaltrainClient) UpdateTimeTable(ctx context.Context) error {
 	c.ttLock.Lock()
 	defer c.ttLock.Unlock()
@@ -137,7 +93,8 @@ func (c *CaltrainClient) UpdateTimeTable(ctx context.Context) error {
 	return nil
 }
 
-// UpdateStations calls the api to get a station list
+// UpdateStations makes an API call to refresh the station information.
+// This should only need to be called during Initialization.
 func (c *CaltrainClient) UpdateStations(ctx context.Context) error {
 	c.sLock.Lock()
 	defer c.sLock.Unlock()
@@ -159,7 +116,8 @@ func (c *CaltrainClient) UpdateStations(ctx context.Context) error {
 	return nil
 }
 
-// UpdateHolidays calls the api to get upcoming holidays
+// UpdateHolidays makes an API call to refresh the holiday data. This can
+// be updated multiple times a year so this should be called periodically.
 func (c *CaltrainClient) UpdateHolidays(ctx context.Context) error {
 	c.sLock.Lock()
 	defer c.sLock.Unlock()
@@ -181,13 +139,15 @@ func (c *CaltrainClient) UpdateHolidays(ctx context.Context) error {
 	return nil
 }
 
-// SetupCache defines enables use of endpoint caching
+// SetupCache enables the use of API caching to prevent going over the API
+// limit. Users set the caching expire time.
 func (c *CaltrainClient) SetupCache(expire time.Duration) {
 	c.cache = newCache(expire)
 	c.useCache = true
 }
 
-// GetDelays returns a list of delayed trains and their information
+// GetDelays makes an API call and returns a slice of TrainStatus who's
+// delay into their next station is greater than the time.Duration argument
 func (c *CaltrainClient) GetDelays(ctx context.Context, threshold time.Duration) ([]TrainStatus, error) {
 	query := map[string]string{
 		"agency":  "CT",
@@ -218,8 +178,8 @@ func (c *CaltrainClient) GetDelays(ctx context.Context, threshold time.Duration)
 	return trains, nil
 }
 
-// GetStationStatus returns the status of upcoming trains for a given station
-// and direction. Direction must be either caltrain.North or caltrain.South
+// GetStationStatus makes an API call and returns a slice of TrainsStatus
+// who have a status reported for the given station and direction.
 func (c *CaltrainClient) GetStationStatus(ctx context.Context, stationName Station, direction Direction) ([]TrainStatus, error) {
 	code, err := c.getStationCode(stationName, direction)
 	if err != nil {
@@ -256,7 +216,9 @@ func (c *CaltrainClient) GetStationStatus(ctx context.Context, stationName Stati
 	return trains, nil
 }
 
-// GetTrainsBetweenStationsForWeekday a slice of routes from src to dst
+// GetTrainsBetweenStationsForWeekday returns a slice of Routes that travel
+// from src to dst on the given weekday. It uses the cached timetable and
+// does not make an API call
 func (c *CaltrainClient) GetTrainsBetweenStationsForWeekday(ctx context.Context, src, dst Station, weekday time.Weekday) ([]*Route, error) {
 	c.ttLock.RLock()
 	defer c.ttLock.RUnlock()
@@ -277,8 +239,10 @@ func (c *CaltrainClient) GetTrainsBetweenStationsForWeekday(ctx context.Context,
 	return routes, nil
 }
 
-// GetTrainsBetweenStationsForDate checks if the date is a holiday, then calls
-// GetTrainsBetweenStationsForWeekday with the appropriate weekday value
+// GetTrainsBetweenStationsForDate returns a slice of Routes that travel
+// from src to dst for a given date. It uses the cached timetable and does
+// not make an API call. It checks against the known holidays. Date must be
+// in the correct time zone
 func (c *CaltrainClient) GetTrainsBetweenStationsForDate(ctx context.Context, src, dst Station, date time.Time) ([]*Route, error) {
 	if c.IsHoliday(date) {
 		return c.GetTrainsBetweenStationsForWeekday(ctx, src, dst, time.Sunday)
