@@ -86,6 +86,7 @@ func (a *APIClient511) Get(ctx context.Context, url string, query map[string]str
 	if err != nil {
 		return nil, fmt.Errorf("failed to read body: %w", err)
 	}
+	resp.Body.Close()
 
 	return body, nil
 }
