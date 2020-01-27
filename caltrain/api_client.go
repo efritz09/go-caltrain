@@ -19,11 +19,11 @@ func (a *APILimitError) Error() string {
 // APIError is returned on a failed API request for any reason other
 // than too many requests
 type APIError struct {
-	status string
+	Status string
 }
 
 func (a *APIError) Error() string {
-	return fmt.Sprintf("API error: %s", a.status)
+	return fmt.Sprintf("API error: %s", a.Status)
 }
 
 // APIClient is an interface for making requests
@@ -66,7 +66,7 @@ func (a *APIClient511) Get(ctx context.Context, url string, query map[string]str
 		if resp.StatusCode == http.StatusTooManyRequests {
 			return nil, &APILimitError{}
 		} else {
-			return nil, &APIError{status: resp.Status}
+			return nil, &APIError{Status: resp.Status}
 		}
 	}
 
