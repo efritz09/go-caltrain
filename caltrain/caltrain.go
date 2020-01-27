@@ -265,8 +265,7 @@ func (c *CaltrainClient) IsHoliday(date time.Time) bool {
 
 // getStationTimetable returns the routes that stop at a given station in the
 // given direction
-// TODO: export this in the interface???
-func (c *CaltrainClient) getStationTimetable(st Station, dir Direction, weekday time.Weekday) ([]timetableRouteJourney, error) {
+func (c *CaltrainClient) GetStationTimetable(st Station, dir Direction, date time.Time) ([]timetableRouteJourney, error) {
 	c.ttLock.RLock()
 	defer c.ttLock.RUnlock()
 
@@ -274,11 +273,10 @@ func (c *CaltrainClient) getStationTimetable(st Station, dir Direction, weekday 
 	if err != nil {
 		return nil, err
 	}
-
-	// TODO: holiday?
-
-	return c.getTimetableForStation(code, dir, weekday)
-
+	if c.IsHoliday(date) {
+		return c.getTimetableForStation(code, dir, time.Sunday)
+	}
+	return c.getTimetableForStation(code, dir, date.Weekday())
 }
 
 // GetTrainRoute returns the Route struct for a given train
