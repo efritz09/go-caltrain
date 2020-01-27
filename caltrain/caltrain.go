@@ -265,7 +265,7 @@ func (c *CaltrainClient) IsHoliday(date time.Time) bool {
 
 // getStationTimetable returns the routes that stop at a given station in the
 // given direction
-func (c *CaltrainClient) GetStationTimetable(st Station, dir Direction, date time.Time) ([]timetableRouteJourney, error) {
+func (c *CaltrainClient) GetStationTimetable(st Station, dir Direction, date time.Time) ([]*Route, error) {
 	c.ttLock.RLock()
 	defer c.ttLock.RUnlock()
 
@@ -273,10 +273,24 @@ func (c *CaltrainClient) GetStationTimetable(st Station, dir Direction, date tim
 	if err != nil {
 		return nil, err
 	}
+	weekday := date.Weekday()
 	if c.IsHoliday(date) {
-		return c.getTimetableForStation(code, dir, time.Sunday)
+		weekday = time.Sunday
 	}
-	return c.getTimetableForStation(code, dir, date.Weekday())
+	journeys, err := c.getTimetableForStation(code, dir, weekday)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get Train Routes: %w", err)
+	}
+
+	routes := make([]*Route, len(journeys))
+	for i, journey := range journeys {
+		r, err := c.journeyToRoute(journey)
+		if err != nil {
+			return routes, fmt.Errorf("failed to get Train Routes: %w", err)
+		}
+		routes[i] = r
+	}
+	return routes, nil
 }
 
 // GetTrainRoute returns the Route struct for a given train

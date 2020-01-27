@@ -440,7 +440,7 @@ func TestGetStationTimetable(t *testing.T) {
 		t.Fatalf("Unexpected error loading stations: %v", err)
 	}
 
-	_, err := c.getStationTimetable(StationHillsdale, North, time.Monday)
+	_, err := c.GetStationTimetable(StationHillsdale, North, time.Date(2019, time.November, 23, 0, 0, 0, 0, time.UTC))
 	if err != nil {
 		t.Fatalf("Unexpected error: %v", err)
 	}
