@@ -263,7 +263,7 @@ func (c *CaltrainClient) IsHoliday(date time.Time) bool {
 	return false
 }
 
-// getStationTimetable returns the routes that stop at a given station in the
+// GetStationTimetable returns the routes that stop at a given station in the
 // given direction
 func (c *CaltrainClient) GetStationTimetable(st Station, dir Direction, date time.Time) ([]*Route, error) {
 	c.ttLock.RLock()
