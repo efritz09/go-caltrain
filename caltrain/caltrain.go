@@ -293,8 +293,7 @@ func (c *CaltrainClient) GetStationTimetable(st Station, dir Direction, date tim
 	return routes, nil
 }
 
-// GetTrainRoute returns the Route struct for a given train
-// TODO: export this in the interface???
+// GetTrainRoute returns the Route for a given train
 func (c *CaltrainClient) GetTrainRoute(trainNum string) (*Route, error) {
 	c.ttLock.RLock()
 	defer c.ttLock.RUnlock()
