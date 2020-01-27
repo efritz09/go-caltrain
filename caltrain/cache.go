@@ -13,7 +13,7 @@ const (
 
 type cache interface {
 	set(key string, body []byte)
-	get(key string) ([]byte, bool)
+	get(key string) ([]byte, time.Time, bool)
 	clearCache()
 }
 
@@ -26,8 +26,9 @@ type caltrainCache struct {
 }
 
 type cacheData struct {
-	body       []byte
-	expiration int64
+	body       []byte    // response body
+	entryTime  time.Time // time that 'body' was stored
+	expiration int64     // expiration time
 }
 
 func newCache(expire time.Duration) *caltrainCache {
@@ -44,28 +45,29 @@ func (c *caltrainCache) set(key string, body []byte) {
 	c.lock.Lock()
 	c.cache[key] = cacheData{
 		body:       body,
+		entryTime:  time.Now(),
 		expiration: exp,
 	}
 	c.lock.Unlock()
 }
 
 // get will query the cache for an endpoint. if the endpoint exists, it will
-// check if the cache has expired. If not, it returns the value and true. if it
-// has expired, it will return false
-func (c *caltrainCache) get(key string) ([]byte, bool) {
+// check if the cache has expired. If not, it returnstrue. if it has expired,
+// it will return false. It always returns the body and entryTime for use in
+// case the API limit has been reached
+func (c *caltrainCache) get(key string) ([]byte, time.Time, bool) {
 	c.lock.RLock()
+	defer c.lock.RUnlock()
 	data, ok := c.cache[key]
+	var t time.Time
 	if !ok {
-		c.lock.RUnlock()
-		return nil, false
+		return nil, t, false
 	}
 
 	if c.clock.Now().UnixNano() > data.expiration {
-		c.lock.RUnlock()
-		return nil, false
+		return data.body, data.entryTime, false
 	}
-	c.lock.RUnlock()
-	return data.body, true
+	return data.body, data.entryTime, true
 }
 
 // clearCache clears the cache by creating a new cache map
@@ -77,7 +79,7 @@ func (c *caltrainCache) clearCache() {
 
 type mockCache struct {
 	SetFunc func(string, []byte)
-	GetFunc func(string) ([]byte, bool)
+	GetFunc func(string) ([]byte, time.Time, bool)
 }
 
 func (c *mockCache) set(key string, body []byte) {
@@ -86,11 +88,11 @@ func (c *mockCache) set(key string, body []byte) {
 	}
 }
 
-func (c *mockCache) get(key string) ([]byte, bool) {
+func (c *mockCache) get(key string) ([]byte, time.Time, bool) {
 	if c.GetFunc != nil {
 		return c.GetFunc(key)
 	}
-	return nil, false
+	return nil, time.Now(), false
 }
 
 func (C *mockCache) clearCache() {}

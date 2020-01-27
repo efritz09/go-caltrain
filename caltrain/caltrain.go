@@ -2,6 +2,7 @@ package caltrain
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -148,42 +149,57 @@ func (c *CaltrainClient) SetupCache(expire time.Duration) {
 
 // GetDelays makes an API call and returns a slice of TrainStatus who's
 // delay into their next station is greater than the time.Duration argument
-func (c *CaltrainClient) GetDelays(ctx context.Context, threshold time.Duration) ([]TrainStatus, error) {
+func (c *CaltrainClient) GetDelays(ctx context.Context, threshold time.Duration) ([]TrainStatus, time.Time, error) {
 	query := map[string]string{
 		"agency":  "CT",
 		"api_key": c.key,
 	}
+	t := time.Now()
+
+	var cacheData []TrainStatus
+	var cacheTime time.Time
+	var cacheError error
 
 	if c.useCache {
-		data, ok := c.cache.get(delayURL)
+		var data []byte
+		var ok bool
+		data, cacheTime, ok = c.cache.get(delayURL)
 		if ok {
-			return parseDelays(data, threshold)
+			cacheData, cacheError = parseDelays(data, threshold)
+			return cacheData, cacheTime, cacheError
 		}
 	}
 
 	data, err := c.APIClient.Get(ctx, delayURL, query)
 	if err != nil {
-		return nil, fmt.Errorf("failed to make request: %w", err)
+		return nil, t, fmt.Errorf("failed to make request: %w", err)
 	}
 
 	// Now parse the body json string
 	trains, err := parseDelays(data, threshold)
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse delay data: %w", err)
+		if c.useCache {
+			if errors.As(err, &APILimitError) || errors.As(err, &APIError) {
+				return cacheData, cacheTime, err
+			}
+			return cacheData, cacheTime, fmt.Errorf("failed to parse delay data: %w", err)
+		}
+		return nil, t, fmt.Errorf("failed to parse delay data: %w", err)
 	}
 
 	if c.useCache {
 		c.cache.set(delayURL, data)
 	}
-	return trains, nil
+	return trains, t, nil
 }
 
 // GetStationStatus makes an API call and returns a slice of TrainsStatus
 // who have a status reported for the given station and direction.
-func (c *CaltrainClient) GetStationStatus(ctx context.Context, stationName Station, direction Direction) ([]TrainStatus, error) {
+func (c *CaltrainClient) GetStationStatus(ctx context.Context, stationName Station, direction Direction) ([]TrainStatus, time.Time, error) {
+	t := time.Now()
 	code, err := c.getStationCode(stationName, direction)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get station code: %w", err)
+		return nil, t, fmt.Errorf("failed to get station code: %w", err)
 	}
 	query := map[string]string{
 		"agency":   "CT",
@@ -191,29 +207,42 @@ func (c *CaltrainClient) GetStationStatus(ctx context.Context, stationName Stati
 		"api_key":  c.key,
 	}
 
+	var cacheData []TrainStatus
+	var cacheTime time.Time
+	var cacheError error
+
 	// cache key is stationStatusURL plus the stop code
 	if c.useCache {
-		data, ok := c.cache.get(stationStatusURL + code)
+		var data []byte
+		var ok bool
+		data, cacheTime, ok = c.cache.get(stationStatusURL + code)
 		if ok {
-			return getTrains(data)
+			cacheData, cacheError = getTrains(data)
+			return cacheData, cacheTime, cacheError
 		}
 	}
 
 	data, err := c.APIClient.Get(ctx, stationStatusURL, query)
 	if err != nil {
-		return nil, fmt.Errorf("failed to make request: %w", err)
+		return nil, t, fmt.Errorf("failed to make request: %w", err)
 	}
 
 	// Now parse the body json string
 	trains, err := getTrains(data)
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse trains: %w", err)
+		if c.useCache {
+			if errors.As(err, &APILimitError) || errors.As(err, &APIError) {
+				return cacheData, cacheTime, err
+			}
+			return cacheData, cacheTime, fmt.Errorf("failed to parse trains: %w", err)
+		}
+		return nil, t, fmt.Errorf("failed to parse trains: %w", err)
 	}
 
 	if c.useCache {
 		c.cache.set(stationStatusURL+code, data)
 	}
-	return trains, nil
+	return trains, t, nil
 }
 
 // GetTrainsBetweenStationsForWeekday returns a slice of Routes that travel

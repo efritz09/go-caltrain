@@ -257,7 +257,7 @@ func TestGetDelays(t *testing.T) {
 			m := &apiClientMock{}
 			m.GetResultFilePath = tt.data
 			c.APIClient = m
-			d, err := c.GetDelays(ctx, defaultDelayThreshold)
+			d, _, err := c.GetDelays(ctx, defaultDelayThreshold)
 			if err != nil && tt.err == nil {
 				t.Fatalf("Failed to get train delays for %s: %v", tt.name, err)
 			} else if err == nil && tt.err != nil {
@@ -282,9 +282,9 @@ func TestGetDelaysCache(t *testing.T) {
 	cache := make(map[string][]byte)
 	mock := &mockCache{}
 	mock.SetFunc = func(key string, body []byte) { cache[key] = body }
-	mock.GetFunc = func(key string) ([]byte, bool) {
+	mock.GetFunc = func(key string) ([]byte, time.Time, bool) {
 		v, ok := cache[key]
-		return v, ok
+		return v, time.Now(), ok
 	}
 	c.cache = mock
 
@@ -292,7 +292,7 @@ func TestGetDelaysCache(t *testing.T) {
 	if len(cache) != 0 {
 		t.Fatalf("Cache is not empty: %v", cache)
 	}
-	d, err := c.GetDelays(ctx, defaultDelayThreshold)
+	d, _, err := c.GetDelays(ctx, defaultDelayThreshold)
 	if err != nil {
 		t.Fatalf("Failed to get train delays for %v", err)
 	}
@@ -305,7 +305,7 @@ func TestGetDelaysCache(t *testing.T) {
 		t.Fatalf("Cache does not have only 1 key: %v", cache)
 	}
 	// run it again
-	d, err = c.GetDelays(ctx, defaultDelayThreshold)
+	d, _, err = c.GetDelays(ctx, defaultDelayThreshold)
 	if err != nil {
 		t.Fatalf("Failed to get train delays for %v", err)
 	}
@@ -330,7 +330,7 @@ func TestGetStationStatus(t *testing.T) {
 		t.Fatalf("Unexpected error loading stations: %v", err)
 	}
 	m.GetResultFilePath = "testdata/parseHillsdaleNorth.json"
-	_, err := c.GetStationStatus(ctx, StationHillsdale, North)
+	_, _, err := c.GetStationStatus(ctx, StationHillsdale, North)
 	if err != nil {
 		t.Fatalf("Unexpected error: %v", err)
 	}
@@ -351,9 +351,9 @@ func TestGetStationStatusCache(t *testing.T) {
 	cache := make(map[string][]byte)
 	mock := &mockCache{}
 	mock.SetFunc = func(key string, body []byte) { cache[key] = body }
-	mock.GetFunc = func(key string) ([]byte, bool) {
+	mock.GetFunc = func(key string) ([]byte, time.Time, bool) {
 		v, ok := cache[key]
-		return v, ok
+		return v, time.Now(), ok
 	}
 	c.cache = mock
 
@@ -361,7 +361,7 @@ func TestGetStationStatusCache(t *testing.T) {
 	if len(cache) != 0 {
 		t.Fatalf("Cache is not empty: %v", cache)
 	}
-	d, err := c.GetStationStatus(ctx, StationHillsdale, North)
+	d, _, err := c.GetStationStatus(ctx, StationHillsdale, North)
 	if err != nil {
 		t.Fatalf("Failed to get train delays for %v", err)
 	}
@@ -377,7 +377,7 @@ func TestGetStationStatusCache(t *testing.T) {
 	m.GetResultFilePath = "testdata/parseHillsdaleSouth.json"
 	c.APIClient = m
 	// make a south call
-	d, err = c.GetStationStatus(ctx, StationHillsdale, South)
+	d, _, err = c.GetStationStatus(ctx, StationHillsdale, South)
 	if err != nil {
 		t.Fatalf("Failed to get train delays for %v", err)
 	}
@@ -390,7 +390,7 @@ func TestGetStationStatusCache(t *testing.T) {
 		t.Fatalf("Cache does not have only 1 key: %v", cache)
 	}
 	// make a the same call call
-	d, err = c.GetStationStatus(ctx, StationHillsdale, South)
+	d, _, err = c.GetStationStatus(ctx, StationHillsdale, South)
 	if err != nil {
 		t.Fatalf("Failed to get train delays for %v", err)
 	}
