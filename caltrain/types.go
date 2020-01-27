@@ -82,7 +82,7 @@ const (
 	StationGilroy                      // "Gilroy"
 )
 
-var stations = map[Station]string{
+var stationsMap = map[Station]string{
 	StationSanFrancisco: "San Francisco",
 	Station22ndStreet:   "22nd Street",
 	StationBayshore:     "Bayshore",
@@ -120,14 +120,14 @@ var stations = map[Station]string{
 // String returns the string name of the station. String values are show in
 // the Station constant definition
 func (s Station) String() string {
-	return stations[s]
+	return stationsMap[s]
 }
 
 // ParseStation returns a Station from the string passed in. If the string is
 // not a recognized station, it will return an error
 func ParseStation(s string) (Station, error) {
 	l := strings.ToLower(s)
-	for k, v := range stations {
+	for k, v := range stationsMap {
 		if strings.ToLower(v) == l {
 			return k, nil
 		}
