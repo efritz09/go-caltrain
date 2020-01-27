@@ -179,7 +179,9 @@ func (c *CaltrainClient) GetDelays(ctx context.Context, threshold time.Duration)
 	trains, err := parseDelays(data, threshold)
 	if err != nil {
 		if c.useCache {
-			if errors.As(err, &APILimitError) || errors.As(err, &APIError) {
+			var limErr *APILimitError
+			var apiErr *APIError
+			if errors.As(err, &limErr) || errors.As(err, &apiErr) {
 				return cacheData, cacheTime, err
 			}
 			return cacheData, cacheTime, fmt.Errorf("failed to parse delay data: %w", err)
@@ -231,7 +233,9 @@ func (c *CaltrainClient) GetStationStatus(ctx context.Context, stationName Stati
 	trains, err := getTrains(data)
 	if err != nil {
 		if c.useCache {
-			if errors.As(err, &APILimitError) || errors.As(err, &APIError) {
+			var limErr *APILimitError
+			var apiErr *APIError
+			if errors.As(err, &limErr) || errors.As(err, &apiErr) {
 				return cacheData, cacheTime, err
 			}
 			return cacheData, cacheTime, fmt.Errorf("failed to parse trains: %w", err)
