@@ -61,7 +61,6 @@ func (c *CaltrainClient) getRouteForTrain(trainNum string) (timetableRouteJourne
 // given weekday
 func (c *CaltrainClient) getTrainRoutesBetweenStations(src, dst Station, day time.Weekday) ([]timetableRouteJourney, error) {
 	sCode, dCode, err := c.getRouteCodes(src, dst)
-	fmt.Println(src, sCode, dst, dCode)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get station codes: %w", err)
 	}

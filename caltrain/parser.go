@@ -47,17 +47,27 @@ func getTrains(raw []byte) ([]TrainStatus, error) {
 		if delay < 0 {
 			delay = 0
 		}
-		next, err := ParseStation(strings.Split(status.StopPointName, " Caltrain")[0])
-		if err != nil {
-			return ret, fmt.Errorf("could not get trains: %w", err)
+		var next Station
+		var dir Direction
+		var line Line
+		var err error
+		if status.StopPointName != "" {
+			next, err = ParseStation(strings.Split(status.StopPointName, " Caltrain")[0])
+			if err != nil {
+				return ret, fmt.Errorf("could not get trains for %s: %w", status.StopPointName, err)
+			}
 		}
-		dir, err := ParseDirection(train.DirectionRef)
-		if err != nil {
-			return ret, fmt.Errorf("could not get trains: %w", err)
+		if train.DirectionRef != "" {
+			dir, err = ParseDirection(train.DirectionRef)
+			if err != nil {
+				return ret, fmt.Errorf("could not get trains: %w", err)
+			}
 		}
-		line, err := ParseLine(train.LineRef)
-		if err != nil {
-			return ret, fmt.Errorf("could not get trains: %w", err)
+		if train.LineRef != "" {
+			line, err = ParseLine(train.LineRef)
+			if err != nil {
+				return ret, fmt.Errorf("could not get trains: %w", err)
+			}
 		}
 		newTrain := TrainStatus{
 			TrainNum:  train.FramedVehicleJourneyRef.DatedVehicleJourneyRef,
