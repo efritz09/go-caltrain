@@ -459,40 +459,7 @@ func GetDirectionFromSrcToDst(src, dst Station) (Direction, error) {
 // GetStations returns a slice of all recognized stations in order from North
 // to South
 func GetStations() []Station {
-	return []Station{
-		StationSanFrancisco,
-		Station22ndStreet,
-		StationBayshore,
-		StationSouthSF,
-		StationSanBruno,
-		StationMillbrae,
-		StationBroadway,
-		StationBurlingame,
-		StationSanMateo,
-		StationHaywardPark,
-		StationHillsdale,
-		StationBelmont,
-		StationSanCarlos,
-		StationRedwoodCity,
-		StationAtherton,
-		StationMenloPark,
-		StationPaloAlto,
-		StationStanford,
-		StationCalAve,
-		StationSanAntonio,
-		StationMountainView,
-		StationSunnyvale,
-		StationLawrence,
-		StationSantaClara,
-		StationCollegePark,
-		StationSanJose,
-		StationTamien,
-		StationCapitol,
-		StationBlossomHill,
-		StationMorganHill,
-		StationSanMartin,
-		StationGilroy,
-	}
+	return stationSlice
 }
 
 // getDirFromChar returns the proper direction string for a given character.

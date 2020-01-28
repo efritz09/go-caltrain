@@ -117,6 +117,41 @@ var stationsMap = map[Station]string{
 	StationGilroy:       "Gilroy",
 }
 
+var stationSlice = []Station{
+	StationSanFrancisco,
+	Station22ndStreet,
+	StationBayshore,
+	StationSouthSF,
+	StationSanBruno,
+	StationMillbrae,
+	StationBroadway,
+	StationBurlingame,
+	StationSanMateo,
+	StationHaywardPark,
+	StationHillsdale,
+	StationBelmont,
+	StationSanCarlos,
+	StationRedwoodCity,
+	StationAtherton,
+	StationMenloPark,
+	StationPaloAlto,
+	StationStanford,
+	StationCalAve,
+	StationSanAntonio,
+	StationMountainView,
+	StationSunnyvale,
+	StationLawrence,
+	StationSantaClara,
+	StationCollegePark,
+	StationSanJose,
+	StationTamien,
+	StationCapitol,
+	StationBlossomHill,
+	StationMorganHill,
+	StationSanMartin,
+	StationGilroy,
+}
+
 // String returns the string name of the station. String values are show in
 // the Station constant definition
 func (s Station) String() string {
