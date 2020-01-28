@@ -28,12 +28,12 @@ Time And Time Zones
 
 Since the Caltrain is in the Bay Area, all of the static timetable times are in
 pacific time. Because of this the CaltrainClient uses the America/Los_Angeles
-time zone for all time manipulation of static events. Therefore, all times
-returned will be in the pacific time zone. This includes the time components of
+time zone for all time manipulation of static events. All times for static
+events will be returned in pacific time. This includes the time components of
 TrainStop.
 
-However, the live status updates use UTC, so all returned times will be in UTC.
-This includes the time components of TrainStatus.
+However, the live status updates use UTC, so all live time events will be
+returned in UTC. This includes the time components of TrainStatus.
 
 Caching
 
@@ -50,12 +50,5 @@ or an APILimitError. If caching is implemented and the APIClient call returns
 one of these errors, the method will return the stale cached value in addition
 to the error if it exists for the user to use if desired. If caching is not
 implemented or the request has not been cached, the value will be nil.
-
-TODO
-
-The whole API error cache thing is not implemented. It may be useful to add a
-timestamp value to the return structs so that the caching thing can let the
-user know how old the cached value is.
-
 */
 package caltrain
