@@ -14,16 +14,7 @@ const (
 )
 
 func TestGetStations(t *testing.T) {
-	ctx := context.Background()
-	c := New(fakeKey)
-	m := &MockAPIClient{}
-	m.GetResultFilePath = "testdata/stations.json"
-	c.APIClient = m
-	if err := c.UpdateStations(ctx); err != nil {
-		t.Fatalf("Unexpected error loading stations: %v", err)
-	}
-
-	exp := map[string]struct{}{
+	exp := map[Station]struct{}{
 		Station22ndStreet:   struct{}{},
 		StationAtherton:     struct{}{},
 		StationBayshore:     struct{}{},
@@ -57,8 +48,7 @@ func TestGetStations(t *testing.T) {
 		StationSunnyvale:    struct{}{},
 		StationTamien:       struct{}{},
 	}
-
-	stations := c.GetStations()
+	stations := GetStations()
 	if len(exp) != len(stations) {
 		t.Fatalf("incorrect number of stations")
 	}
@@ -72,7 +62,7 @@ func TestGetStations(t *testing.T) {
 func TestGetTrainRoute(t *testing.T) {
 	ctx := context.Background()
 	c := New(fakeKey)
-	m := &MockAPIClient{}
+	m := &apiClientMock{}
 	m.GetResultFilePath = "testdata/bulletSchedule.json"
 	c.APIClient = m
 	if err := c.UpdateTimeTable(ctx); err != nil {
@@ -124,7 +114,7 @@ func TestGetTrainRoute(t *testing.T) {
 func TestGetTrainsBetweenStationsForWeekday(t *testing.T) {
 	ctx := context.Background()
 	c := New(fakeKey)
-	m := &MockAPIClient{}
+	m := &apiClientMock{}
 	m.GetResultFilePath = "testdata/bulletSchedule.json"
 	c.APIClient = m
 	if err := c.UpdateTimeTable(ctx); err != nil {
@@ -140,8 +130,8 @@ func TestGetTrainsBetweenStationsForWeekday(t *testing.T) {
 	delete(c.timetable, Local)
 
 	tests := []struct {
-		src  string
-		dst  string
+		src  Station
+		dst  Station
 		numN int // len of array for now
 		numS int
 		day  time.Weekday
@@ -151,11 +141,11 @@ func TestGetTrainsBetweenStationsForWeekday(t *testing.T) {
 		{src: StationSanJose, dst: StationSanFrancisco, numN: 11, numS: 11, day: time.Monday, err: nil},
 		{src: StationSanJose, dst: StationSanFrancisco, numN: 2, numS: 2, day: time.Sunday, err: nil},
 		{src: StationHillsdale, dst: StationHaywardPark, numN: 0, numS: 0, day: time.Monday, err: nil},
-		{src: StationSanFrancisco, dst: "BadSation", numN: 0, numS: 0, day: time.Monday, err: errors.New("")},
+		{src: StationSanFrancisco, dst: 9999, numN: 0, numS: 0, day: time.Monday, err: errors.New("")},
 	}
 
 	for _, tt := range tests {
-		name := tt.src + "_" + tt.dst
+		name := tt.src.String() + "_" + tt.dst.String()
 		t.Run(name, func(t *testing.T) {
 			// verify north
 			d1, err := c.GetTrainsBetweenStationsForWeekday(ctx, tt.src, tt.dst, tt.day)
@@ -186,7 +176,7 @@ func TestGetTrainsBetweenStationsForWeekday(t *testing.T) {
 func TestGetTrainsBetweenStationsForDate(t *testing.T) {
 	ctx := context.Background()
 	c := New(fakeKey)
-	m := &MockAPIClient{}
+	m := &apiClientMock{}
 	m.GetResultFilePath = "testdata/bulletSchedule.json"
 	c.APIClient = m
 	if err := c.UpdateTimeTable(ctx); err != nil {
@@ -207,8 +197,8 @@ func TestGetTrainsBetweenStationsForDate(t *testing.T) {
 
 	tests := []struct {
 		name string
-		src  string
-		dst  string
+		src  Station
+		dst  Station
 		numN int // len of array for now
 		numS int
 		day  time.Time
@@ -216,7 +206,7 @@ func TestGetTrainsBetweenStationsForDate(t *testing.T) {
 	}{
 		{name: "Weekday-No-Holiday", src: StationSanJose, dst: StationSanFrancisco, numN: 11, numS: 11, day: time.Date(2019, time.November, 22, 0, 0, 0, 0, time.UTC), err: nil},
 		{name: "Holiday", src: StationSanJose, dst: StationSanFrancisco, numN: 2, numS: 2, day: time.Date(2019, time.November, 23, 0, 0, 0, 0, time.UTC), err: nil},
-		{name: "Error", src: StationSanFrancisco, dst: "BadSation", numN: 0, numS: 0, day: time.Date(2019, time.November, 23, 0, 0, 0, 0, time.UTC), err: errors.New("")},
+		{name: "Error", src: StationSanFrancisco, dst: 999, numN: 0, numS: 0, day: time.Date(2019, time.November, 23, 0, 0, 0, 0, time.UTC), err: errors.New("")},
 	}
 
 	for _, tt := range tests {
@@ -264,10 +254,10 @@ func TestGetDelays(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			m := &MockAPIClient{}
+			m := &apiClientMock{}
 			m.GetResultFilePath = tt.data
 			c.APIClient = m
-			d, err := c.GetDelays(ctx, defaultDelayThreshold)
+			d, _, err := c.GetDelays(ctx, defaultDelayThreshold)
 			if err != nil && tt.err == nil {
 				t.Fatalf("Failed to get train delays for %s: %v", tt.name, err)
 			} else if err == nil && tt.err != nil {
@@ -284,25 +274,25 @@ func TestGetDelays(t *testing.T) {
 func TestGetDelaysCache(t *testing.T) {
 	ctx := context.Background()
 	c := New(fakeKey)
-	m := &MockAPIClient{}
+	m := &apiClientMock{}
 	m.GetResultFilePath = "testdata/parseDelayData1.json"
 	c.APIClient = m
-	c.SetupCache(DefaultCacheTimeout)
+	c.SetupCache(defaultCacheTimeout)
 
 	cache := make(map[string][]byte)
-	mock := &MockCache{}
+	mock := &mockCache{}
 	mock.SetFunc = func(key string, body []byte) { cache[key] = body }
-	mock.GetFunc = func(key string) ([]byte, bool) {
+	mock.GetFunc = func(key string) ([]byte, time.Time, bool) {
 		v, ok := cache[key]
-		return v, ok
+		return v, time.Now(), ok
 	}
-	c.Cache = mock
+	c.cache = mock
 
 	// first make a call, the cache should be empty
 	if len(cache) != 0 {
 		t.Fatalf("Cache is not empty: %v", cache)
 	}
-	d, err := c.GetDelays(ctx, defaultDelayThreshold)
+	d, _, err := c.GetDelays(ctx, defaultDelayThreshold)
 	if err != nil {
 		t.Fatalf("Failed to get train delays for %v", err)
 	}
@@ -315,7 +305,7 @@ func TestGetDelaysCache(t *testing.T) {
 		t.Fatalf("Cache does not have only 1 key: %v", cache)
 	}
 	// run it again
-	d, err = c.GetDelays(ctx, defaultDelayThreshold)
+	d, _, err = c.GetDelays(ctx, defaultDelayThreshold)
 	if err != nil {
 		t.Fatalf("Failed to get train delays for %v", err)
 	}
@@ -333,14 +323,14 @@ func TestGetDelaysCache(t *testing.T) {
 func TestGetStationStatus(t *testing.T) {
 	ctx := context.Background()
 	c := New(fakeKey)
-	m := &MockAPIClient{}
+	m := &apiClientMock{}
 	m.GetResultFilePath = "testdata/stations.json"
 	c.APIClient = m
 	if err := c.UpdateStations(ctx); err != nil {
 		t.Fatalf("Unexpected error loading stations: %v", err)
 	}
 	m.GetResultFilePath = "testdata/parseHillsdaleNorth.json"
-	_, err := c.GetStationStatus(ctx, StationHillsdale, North)
+	_, _, err := c.GetStationStatus(ctx, StationHillsdale, North)
 	if err != nil {
 		t.Fatalf("Unexpected error: %v", err)
 	}
@@ -349,29 +339,29 @@ func TestGetStationStatus(t *testing.T) {
 func TestGetStationStatusCache(t *testing.T) {
 	ctx := context.Background()
 	c := New(fakeKey)
-	m := &MockAPIClient{}
+	m := &apiClientMock{}
 	m.GetResultFilePath = "testdata/stations.json"
 	c.APIClient = m
 	if err := c.UpdateStations(ctx); err != nil {
 		t.Fatalf("Unexpected error loading stations: %v", err)
 	}
 	m.GetResultFilePath = "testdata/parseHillsdaleNorth.json"
-	c.SetupCache(DefaultCacheTimeout)
+	c.SetupCache(defaultCacheTimeout)
 
 	cache := make(map[string][]byte)
-	mock := &MockCache{}
+	mock := &mockCache{}
 	mock.SetFunc = func(key string, body []byte) { cache[key] = body }
-	mock.GetFunc = func(key string) ([]byte, bool) {
+	mock.GetFunc = func(key string) ([]byte, time.Time, bool) {
 		v, ok := cache[key]
-		return v, ok
+		return v, time.Now(), ok
 	}
-	c.Cache = mock
+	c.cache = mock
 
 	// first make a call, the cache should be empty
 	if len(cache) != 0 {
 		t.Fatalf("Cache is not empty: %v", cache)
 	}
-	d, err := c.GetStationStatus(ctx, StationHillsdale, North)
+	d, _, err := c.GetStationStatus(ctx, StationHillsdale, North)
 	if err != nil {
 		t.Fatalf("Failed to get train delays for %v", err)
 	}
@@ -387,7 +377,7 @@ func TestGetStationStatusCache(t *testing.T) {
 	m.GetResultFilePath = "testdata/parseHillsdaleSouth.json"
 	c.APIClient = m
 	// make a south call
-	d, err = c.GetStationStatus(ctx, StationHillsdale, South)
+	d, _, err = c.GetStationStatus(ctx, StationHillsdale, South)
 	if err != nil {
 		t.Fatalf("Failed to get train delays for %v", err)
 	}
@@ -400,7 +390,7 @@ func TestGetStationStatusCache(t *testing.T) {
 		t.Fatalf("Cache does not have only 1 key: %v", cache)
 	}
 	// make a the same call call
-	d, err = c.GetStationStatus(ctx, StationHillsdale, South)
+	d, _, err = c.GetStationStatus(ctx, StationHillsdale, South)
 	if err != nil {
 		t.Fatalf("Failed to get train delays for %v", err)
 	}
@@ -420,15 +410,15 @@ func TestUpdateTimeTable(t *testing.T) {
 		name     string
 		filepath string
 	}{
-		{name: Bullet, filepath: "testdata/bulletSchedule.json"},
-		{name: Limited, filepath: "testdata/limitedSchedule.json"},
-		{name: Local, filepath: "testdata/localSchedule.json"},
+		{name: "Bullet", filepath: "testdata/bulletSchedule.json"},
+		{name: "Limited", filepath: "testdata/limitedSchedule.json"},
+		{name: "Local", filepath: "testdata/localSchedule.json"},
 	}
 	ctx := context.Background()
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := New(fakeKey)
-			m := &MockAPIClient{}
+			m := &apiClientMock{}
 			m.GetResultFilePath = tt.filepath
 			c.APIClient = m
 			err := c.UpdateTimeTable(ctx)
@@ -443,14 +433,14 @@ func TestUpdateTimeTable(t *testing.T) {
 func TestGetStationTimetable(t *testing.T) {
 	ctx := context.Background()
 	c := New(fakeKey)
-	m := &MockAPIClient{}
+	m := &apiClientMock{}
 	m.GetResultFilePath = "testdata/stations.json"
 	c.APIClient = m
 	if err := c.UpdateStations(ctx); err != nil {
 		t.Fatalf("Unexpected error loading stations: %v", err)
 	}
 
-	_, err := c.GetStationTimetable(StationHillsdale, North, time.Monday)
+	_, err := c.GetStationTimetable(StationHillsdale, North, time.Date(2019, time.November, 23, 0, 0, 0, 0, time.UTC))
 	if err != nil {
 		t.Fatalf("Unexpected error: %v", err)
 	}
@@ -460,7 +450,7 @@ func TestGetStationTimetable(t *testing.T) {
 func TestUpdateHolidays(t *testing.T) {
 	ctx := context.Background()
 	c := New(fakeKey)
-	m := &MockAPIClient{}
+	m := &apiClientMock{}
 	m.GetResultFilePath = "testdata/holiday.json"
 	c.APIClient = m
 	if err := c.UpdateHolidays(ctx); err != nil {
@@ -471,7 +461,7 @@ func TestUpdateHolidays(t *testing.T) {
 func TestIsHoliday(t *testing.T) {
 	ctx := context.Background()
 	c := New(fakeKey)
-	m := &MockAPIClient{}
+	m := &apiClientMock{}
 	m.GetResultFilePath = "testdata/holiday.json"
 	c.APIClient = m
 	if err := c.UpdateHolidays(ctx); err != nil {

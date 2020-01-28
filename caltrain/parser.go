@@ -47,13 +47,35 @@ func getTrains(raw []byte) ([]TrainStatus, error) {
 		if delay < 0 {
 			delay = 0
 		}
+		var next Station
+		var dir Direction
+		var line Line
+		var err error
+		if status.StopPointName != "" {
+			next, err = ParseStation(strings.Split(status.StopPointName, " Caltrain")[0])
+			if err != nil {
+				return ret, fmt.Errorf("could not get trains for %s: %w", status.StopPointName, err)
+			}
+		}
+		if train.DirectionRef != "" {
+			dir, err = ParseDirection(train.DirectionRef)
+			if err != nil {
+				return ret, fmt.Errorf("could not get trains: %w", err)
+			}
+		}
+		if train.LineRef != "" {
+			line, err = ParseLine(train.LineRef)
+			if err != nil {
+				return ret, fmt.Errorf("could not get trains: %w", err)
+			}
+		}
 		newTrain := TrainStatus{
 			TrainNum:  train.FramedVehicleJourneyRef.DatedVehicleJourneyRef,
-			NextStop:  strings.Split(status.StopPointName, " Caltrain")[0],
-			Direction: train.DirectionRef,
+			NextStop:  next,
+			Direction: dir,
 			Delay:     delay,
 			Arrival:   arrival,
-			Line:      train.LineRef,
+			Line:      line,
 		}
 		ret = append(ret, newTrain)
 	}
@@ -87,7 +109,7 @@ func getDelay(status monitoredCall) (time.Duration, time.Time) {
 }
 
 // parseTimetable returns a slice of TimetableFrames from the given raw data
-func parseTimetable(raw []byte) ([]TimetableFrame, map[string][]string, error) {
+func parseTimetable(raw []byte) ([]timetableFrame, map[string][]string, error) {
 	raw = bytes.TrimPrefix(raw, []byte("\xef\xbb\xbf"))
 	data := timetableJson{}
 	services := make(map[string][]string)
@@ -117,14 +139,14 @@ func parseTimetable(raw []byte) ([]TimetableFrame, map[string][]string, error) {
 
 // parseStations returns a map of station name to station struct, parsing the
 // north and south codes
-func parseStations(raw []byte) (map[string]*station, error) {
+func parseStations(raw []byte) (map[Station]*stationInfo, error) {
 	raw = bytes.TrimPrefix(raw, []byte("\xef\xbb\xbf"))
 	data := stationJson{}
 	if err := json.Unmarshal(raw, &data); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal: %w", err)
 	}
 
-	ret := make(map[string]*station)
+	ret := make(map[Station]*stationInfo)
 
 	// stops are indexed by id, not by station, so we have to generate a map
 	// that gets us halfway there first, then convert to our struct
@@ -133,7 +155,10 @@ func parseStations(raw []byte) (map[string]*station, error) {
 		if strings.HasSuffix(stop.Name, "Station") {
 			continue
 		}
-		name := strings.TrimSuffix(stop.Name, " Caltrain")
+		name, err := ParseStation(strings.TrimSuffix(stop.Name, " Caltrain"))
+		if err != nil {
+			return ret, fmt.Errorf("failed to parse station: %w", err)
+		}
 		if st, ok := ret[name]; !ok {
 			// create a new station with location
 			lat, err := strconv.ParseFloat(stop.Location.Latitude, 64)
@@ -144,7 +169,7 @@ func parseStations(raw []byte) (map[string]*station, error) {
 			if err != nil {
 				return nil, fmt.Errorf("failed to parse location for %s: %w", name, err)
 			}
-			newStation := &station{
+			newStation := &stationInfo{
 				name:      name,
 				latitude:  lat,
 				longitude: lon,
@@ -190,7 +215,7 @@ func parseHolidays(raw []byte) ([]time.Time, error) {
 
 // addDirectionToStation is a helper function to add the code to the proper
 // direction in the station struct
-func addDirectionToStation(s *station, id string) error {
+func addDirectionToStation(s *stationInfo, id string) error {
 	if dir, err := isCodeNorth(id); err != nil {
 		return fmt.Errorf("failed to parse stations: %w", err)
 	} else if dir {

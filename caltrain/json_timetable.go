@@ -45,11 +45,11 @@ type timetableJson struct {
 				} `json:"DayTypeAssignment"`
 			} `json:"dayTypeAssignments"`
 		} `json:"ServiceCalendarFrame"`
-		TimetableFrame []TimetableFrame `json:"TimetableFrame"`
+		TimetableFrame []timetableFrame `json:"TimetableFrame"`
 	} `json:"Content"`
 }
 
-type TimetableFrame struct {
+type timetableFrame struct {
 	ID                      string `json:"id"`
 	Name                    string `json:"Name"`
 	FrameValidityConditions struct {
@@ -65,11 +65,11 @@ type TimetableFrame struct {
 		} `json:"AvailabilityCondition"`
 	} `json:"frameValidityConditions"`
 	VehicleJourneys struct {
-		TimetableRouteJourney []TimetableRouteJourney `json:"ServiceJourney"`
+		TimetableRouteJourney []timetableRouteJourney `json:"ServiceJourney"`
 	} `json:"vehicleJourneys"`
 }
 
-type TimetableRouteJourney struct {
+type timetableRouteJourney struct {
 	Line                  string // is not in the json, added for convenience
 	ID                    string `json:"id"`
 	SiriVehicleJourneyRef string `json:"SiriVehicleJourneyRef"`
@@ -82,11 +82,11 @@ type TimetableRouteJourney struct {
 		} `json:"DirectionRef"`
 	} `json:"JourneyPatternView"`
 	Calls struct {
-		Call []TimetableRouteCall `json:"Call"`
+		Call []timetableRouteCall `json:"Call"`
 	} `json:"calls"`
 }
 
-type TimetableRouteCall struct {
+type timetableRouteCall struct {
 	Order                 string `json:"order"`
 	ScheduledStopPointRef struct {
 		Ref string `json:"ref"`
@@ -148,6 +148,6 @@ type timetableJsonAlternate struct {
 				} `json:"DayTypeAssignment"`
 			} `json:"dayTypeAssignments"`
 		} `json:"ServiceCalendarFrame"`
-		TimetableFrame []TimetableFrame `json:"TimetableFrame"`
+		TimetableFrame []timetableFrame `json:"TimetableFrame"`
 	} `json:"Content"`
 }
