@@ -16,7 +16,7 @@ func (c *CaltrainClient) getTimetableForStation(stationCode string, dir Directio
 
 	weekday := strings.ToLower(day.String())
 
-	for _, ttArray := range c.timetable {
+	for line, ttArray := range c.timetable {
 		for _, frame := range ttArray {
 			// Check the day reference
 			if !c.isForToday(weekday, frame.FrameValidityConditions.AvailabilityCondition.DayTypes.DayTypeRef.Ref) {
@@ -30,6 +30,7 @@ func (c *CaltrainClient) getTimetableForStation(stationCode string, dir Directio
 			journeys := frame.VehicleJourneys.TimetableRouteJourney
 			for _, journey := range journeys {
 				if isStationInJourney(stationCode, journey) {
+					journey.Line = line.String()
 					allJourneys = append(allJourneys, journey)
 				}
 			}
