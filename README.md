@@ -2,6 +2,9 @@
 
 Go implementation to get live caltrain status using [511.org](https://511.org/)
 
+# protobufs
+`protoc --proto_path=./ --go_out=caltrain/gen gtfs.proto`
+
 # Testing and linting
 `golangci-lint run ./...`
 
