@@ -24,10 +24,11 @@ const (
 type CaltrainClient struct {
 	timetable  map[Line][]timetableFrame // map of line type to slice of service journeys
 	dayService map[string][]string       // map of id to days of the week that the id corresponds to
-	ttLock     sync.RWMutex              // lock in case someone tries to access the timetable during and update
+	ttLock     sync.RWMutex              // lock in case someone tries to access the timetable during an update
 	stations   map[Station]*stationInfo  // station information map
+	sLock      sync.RWMutex              // lock in case someone tries to access the stations during an update
 	holidays   []time.Time               // slice of days that are on a holiday schedule
-	sLock      sync.RWMutex              // lock in case someone tries to access the stations during and update
+	hLock      sync.RWMutex              // lock in case someone tries to access the holidays during an update
 	useCache   bool                      // set by calling the SetupCache method
 	tz         *time.Location            // constant America/LosAngeles time
 	key        string                    // API key for 511.org
@@ -97,8 +98,6 @@ func (c *CaltrainClient) UpdateTimeTable(ctx context.Context) error {
 // UpdateStations makes an API call to refresh the station information.
 // This should only need to be called during Initialization.
 func (c *CaltrainClient) UpdateStations(ctx context.Context) error {
-	c.sLock.Lock()
-	defer c.sLock.Unlock()
 
 	query := map[string]string{
 		"operator_id": "CT",
@@ -113,16 +112,15 @@ func (c *CaltrainClient) UpdateStations(ctx context.Context) error {
 	if err != nil {
 		return fmt.Errorf("failed to parse stations: %w", err)
 	}
+	c.sLock.Lock()
 	c.stations = stations
+	c.sLock.Unlock()
 	return nil
 }
 
 // UpdateHolidays makes an API call to refresh the holiday data. This can
 // be updated multiple times a year so this should be called periodically.
 func (c *CaltrainClient) UpdateHolidays(ctx context.Context) error {
-	c.sLock.Lock()
-	defer c.sLock.Unlock()
-
 	query := map[string]string{
 		"operator_id": "CT",
 		"api_key":     c.key,
@@ -136,7 +134,9 @@ func (c *CaltrainClient) UpdateHolidays(ctx context.Context) error {
 	if err != nil {
 		return fmt.Errorf("failed to parse holidays: %w", err)
 	}
+	c.hLock.Lock()
 	c.holidays = holidays
+	c.hLock.Unlock()
 	return nil
 }
 
@@ -254,12 +254,12 @@ func (c *CaltrainClient) GetStationStatus(ctx context.Context, stationName Stati
 // does not make an API call
 func (c *CaltrainClient) GetTrainsBetweenStationsForWeekday(ctx context.Context, src, dst Station, weekday time.Weekday) ([]*Route, error) {
 	c.ttLock.RLock()
-	defer c.ttLock.RUnlock()
-
 	journeys, err := c.getTrainRoutesBetweenStations(src, dst, weekday)
 	if err != nil {
+		c.ttLock.RUnlock()
 		return nil, fmt.Errorf("failed to get Train Routes: %w", err)
 	}
+	c.ttLock.RUnlock()
 
 	routes := make([]*Route, len(journeys))
 	for i, journey := range journeys {
@@ -286,8 +286,8 @@ func (c *CaltrainClient) GetTrainsBetweenStationsForDate(ctx context.Context, sr
 // IsHoliday returns true if the date passed in is a holiday
 func (c *CaltrainClient) IsHoliday(date time.Time) bool {
 	d := date.Truncate(24 * time.Hour)
-	c.sLock.RLock()
-	defer c.sLock.RUnlock()
+	c.hLock.RLock()
+	defer c.hLock.RUnlock()
 	for _, h := range c.holidays {
 		if d.Equal(h.Truncate(24 * time.Hour)) {
 			return true
@@ -299,8 +299,6 @@ func (c *CaltrainClient) IsHoliday(date time.Time) bool {
 // GetStationTimetable returns the routes that stop at a given station in the
 // given direction
 func (c *CaltrainClient) GetStationTimetable(st Station, dir Direction, date time.Time) ([]*Route, error) {
-	c.ttLock.RLock()
-	defer c.ttLock.RUnlock()
 
 	code, err := c.getStationCode(st, dir)
 	if err != nil {
@@ -310,10 +308,14 @@ func (c *CaltrainClient) GetStationTimetable(st Station, dir Direction, date tim
 	if c.IsHoliday(date) {
 		weekday = time.Sunday
 	}
+
+	c.ttLock.RLock()
 	journeys, err := c.getTimetableForStation(code, dir, weekday)
 	if err != nil {
+		c.ttLock.RUnlock()
 		return nil, fmt.Errorf("failed to get Train Routes: %w", err)
 	}
+	c.ttLock.RUnlock()
 
 	routes := make([]*Route, len(journeys))
 	for i, journey := range journeys {
