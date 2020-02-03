@@ -114,27 +114,15 @@ func parseTimetable(raw []byte) ([]timetableFrame, map[string][]string, error) {
 	data := timetableJson{}
 	services := make(map[string][]string)
 	if err := json.Unmarshal(raw, &data); err != nil {
-		e := fmt.Errorf("failed to unmarshal: %w", err)
-		// Try using the alternative struct
-		altData := timetableJsonAlternate{}
-		if err := json.Unmarshal(raw, &altData); err != nil {
-			return nil, nil, fmt.Errorf("failed to unmarshal alternative: %w", e)
-		}
-		frames := altData.Content.TimetableFrame
-		// parse the service data with the alt data
-		sframe := altData.Content.ServiceCalendarFrame.DayTypes.DayType
-		days := strings.Split(strings.TrimSpace(strings.ToLower(sframe.Properties.PropertyOfDay.DaysOfWeek)), " ")
-		services[sframe.ID] = days
-		return frames, services, nil
-	} else {
-		frames := data.Content.TimetableFrame
-		sframe := data.Content.ServiceCalendarFrame.DayTypes.DayType
-		for _, f := range sframe {
-			days := strings.Split(strings.TrimSpace(strings.ToLower(f.Properties.PropertyOfDay.DaysOfWeek)), " ")
-			services[f.ID] = days
-		}
-		return frames, services, nil
+		return nil, nil, fmt.Errorf("failed to unmarshal: %w", err)
 	}
+	frames := data.Content.TimetableFrame
+	sframe := data.Content.ServiceCalendarFrame.DayTypes.DayType
+	for _, f := range sframe {
+		days := strings.Split(strings.TrimSpace(strings.ToLower(f.Properties.PropertyOfDay.DaysOfWeek)), " ")
+		services[f.ID] = days
+	}
+	return frames, services, nil
 }
 
 // parseStations returns a map of station name to station struct, parsing the
