@@ -5,7 +5,7 @@
       "routes": {
         "Route": [
           {
-            "id": "556318",
+            "id": "576087",
             "Name": "Local:N :Year Round Saturday (Saturday only)",
             "LineRef": {
               "ref": "Local"
@@ -16,168 +16,168 @@
             "pointsInSequence": {
               "PointOnRoute": [
                 {
-                  "id": "556318:1",
+                  "id": "576087:1",
                   "PointRef": {
                     "ref": "70261",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556318:2",
+                  "id": "576087:2",
                   "PointRef": {
                     "ref": "70241",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556318:3",
+                  "id": "576087:3",
                   "PointRef": {
                     "ref": "70231",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556318:4",
+                  "id": "576087:4",
                   "PointRef": {
                     "ref": "70221",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556318:5",
+                  "id": "576087:5",
                   "PointRef": {
                     "ref": "70211",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556318:6",
+                  "id": "576087:6",
                   "PointRef": {
                     "ref": "70201",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556318:7",
+                  "id": "576087:7",
                   "PointRef": {
                     "ref": "70191",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556318:8",
+                  "id": "576087:8",
                   "PointRef": {
                     "ref": "70171",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556318:9",
+                  "id": "576087:9",
                   "PointRef": {
                     "ref": "70161",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556318:10",
+                  "id": "576087:10",
                   "PointRef": {
                     "ref": "70151",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556318:11",
+                  "id": "576087:11",
                   "PointRef": {
                     "ref": "70141",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556318:12",
+                  "id": "576087:12",
                   "PointRef": {
                     "ref": "70131",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556318:13",
+                  "id": "576087:13",
                   "PointRef": {
                     "ref": "70121",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556318:14",
+                  "id": "576087:14",
                   "PointRef": {
                     "ref": "70111",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556318:15",
+                  "id": "576087:15",
                   "PointRef": {
                     "ref": "70101",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556318:16",
+                  "id": "576087:16",
                   "PointRef": {
                     "ref": "70091",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556318:17",
+                  "id": "576087:17",
                   "PointRef": {
                     "ref": "70081",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556318:18",
+                  "id": "576087:18",
                   "PointRef": {
                     "ref": "70071",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556318:19",
+                  "id": "576087:19",
                   "PointRef": {
                     "ref": "70061",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556318:20",
+                  "id": "576087:20",
                   "PointRef": {
                     "ref": "70051",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556318:21",
+                  "id": "576087:21",
                   "PointRef": {
                     "ref": "70041",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556318:22",
+                  "id": "576087:22",
                   "PointRef": {
                     "ref": "70031",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556318:23",
+                  "id": "576087:23",
                   "PointRef": {
                     "ref": "70021",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556318:24",
+                  "id": "576087:24",
                   "PointRef": {
                     "ref": "70011",
                     "type": "ScheduledStopPointRefStructure"
@@ -187,7 +187,7 @@
             }
           },
           {
-            "id": "556319",
+            "id": "576088",
             "Name": "Local:N :Year Round Weekday (Weekday)",
             "LineRef": {
               "ref": "Local"
@@ -198,168 +198,168 @@
             "pointsInSequence": {
               "PointOnRoute": [
                 {
-                  "id": "556319:1",
+                  "id": "576088:1",
                   "PointRef": {
                     "ref": "70271",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556319:2",
+                  "id": "576088:2",
                   "PointRef": {
                     "ref": "70261",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556319:3",
+                  "id": "576088:3",
                   "PointRef": {
                     "ref": "70251",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556319:4",
+                  "id": "576088:4",
                   "PointRef": {
                     "ref": "70241",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556319:5",
+                  "id": "576088:5",
                   "PointRef": {
                     "ref": "70231",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556319:6",
+                  "id": "576088:6",
                   "PointRef": {
                     "ref": "70221",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556319:7",
+                  "id": "576088:7",
                   "PointRef": {
                     "ref": "70211",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556319:8",
+                  "id": "576088:8",
                   "PointRef": {
                     "ref": "70201",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556319:9",
+                  "id": "576088:9",
                   "PointRef": {
                     "ref": "70191",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556319:10",
+                  "id": "576088:10",
                   "PointRef": {
                     "ref": "70171",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556319:11",
+                  "id": "576088:11",
                   "PointRef": {
                     "ref": "70161",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556319:12",
+                  "id": "576088:12",
                   "PointRef": {
                     "ref": "70141",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556319:13",
+                  "id": "576088:13",
                   "PointRef": {
                     "ref": "70131",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556319:14",
+                  "id": "576088:14",
                   "PointRef": {
                     "ref": "70121",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556319:15",
+                  "id": "576088:15",
                   "PointRef": {
                     "ref": "70111",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556319:16",
+                  "id": "576088:16",
                   "PointRef": {
                     "ref": "70101",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556319:17",
+                  "id": "576088:17",
                   "PointRef": {
                     "ref": "70091",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556319:18",
+                  "id": "576088:18",
                   "PointRef": {
                     "ref": "70081",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556319:19",
+                  "id": "576088:19",
                   "PointRef": {
                     "ref": "70061",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556319:20",
+                  "id": "576088:20",
                   "PointRef": {
                     "ref": "70051",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556319:21",
+                  "id": "576088:21",
                   "PointRef": {
                     "ref": "70041",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556319:22",
+                  "id": "576088:22",
                   "PointRef": {
                     "ref": "70031",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556319:23",
+                  "id": "576088:23",
                   "PointRef": {
                     "ref": "70021",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556319:24",
+                  "id": "576088:24",
                   "PointRef": {
                     "ref": "70011",
                     "type": "ScheduledStopPointRefStructure"
@@ -369,7 +369,7 @@
             }
           },
           {
-            "id": "556320",
+            "id": "576089",
             "Name": "Local:N :Year Round Weekend (Weekend)",
             "LineRef": {
               "ref": "Local"
@@ -380,168 +380,168 @@
             "pointsInSequence": {
               "PointOnRoute": [
                 {
-                  "id": "556320:1",
+                  "id": "576089:1",
                   "PointRef": {
                     "ref": "70261",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556320:2",
+                  "id": "576089:2",
                   "PointRef": {
                     "ref": "70241",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556320:3",
+                  "id": "576089:3",
                   "PointRef": {
                     "ref": "70231",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556320:4",
+                  "id": "576089:4",
                   "PointRef": {
                     "ref": "70221",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556320:5",
+                  "id": "576089:5",
                   "PointRef": {
                     "ref": "70211",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556320:6",
+                  "id": "576089:6",
                   "PointRef": {
                     "ref": "70201",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556320:7",
+                  "id": "576089:7",
                   "PointRef": {
                     "ref": "70191",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556320:8",
+                  "id": "576089:8",
                   "PointRef": {
                     "ref": "70171",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556320:9",
+                  "id": "576089:9",
                   "PointRef": {
                     "ref": "70161",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556320:10",
+                  "id": "576089:10",
                   "PointRef": {
                     "ref": "70151",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556320:11",
+                  "id": "576089:11",
                   "PointRef": {
                     "ref": "70141",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556320:12",
+                  "id": "576089:12",
                   "PointRef": {
                     "ref": "70131",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556320:13",
+                  "id": "576089:13",
                   "PointRef": {
                     "ref": "70121",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556320:14",
+                  "id": "576089:14",
                   "PointRef": {
                     "ref": "70111",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556320:15",
+                  "id": "576089:15",
                   "PointRef": {
                     "ref": "70101",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556320:16",
+                  "id": "576089:16",
                   "PointRef": {
                     "ref": "70091",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556320:17",
+                  "id": "576089:17",
                   "PointRef": {
                     "ref": "70081",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556320:18",
+                  "id": "576089:18",
                   "PointRef": {
                     "ref": "70071",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556320:19",
+                  "id": "576089:19",
                   "PointRef": {
                     "ref": "70061",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556320:20",
+                  "id": "576089:20",
                   "PointRef": {
                     "ref": "70051",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556320:21",
+                  "id": "576089:21",
                   "PointRef": {
                     "ref": "70041",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556320:22",
+                  "id": "576089:22",
                   "PointRef": {
                     "ref": "70031",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556320:23",
+                  "id": "576089:23",
                   "PointRef": {
                     "ref": "70021",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556320:24",
+                  "id": "576089:24",
                   "PointRef": {
                     "ref": "70011",
                     "type": "ScheduledStopPointRefStructure"
@@ -551,7 +551,7 @@
             }
           },
           {
-            "id": "556321",
+            "id": "576090",
             "Name": "Local:S :Year Round Saturday (Saturday only)",
             "LineRef": {
               "ref": "Local"
@@ -562,168 +562,168 @@
             "pointsInSequence": {
               "PointOnRoute": [
                 {
-                  "id": "556321:1",
+                  "id": "576090:1",
                   "PointRef": {
                     "ref": "70012",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556321:2",
+                  "id": "576090:2",
                   "PointRef": {
                     "ref": "70022",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556321:3",
+                  "id": "576090:3",
                   "PointRef": {
                     "ref": "70032",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556321:4",
+                  "id": "576090:4",
                   "PointRef": {
                     "ref": "70042",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556321:5",
+                  "id": "576090:5",
                   "PointRef": {
                     "ref": "70052",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556321:6",
+                  "id": "576090:6",
                   "PointRef": {
                     "ref": "70062",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556321:7",
+                  "id": "576090:7",
                   "PointRef": {
                     "ref": "70072",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556321:8",
+                  "id": "576090:8",
                   "PointRef": {
                     "ref": "70082",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556321:9",
+                  "id": "576090:9",
                   "PointRef": {
                     "ref": "70092",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556321:10",
+                  "id": "576090:10",
                   "PointRef": {
                     "ref": "70102",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556321:11",
+                  "id": "576090:11",
                   "PointRef": {
                     "ref": "70112",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556321:12",
+                  "id": "576090:12",
                   "PointRef": {
                     "ref": "70122",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556321:13",
+                  "id": "576090:13",
                   "PointRef": {
                     "ref": "70132",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556321:14",
+                  "id": "576090:14",
                   "PointRef": {
                     "ref": "70142",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556321:15",
+                  "id": "576090:15",
                   "PointRef": {
                     "ref": "70152",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556321:16",
+                  "id": "576090:16",
                   "PointRef": {
                     "ref": "70162",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556321:17",
+                  "id": "576090:17",
                   "PointRef": {
                     "ref": "70172",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556321:18",
+                  "id": "576090:18",
                   "PointRef": {
                     "ref": "70192",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556321:19",
+                  "id": "576090:19",
                   "PointRef": {
                     "ref": "70202",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556321:20",
+                  "id": "576090:20",
                   "PointRef": {
                     "ref": "70212",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556321:21",
+                  "id": "576090:21",
                   "PointRef": {
                     "ref": "70222",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556321:22",
+                  "id": "576090:22",
                   "PointRef": {
                     "ref": "70232",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556321:23",
+                  "id": "576090:23",
                   "PointRef": {
                     "ref": "70242",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556321:24",
+                  "id": "576090:24",
                   "PointRef": {
                     "ref": "70262",
                     "type": "ScheduledStopPointRefStructure"
@@ -733,7 +733,7 @@
             }
           },
           {
-            "id": "556322",
+            "id": "576091",
             "Name": "Local:S :Year Round Weekday (Weekday)",
             "LineRef": {
               "ref": "Local"
@@ -744,203 +744,203 @@
             "pointsInSequence": {
               "PointOnRoute": [
                 {
-                  "id": "556322:1",
+                  "id": "576091:1",
                   "PointRef": {
                     "ref": "70012",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556322:2",
+                  "id": "576091:2",
                   "PointRef": {
                     "ref": "70022",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556322:3",
+                  "id": "576091:3",
                   "PointRef": {
                     "ref": "70032",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556322:4",
+                  "id": "576091:4",
                   "PointRef": {
                     "ref": "70042",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556322:5",
+                  "id": "576091:5",
                   "PointRef": {
                     "ref": "70052",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556322:6",
+                  "id": "576091:6",
                   "PointRef": {
                     "ref": "70062",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556322:7",
+                  "id": "576091:7",
                   "PointRef": {
                     "ref": "70082",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556322:8",
+                  "id": "576091:8",
                   "PointRef": {
                     "ref": "70092",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556322:9",
+                  "id": "576091:9",
                   "PointRef": {
                     "ref": "70102",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556322:10",
+                  "id": "576091:10",
                   "PointRef": {
                     "ref": "70112",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556322:11",
+                  "id": "576091:11",
                   "PointRef": {
                     "ref": "70122",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556322:12",
+                  "id": "576091:12",
                   "PointRef": {
                     "ref": "70132",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556322:13",
+                  "id": "576091:13",
                   "PointRef": {
                     "ref": "70142",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556322:14",
+                  "id": "576091:14",
                   "PointRef": {
                     "ref": "70162",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556322:15",
+                  "id": "576091:15",
                   "PointRef": {
                     "ref": "70172",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556322:16",
+                  "id": "576091:16",
                   "PointRef": {
                     "ref": "70192",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556322:17",
+                  "id": "576091:17",
                   "PointRef": {
                     "ref": "70202",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556322:18",
+                  "id": "576091:18",
                   "PointRef": {
                     "ref": "70212",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556322:19",
+                  "id": "576091:19",
                   "PointRef": {
                     "ref": "70222",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556322:20",
+                  "id": "576091:20",
                   "PointRef": {
                     "ref": "70232",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556322:21",
+                  "id": "576091:21",
                   "PointRef": {
                     "ref": "70242",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556322:22",
+                  "id": "576091:22",
                   "PointRef": {
                     "ref": "70252",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556322:23",
+                  "id": "576091:23",
                   "PointRef": {
                     "ref": "70262",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556322:24",
+                  "id": "576091:24",
                   "PointRef": {
                     "ref": "70272",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556322:25",
+                  "id": "576091:25",
                   "PointRef": {
                     "ref": "70282",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556322:26",
+                  "id": "576091:26",
                   "PointRef": {
                     "ref": "70292",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556322:27",
+                  "id": "576091:27",
                   "PointRef": {
                     "ref": "70302",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556322:28",
+                  "id": "576091:28",
                   "PointRef": {
                     "ref": "70312",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556322:29",
+                  "id": "576091:29",
                   "PointRef": {
                     "ref": "70322",
                     "type": "ScheduledStopPointRefStructure"
@@ -950,7 +950,7 @@
             }
           },
           {
-            "id": "556323",
+            "id": "576092",
             "Name": "Local:S :Year Round Weekend (Weekend)",
             "LineRef": {
               "ref": "Local"
@@ -961,168 +961,168 @@
             "pointsInSequence": {
               "PointOnRoute": [
                 {
-                  "id": "556323:1",
+                  "id": "576092:1",
                   "PointRef": {
                     "ref": "70012",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556323:2",
+                  "id": "576092:2",
                   "PointRef": {
                     "ref": "70022",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556323:3",
+                  "id": "576092:3",
                   "PointRef": {
                     "ref": "70032",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556323:4",
+                  "id": "576092:4",
                   "PointRef": {
                     "ref": "70042",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556323:5",
+                  "id": "576092:5",
                   "PointRef": {
                     "ref": "70052",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556323:6",
+                  "id": "576092:6",
                   "PointRef": {
                     "ref": "70062",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556323:7",
+                  "id": "576092:7",
                   "PointRef": {
                     "ref": "70072",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556323:8",
+                  "id": "576092:8",
                   "PointRef": {
                     "ref": "70082",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556323:9",
+                  "id": "576092:9",
                   "PointRef": {
                     "ref": "70092",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556323:10",
+                  "id": "576092:10",
                   "PointRef": {
                     "ref": "70102",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556323:11",
+                  "id": "576092:11",
                   "PointRef": {
                     "ref": "70112",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556323:12",
+                  "id": "576092:12",
                   "PointRef": {
                     "ref": "70122",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556323:13",
+                  "id": "576092:13",
                   "PointRef": {
                     "ref": "70132",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556323:14",
+                  "id": "576092:14",
                   "PointRef": {
                     "ref": "70142",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556323:15",
+                  "id": "576092:15",
                   "PointRef": {
                     "ref": "70152",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556323:16",
+                  "id": "576092:16",
                   "PointRef": {
                     "ref": "70162",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556323:17",
+                  "id": "576092:17",
                   "PointRef": {
                     "ref": "70172",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556323:18",
+                  "id": "576092:18",
                   "PointRef": {
                     "ref": "70192",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556323:19",
+                  "id": "576092:19",
                   "PointRef": {
                     "ref": "70202",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556323:20",
+                  "id": "576092:20",
                   "PointRef": {
                     "ref": "70212",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556323:21",
+                  "id": "576092:21",
                   "PointRef": {
                     "ref": "70222",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556323:22",
+                  "id": "576092:22",
                   "PointRef": {
                     "ref": "70232",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556323:23",
+                  "id": "576092:23",
                   "PointRef": {
                     "ref": "70242",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556323:24",
+                  "id": "576092:24",
                   "PointRef": {
                     "ref": "70262",
                     "type": "ScheduledStopPointRefStructure"
@@ -1139,7 +1139,7 @@
       "dayTypes": {
         "DayType": [
           {
-            "id": "8715",
+            "id": "9126",
             "Name": "Year Round Weekday (Weekday)",
             "properties": {
               "PropertyOfDay": {
@@ -1148,7 +1148,7 @@
             }
           },
           {
-            "id": "8716",
+            "id": "9127",
             "Name": "Year Round Weekend (Weekend)",
             "properties": {
               "PropertyOfDay": {
@@ -1157,7 +1157,7 @@
             }
           },
           {
-            "id": "8717",
+            "id": "9128",
             "Name": "Year Round Saturday (Saturday only)",
             "properties": {
               "PropertyOfDay": {
@@ -1175,7 +1175,7 @@
     },
     "TimetableFrame": [
       {
-        "id": "Timetable:556318",
+        "id": "Timetable:576087",
         "Name": "Local:N :Year Round Saturday (Saturday only)",
         "frameValidityConditions": {
           "AvailabilityCondition": {
@@ -1184,7 +1184,7 @@
             "ToDate": "2021-01-01T23:59:00-08:00",
             "dayTypes": {
               "DayTypeRef": {
-                "ref": "8717"
+                "ref": "9128"
               }
             }
           }
@@ -1196,7 +1196,7 @@
               "SiriVehicleJourneyRef": "421",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556318"
+                  "ref": "576087"
                 },
                 "DirectionRef": {
                   "ref": "N "
@@ -1548,7 +1548,7 @@
               "SiriVehicleJourneyRef": "443",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556318"
+                  "ref": "576087"
                 },
                 "DirectionRef": {
                   "ref": "N "
@@ -1899,7 +1899,7 @@
         }
       },
       {
-        "id": "Timetable:556319",
+        "id": "Timetable:576088",
         "Name": "Local:N :Year Round Weekday (Weekday)",
         "frameValidityConditions": {
           "AvailabilityCondition": {
@@ -1908,7 +1908,7 @@
             "ToDate": "2021-01-01T23:59:00-08:00",
             "dayTypes": {
               "DayTypeRef": {
-                "ref": "8715"
+                "ref": "9126"
               }
             }
           }
@@ -1920,7 +1920,7 @@
               "SiriVehicleJourneyRef": "101",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556319"
+                  "ref": "576088"
                 },
                 "DirectionRef": {
                   "ref": "N "
@@ -2244,7 +2244,7 @@
               "SiriVehicleJourneyRef": "103",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556319"
+                  "ref": "576088"
                 },
                 "DirectionRef": {
                   "ref": "N "
@@ -2582,7 +2582,7 @@
               "SiriVehicleJourneyRef": "135",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556319"
+                  "ref": "576088"
                 },
                 "DirectionRef": {
                   "ref": "N "
@@ -2906,7 +2906,7 @@
               "SiriVehicleJourneyRef": "139",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556319"
+                  "ref": "576088"
                 },
                 "DirectionRef": {
                   "ref": "N "
@@ -3230,7 +3230,7 @@
               "SiriVehicleJourneyRef": "143",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556319"
+                  "ref": "576088"
                 },
                 "DirectionRef": {
                   "ref": "N "
@@ -3554,7 +3554,7 @@
               "SiriVehicleJourneyRef": "147",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556319"
+                  "ref": "576088"
                 },
                 "DirectionRef": {
                   "ref": "N "
@@ -3878,7 +3878,7 @@
               "SiriVehicleJourneyRef": "151",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556319"
+                  "ref": "576088"
                 },
                 "DirectionRef": {
                   "ref": "N "
@@ -4202,7 +4202,7 @@
               "SiriVehicleJourneyRef": "155",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556319"
+                  "ref": "576088"
                 },
                 "DirectionRef": {
                   "ref": "N "
@@ -4526,7 +4526,7 @@
               "SiriVehicleJourneyRef": "159",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556319"
+                  "ref": "576088"
                 },
                 "DirectionRef": {
                   "ref": "N "
@@ -4864,7 +4864,7 @@
               "SiriVehicleJourneyRef": "191",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556319"
+                  "ref": "576088"
                 },
                 "DirectionRef": {
                   "ref": "N "
@@ -5188,7 +5188,7 @@
               "SiriVehicleJourneyRef": "193",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556319"
+                  "ref": "576088"
                 },
                 "DirectionRef": {
                   "ref": "N "
@@ -5512,7 +5512,7 @@
               "SiriVehicleJourneyRef": "195",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556319"
+                  "ref": "576088"
                 },
                 "DirectionRef": {
                   "ref": "N "
@@ -5850,7 +5850,7 @@
               "SiriVehicleJourneyRef": "197",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556319"
+                  "ref": "576088"
                 },
                 "DirectionRef": {
                   "ref": "N "
@@ -6188,7 +6188,7 @@
               "SiriVehicleJourneyRef": "199",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556319"
+                  "ref": "576088"
                 },
                 "DirectionRef": {
                   "ref": "N "
@@ -6511,7 +6511,7 @@
         }
       },
       {
-        "id": "Timetable:556320",
+        "id": "Timetable:576089",
         "Name": "Local:N :Year Round Weekend (Weekend)",
         "frameValidityConditions": {
           "AvailabilityCondition": {
@@ -6520,7 +6520,7 @@
             "ToDate": "2021-01-01T23:59:00-08:00",
             "dayTypes": {
               "DayTypeRef": {
-                "ref": "8716"
+                "ref": "9127"
               }
             }
           }
@@ -6532,7 +6532,7 @@
               "SiriVehicleJourneyRef": "423",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556320"
+                  "ref": "576089"
                 },
                 "DirectionRef": {
                   "ref": "N "
@@ -6884,7 +6884,7 @@
               "SiriVehicleJourneyRef": "425",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556320"
+                  "ref": "576089"
                 },
                 "DirectionRef": {
                   "ref": "N "
@@ -7236,7 +7236,7 @@
               "SiriVehicleJourneyRef": "427",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556320"
+                  "ref": "576089"
                 },
                 "DirectionRef": {
                   "ref": "N "
@@ -7588,7 +7588,7 @@
               "SiriVehicleJourneyRef": "429",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556320"
+                  "ref": "576089"
                 },
                 "DirectionRef": {
                   "ref": "N "
@@ -7940,7 +7940,7 @@
               "SiriVehicleJourneyRef": "431",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556320"
+                  "ref": "576089"
                 },
                 "DirectionRef": {
                   "ref": "N "
@@ -8292,7 +8292,7 @@
               "SiriVehicleJourneyRef": "433",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556320"
+                  "ref": "576089"
                 },
                 "DirectionRef": {
                   "ref": "N "
@@ -8644,7 +8644,7 @@
               "SiriVehicleJourneyRef": "435",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556320"
+                  "ref": "576089"
                 },
                 "DirectionRef": {
                   "ref": "N "
@@ -8996,7 +8996,7 @@
               "SiriVehicleJourneyRef": "437",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556320"
+                  "ref": "576089"
                 },
                 "DirectionRef": {
                   "ref": "N "
@@ -9348,7 +9348,7 @@
               "SiriVehicleJourneyRef": "439",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556320"
+                  "ref": "576089"
                 },
                 "DirectionRef": {
                   "ref": "N "
@@ -9700,7 +9700,7 @@
               "SiriVehicleJourneyRef": "441",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556320"
+                  "ref": "576089"
                 },
                 "DirectionRef": {
                   "ref": "N "
@@ -10051,7 +10051,7 @@
         }
       },
       {
-        "id": "Timetable:556321",
+        "id": "Timetable:576090",
         "Name": "Local:S :Year Round Saturday (Saturday only)",
         "frameValidityConditions": {
           "AvailabilityCondition": {
@@ -10060,7 +10060,7 @@
             "ToDate": "2021-01-01T23:59:00-08:00",
             "dayTypes": {
               "DayTypeRef": {
-                "ref": "8717"
+                "ref": "9128"
               }
             }
           }
@@ -10072,7 +10072,7 @@
               "SiriVehicleJourneyRef": "442",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556321"
+                  "ref": "576090"
                 },
                 "DirectionRef": {
                   "ref": "S "
@@ -10424,7 +10424,7 @@
               "SiriVehicleJourneyRef": "444",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556321"
+                  "ref": "576090"
                 },
                 "DirectionRef": {
                   "ref": "S "
@@ -10775,7 +10775,7 @@
         }
       },
       {
-        "id": "Timetable:556322",
+        "id": "Timetable:576091",
         "Name": "Local:S :Year Round Weekday (Weekday)",
         "frameValidityConditions": {
           "AvailabilityCondition": {
@@ -10784,7 +10784,7 @@
             "ToDate": "2021-01-01T23:59:00-08:00",
             "dayTypes": {
               "DayTypeRef": {
-                "ref": "8715"
+                "ref": "9126"
               }
             }
           }
@@ -10796,7 +10796,7 @@
               "SiriVehicleJourneyRef": "102",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556322"
+                  "ref": "576091"
                 },
                 "DirectionRef": {
                   "ref": "S "
@@ -11120,7 +11120,7 @@
               "SiriVehicleJourneyRef": "104",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556322"
+                  "ref": "576091"
                 },
                 "DirectionRef": {
                   "ref": "S "
@@ -11458,7 +11458,7 @@
               "SiriVehicleJourneyRef": "134",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556322"
+                  "ref": "576091"
                 },
                 "DirectionRef": {
                   "ref": "S "
@@ -11782,7 +11782,7 @@
               "SiriVehicleJourneyRef": "138",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556322"
+                  "ref": "576091"
                 },
                 "DirectionRef": {
                   "ref": "S "
@@ -12106,7 +12106,7 @@
               "SiriVehicleJourneyRef": "142",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556322"
+                  "ref": "576091"
                 },
                 "DirectionRef": {
                   "ref": "S "
@@ -12430,7 +12430,7 @@
               "SiriVehicleJourneyRef": "146",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556322"
+                  "ref": "576091"
                 },
                 "DirectionRef": {
                   "ref": "S "
@@ -12754,7 +12754,7 @@
               "SiriVehicleJourneyRef": "150",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556322"
+                  "ref": "576091"
                 },
                 "DirectionRef": {
                   "ref": "S "
@@ -13078,7 +13078,7 @@
               "SiriVehicleJourneyRef": "152",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556322"
+                  "ref": "576091"
                 },
                 "DirectionRef": {
                   "ref": "S "
@@ -13402,7 +13402,7 @@
               "SiriVehicleJourneyRef": "156",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556322"
+                  "ref": "576091"
                 },
                 "DirectionRef": {
                   "ref": "S "
@@ -13824,7 +13824,7 @@
               "SiriVehicleJourneyRef": "190",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556322"
+                  "ref": "576091"
                 },
                 "DirectionRef": {
                   "ref": "S "
@@ -14148,7 +14148,7 @@
               "SiriVehicleJourneyRef": "192",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556322"
+                  "ref": "576091"
                 },
                 "DirectionRef": {
                   "ref": "S "
@@ -14486,7 +14486,7 @@
               "SiriVehicleJourneyRef": "194",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556322"
+                  "ref": "576091"
                 },
                 "DirectionRef": {
                   "ref": "S "
@@ -14824,7 +14824,7 @@
               "SiriVehicleJourneyRef": "196",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556322"
+                  "ref": "576091"
                 },
                 "DirectionRef": {
                   "ref": "S "
@@ -15148,7 +15148,7 @@
               "SiriVehicleJourneyRef": "198",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556322"
+                  "ref": "576091"
                 },
                 "DirectionRef": {
                   "ref": "S "
@@ -15471,7 +15471,7 @@
         }
       },
       {
-        "id": "Timetable:556323",
+        "id": "Timetable:576092",
         "Name": "Local:S :Year Round Weekend (Weekend)",
         "frameValidityConditions": {
           "AvailabilityCondition": {
@@ -15480,7 +15480,7 @@
             "ToDate": "2021-01-01T23:59:00-08:00",
             "dayTypes": {
               "DayTypeRef": {
-                "ref": "8716"
+                "ref": "9127"
               }
             }
           }
@@ -15492,7 +15492,7 @@
               "SiriVehicleJourneyRef": "422",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556323"
+                  "ref": "576092"
                 },
                 "DirectionRef": {
                   "ref": "S "
@@ -15844,7 +15844,7 @@
               "SiriVehicleJourneyRef": "424",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556323"
+                  "ref": "576092"
                 },
                 "DirectionRef": {
                   "ref": "S "
@@ -16196,7 +16196,7 @@
               "SiriVehicleJourneyRef": "426",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556323"
+                  "ref": "576092"
                 },
                 "DirectionRef": {
                   "ref": "S "
@@ -16548,7 +16548,7 @@
               "SiriVehicleJourneyRef": "428",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556323"
+                  "ref": "576092"
                 },
                 "DirectionRef": {
                   "ref": "S "
@@ -16900,7 +16900,7 @@
               "SiriVehicleJourneyRef": "430",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556323"
+                  "ref": "576092"
                 },
                 "DirectionRef": {
                   "ref": "S "
@@ -17252,7 +17252,7 @@
               "SiriVehicleJourneyRef": "432",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556323"
+                  "ref": "576092"
                 },
                 "DirectionRef": {
                   "ref": "S "
@@ -17604,7 +17604,7 @@
               "SiriVehicleJourneyRef": "434",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556323"
+                  "ref": "576092"
                 },
                 "DirectionRef": {
                   "ref": "S "
@@ -17956,7 +17956,7 @@
               "SiriVehicleJourneyRef": "436",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556323"
+                  "ref": "576092"
                 },
                 "DirectionRef": {
                   "ref": "S "
@@ -18308,7 +18308,7 @@
               "SiriVehicleJourneyRef": "438",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556323"
+                  "ref": "576092"
                 },
                 "DirectionRef": {
                   "ref": "S "
@@ -18660,7 +18660,7 @@
               "SiriVehicleJourneyRef": "440",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556323"
+                  "ref": "576092"
                 },
                 "DirectionRef": {
                   "ref": "S "

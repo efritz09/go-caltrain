@@ -5,7 +5,7 @@
       "routes": {
         "Route": [
           {
-            "id": "556326",
+            "id": "576095",
             "Name": "Bullet:N :Year Round Weekday (Weekday)",
             "LineRef": {
               "ref": "Bullet"
@@ -16,84 +16,84 @@
             "pointsInSequence": {
               "PointOnRoute": [
                 {
-                  "id": "556326:1",
+                  "id": "576095:1",
                   "PointRef": {
                     "ref": "70271",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556326:2",
+                  "id": "576095:2",
                   "PointRef": {
                     "ref": "70261",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556326:3",
+                  "id": "576095:3",
                   "PointRef": {
                     "ref": "70221",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556326:4",
+                  "id": "576095:4",
                   "PointRef": {
                     "ref": "70211",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556326:5",
+                  "id": "576095:5",
                   "PointRef": {
                     "ref": "70171",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556326:6",
+                  "id": "576095:6",
                   "PointRef": {
                     "ref": "70161",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556326:7",
+                  "id": "576095:7",
                   "PointRef": {
                     "ref": "70141",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556326:8",
+                  "id": "576095:8",
                   "PointRef": {
                     "ref": "70091",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556326:9",
+                  "id": "576095:9",
                   "PointRef": {
                     "ref": "70111",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556326:10",
+                  "id": "576095:10",
                   "PointRef": {
                     "ref": "70061",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556326:11",
+                  "id": "576095:11",
                   "PointRef": {
                     "ref": "70021",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556326:12",
+                  "id": "576095:12",
                   "PointRef": {
                     "ref": "70011",
                     "type": "ScheduledStopPointRefStructure"
@@ -103,7 +103,7 @@
             }
           },
           {
-            "id": "556327",
+            "id": "576096",
             "Name": "Bullet:N :Year Round Weekend (Weekend)",
             "LineRef": {
               "ref": "Bullet"
@@ -114,63 +114,63 @@
             "pointsInSequence": {
               "PointOnRoute": [
                 {
-                  "id": "556327:1",
+                  "id": "576096:1",
                   "PointRef": {
                     "ref": "70261",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556327:2",
+                  "id": "576096:2",
                   "PointRef": {
                     "ref": "70221",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556327:3",
+                  "id": "576096:3",
                   "PointRef": {
                     "ref": "70211",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556327:4",
+                  "id": "576096:4",
                   "PointRef": {
                     "ref": "70171",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556327:5",
+                  "id": "576096:5",
                   "PointRef": {
                     "ref": "70141",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556327:6",
+                  "id": "576096:6",
                   "PointRef": {
                     "ref": "70111",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556327:7",
+                  "id": "576096:7",
                   "PointRef": {
                     "ref": "70091",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556327:8",
+                  "id": "576096:8",
                   "PointRef": {
                     "ref": "70061",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556327:9",
+                  "id": "576096:9",
                   "PointRef": {
                     "ref": "70011",
                     "type": "ScheduledStopPointRefStructure"
@@ -180,7 +180,7 @@
             }
           },
           {
-            "id": "556328",
+            "id": "576097",
             "Name": "Bullet:S :Year Round Weekday (Weekday)",
             "LineRef": {
               "ref": "Bullet"
@@ -191,91 +191,91 @@
             "pointsInSequence": {
               "PointOnRoute": [
                 {
-                  "id": "556328:1",
+                  "id": "576097:1",
                   "PointRef": {
                     "ref": "70012",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556328:2",
+                  "id": "576097:2",
                   "PointRef": {
                     "ref": "70022",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556328:3",
+                  "id": "576097:3",
                   "PointRef": {
                     "ref": "70062",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556328:4",
+                  "id": "576097:4",
                   "PointRef": {
                     "ref": "70092",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556328:5",
+                  "id": "576097:5",
                   "PointRef": {
                     "ref": "70112",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556328:6",
+                  "id": "576097:6",
                   "PointRef": {
                     "ref": "70142",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556328:7",
+                  "id": "576097:7",
                   "PointRef": {
                     "ref": "70162",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556328:8",
+                  "id": "576097:8",
                   "PointRef": {
                     "ref": "70172",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556328:9",
+                  "id": "576097:9",
                   "PointRef": {
                     "ref": "70192",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556328:10",
+                  "id": "576097:10",
                   "PointRef": {
                     "ref": "70222",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556328:11",
+                  "id": "576097:11",
                   "PointRef": {
                     "ref": "70212",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556328:12",
+                  "id": "576097:12",
                   "PointRef": {
                     "ref": "70262",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556328:13",
+                  "id": "576097:13",
                   "PointRef": {
                     "ref": "70272",
                     "type": "ScheduledStopPointRefStructure"
@@ -285,7 +285,7 @@
             }
           },
           {
-            "id": "556329",
+            "id": "576098",
             "Name": "Bullet:S :Year Round Weekend (Weekend)",
             "LineRef": {
               "ref": "Bullet"
@@ -296,63 +296,63 @@
             "pointsInSequence": {
               "PointOnRoute": [
                 {
-                  "id": "556329:1",
+                  "id": "576098:1",
                   "PointRef": {
                     "ref": "70012",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556329:2",
+                  "id": "576098:2",
                   "PointRef": {
                     "ref": "70062",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556329:3",
+                  "id": "576098:3",
                   "PointRef": {
                     "ref": "70092",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556329:4",
+                  "id": "576098:4",
                   "PointRef": {
                     "ref": "70112",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556329:5",
+                  "id": "576098:5",
                   "PointRef": {
                     "ref": "70142",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556329:6",
+                  "id": "576098:6",
                   "PointRef": {
                     "ref": "70172",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556329:7",
+                  "id": "576098:7",
                   "PointRef": {
                     "ref": "70212",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556329:8",
+                  "id": "576098:8",
                   "PointRef": {
                     "ref": "70222",
                     "type": "ScheduledStopPointRefStructure"
                   }
                 },
                 {
-                  "id": "556329:9",
+                  "id": "576098:9",
                   "PointRef": {
                     "ref": "70262",
                     "type": "ScheduledStopPointRefStructure"
@@ -369,7 +369,7 @@
       "dayTypes": {
         "DayType": [
           {
-            "id": "8715",
+            "id": "9126",
             "Name": "Year Round Weekday (Weekday)",
             "properties": {
               "PropertyOfDay": {
@@ -378,7 +378,7 @@
             }
           },
           {
-            "id": "8716",
+            "id": "9127",
             "Name": "Year Round Weekend (Weekend)",
             "properties": {
               "PropertyOfDay": {
@@ -396,7 +396,7 @@
     },
     "TimetableFrame": [
       {
-        "id": "Timetable:556326",
+        "id": "Timetable:576095",
         "Name": "Bullet:N :Year Round Weekday (Weekday)",
         "frameValidityConditions": {
           "AvailabilityCondition": {
@@ -405,7 +405,7 @@
             "ToDate": "2021-01-01T23:59:00-08:00",
             "dayTypes": {
               "DayTypeRef": {
-                "ref": "8715"
+                "ref": "9126"
               }
             }
           }
@@ -417,7 +417,7 @@
               "SiriVehicleJourneyRef": "305",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556326"
+                  "ref": "576095"
                 },
                 "DirectionRef": {
                   "ref": "N "
@@ -517,7 +517,7 @@
               "SiriVehicleJourneyRef": "309",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556326"
+                  "ref": "576095"
                 },
                 "DirectionRef": {
                   "ref": "N "
@@ -645,7 +645,7 @@
               "SiriVehicleJourneyRef": "313",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556326"
+                  "ref": "576095"
                 },
                 "DirectionRef": {
                   "ref": "N "
@@ -745,7 +745,7 @@
               "SiriVehicleJourneyRef": "319",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556326"
+                  "ref": "576095"
                 },
                 "DirectionRef": {
                   "ref": "N "
@@ -873,7 +873,7 @@
               "SiriVehicleJourneyRef": "323",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556326"
+                  "ref": "576095"
                 },
                 "DirectionRef": {
                   "ref": "N "
@@ -973,7 +973,7 @@
               "SiriVehicleJourneyRef": "329",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556326"
+                  "ref": "576095"
                 },
                 "DirectionRef": {
                   "ref": "N "
@@ -1101,7 +1101,7 @@
               "SiriVehicleJourneyRef": "365",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556326"
+                  "ref": "576095"
                 },
                 "DirectionRef": {
                   "ref": "N "
@@ -1229,7 +1229,7 @@
               "SiriVehicleJourneyRef": "371",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556326"
+                  "ref": "576095"
                 },
                 "DirectionRef": {
                   "ref": "N "
@@ -1357,7 +1357,7 @@
               "SiriVehicleJourneyRef": "375",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556326"
+                  "ref": "576095"
                 },
                 "DirectionRef": {
                   "ref": "N "
@@ -1485,7 +1485,7 @@
               "SiriVehicleJourneyRef": "381",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556326"
+                  "ref": "576095"
                 },
                 "DirectionRef": {
                   "ref": "N "
@@ -1613,7 +1613,7 @@
               "SiriVehicleJourneyRef": "385",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556326"
+                  "ref": "576095"
                 },
                 "DirectionRef": {
                   "ref": "N "
@@ -1740,7 +1740,7 @@
         }
       },
       {
-        "id": "Timetable:556327",
+        "id": "Timetable:576096",
         "Name": "Bullet:N :Year Round Weekend (Weekend)",
         "frameValidityConditions": {
           "AvailabilityCondition": {
@@ -1749,7 +1749,7 @@
             "ToDate": "2021-01-01T23:59:00-08:00",
             "dayTypes": {
               "DayTypeRef": {
-                "ref": "8716"
+                "ref": "9127"
               }
             }
           }
@@ -1761,7 +1761,7 @@
               "SiriVehicleJourneyRef": "801",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556327"
+                  "ref": "576096"
                 },
                 "DirectionRef": {
                   "ref": "N "
@@ -1903,7 +1903,7 @@
               "SiriVehicleJourneyRef": "803",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556327"
+                  "ref": "576096"
                 },
                 "DirectionRef": {
                   "ref": "N "
@@ -2044,7 +2044,7 @@
         }
       },
       {
-        "id": "Timetable:556328",
+        "id": "Timetable:576097",
         "Name": "Bullet:S :Year Round Weekday (Weekday)",
         "frameValidityConditions": {
           "AvailabilityCondition": {
@@ -2053,7 +2053,7 @@
             "ToDate": "2021-01-01T23:59:00-08:00",
             "dayTypes": {
               "DayTypeRef": {
-                "ref": "8715"
+                "ref": "9126"
               }
             }
           }
@@ -2065,7 +2065,7 @@
               "SiriVehicleJourneyRef": "310",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556328"
+                  "ref": "576097"
                 },
                 "DirectionRef": {
                   "ref": "S "
@@ -2207,7 +2207,7 @@
               "SiriVehicleJourneyRef": "314",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556328"
+                  "ref": "576097"
                 },
                 "DirectionRef": {
                   "ref": "S "
@@ -2335,7 +2335,7 @@
               "SiriVehicleJourneyRef": "320",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556328"
+                  "ref": "576097"
                 },
                 "DirectionRef": {
                   "ref": "S "
@@ -2477,7 +2477,7 @@
               "SiriVehicleJourneyRef": "324",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556328"
+                  "ref": "576097"
                 },
                 "DirectionRef": {
                   "ref": "S "
@@ -2605,7 +2605,7 @@
               "SiriVehicleJourneyRef": "330",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556328"
+                  "ref": "576097"
                 },
                 "DirectionRef": {
                   "ref": "S "
@@ -2747,7 +2747,7 @@
               "SiriVehicleJourneyRef": "360",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556328"
+                  "ref": "576097"
                 },
                 "DirectionRef": {
                   "ref": "S "
@@ -2847,7 +2847,7 @@
               "SiriVehicleJourneyRef": "366",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556328"
+                  "ref": "576097"
                 },
                 "DirectionRef": {
                   "ref": "S "
@@ -2989,7 +2989,7 @@
               "SiriVehicleJourneyRef": "370",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556328"
+                  "ref": "576097"
                 },
                 "DirectionRef": {
                   "ref": "S "
@@ -3089,7 +3089,7 @@
               "SiriVehicleJourneyRef": "376",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556328"
+                  "ref": "576097"
                 },
                 "DirectionRef": {
                   "ref": "S "
@@ -3231,7 +3231,7 @@
               "SiriVehicleJourneyRef": "380",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556328"
+                  "ref": "576097"
                 },
                 "DirectionRef": {
                   "ref": "S "
@@ -3331,7 +3331,7 @@
               "SiriVehicleJourneyRef": "386",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556328"
+                  "ref": "576097"
                 },
                 "DirectionRef": {
                   "ref": "S "
@@ -3472,7 +3472,7 @@
         }
       },
       {
-        "id": "Timetable:556329",
+        "id": "Timetable:576098",
         "Name": "Bullet:S :Year Round Weekend (Weekend)",
         "frameValidityConditions": {
           "AvailabilityCondition": {
@@ -3481,7 +3481,7 @@
             "ToDate": "2021-01-01T23:59:00-08:00",
             "dayTypes": {
               "DayTypeRef": {
-                "ref": "8716"
+                "ref": "9127"
               }
             }
           }
@@ -3493,7 +3493,7 @@
               "SiriVehicleJourneyRef": "802",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556329"
+                  "ref": "576098"
                 },
                 "DirectionRef": {
                   "ref": "S "
@@ -3635,7 +3635,7 @@
               "SiriVehicleJourneyRef": "804",
               "JourneyPatternView": {
                 "RouteRef": {
-                  "ref": "556329"
+                  "ref": "576098"
                 },
                 "DirectionRef": {
                   "ref": "S "
