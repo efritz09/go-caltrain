@@ -296,6 +296,35 @@ func (c *CaltrainClient) IsHoliday(date time.Time) bool {
 	return false
 }
 
+// GetRoutesForAllStops works the same as GetTrainsBetweenStationsForDate
+// except many stations will be checked instead of just two
+func (c *CaltrainClient) GetRoutesForAllStops(ctx context.Context, stops []Station, dir Direction, date time.Time) ([]*Route, error) {
+	c.ttLock.RLock()
+	defer c.ttLock.RUnlock()
+
+	var d time.Weekday
+	if c.IsHoliday(date) {
+		d = time.Sunday
+	} else {
+		d = date.Weekday()
+	}
+
+	journeys, err := c.getTrainRoutesForAllStops(stops, dir, d)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get Train Routes: %w", err)
+	}
+
+	routes := make([]*Route, len(journeys))
+	for i, journey := range journeys {
+		r, err := c.journeyToRoute(journey)
+		if err != nil {
+			return routes, fmt.Errorf("failed to get Train Routes: %w", err)
+		}
+		routes[i] = r
+	}
+	return routes, nil
+}
+
 // GetStationTimetable returns the routes that stop at a given station in the
 // given direction
 func (c *CaltrainClient) GetStationTimetable(st Station, dir Direction, date time.Time) ([]*Route, error) {
@@ -356,7 +385,7 @@ func (c *CaltrainClient) getStationCode(st Station, dir Direction) (string, erro
 	}
 }
 
-// getRouteDirection returns the proper station codes for a route given a
+// getRouteCodes returns the proper station codes for a route given a
 // source and destination station name
 func (c *CaltrainClient) getRouteCodes(src, dst Station) (string, string, error) {
 	c.sLock.RLock()

@@ -3,6 +3,7 @@ package caltrain
 import (
 	"context"
 	"errors"
+	"fmt"
 	"testing"
 	"time"
 )
@@ -163,6 +164,67 @@ func TestGetRouteForTrain(t *testing.T) {
 			}
 			if r.Line != tt.line {
 				t.Fatalf("Unexpected train line. Expected %s, received %s", tt.line, r.Line)
+			}
+		})
+	}
+}
+
+func TestGetTrainRoutesForAllStops(t *testing.T) {
+	// Load the timetable for only the bullet schedule
+	ctx := context.Background()
+	c := New(fakeKey)
+	m := &apiClientMock{}
+	m.GetResultFilePath = "testdata/bulletSchedule.json"
+	c.APIClient = m
+	err := c.UpdateTimeTable(ctx)
+	if err != nil {
+		t.Fatalf("Unexpected error loading timetable: %v", err)
+	}
+	m.GetResultFilePath = "testdata/stations.json"
+	if err := c.UpdateStations(ctx); err != nil {
+		t.Fatalf("Unexpected error loading stations: %v", err)
+	}
+	// c.UpdateTimeTable currently populates each line with bulletSchedule.
+	// remove the other instances
+	delete(c.timetable, Limited)
+	delete(c.timetable, Local)
+
+	tests := []struct {
+		stops []Station
+		numN  int // len of array for now
+		numS  int
+		day   time.Weekday
+		err   error
+	}{
+		{stops: []Station{StationPaloAlto, StationHillsdale, StationSanFrancisco}, numN: 5, numS: 5, day: time.Monday, err: nil},
+		{stops: []Station{StationSanJose, StationSanFrancisco}, numN: 11, numS: 11, day: time.Monday, err: nil},
+		{stops: []Station{StationPaloAlto, StationHaywardPark, StationSanFrancisco}, numN: 0, numS: 0, day: time.Monday, err: nil},
+		{stops: []Station{StationSanJose, 999}, numN: 0, numS: 0, day: time.Monday, err: errors.New("")},
+	}
+
+	for i, tt := range tests {
+		name := fmt.Sprintf("test %d", i)
+		t.Run(name, func(t *testing.T) {
+			// test north
+			d1, err := c.getTrainRoutesForAllStops(tt.stops, North, tt.day)
+			if err != nil && tt.err == nil {
+				t.Fatalf("Failed to get train routes for %s: %v", name, err)
+			} else if err == nil && tt.err != nil {
+				t.Fatalf("getTrainRoutesForAllStops improperly succeeded for %s", name)
+			}
+			if len(d1) != tt.numN {
+				t.Fatalf("Incorrect routes North. Expected %d, recieved %d", tt.numN, len(d1))
+			}
+
+			// test south
+			d2, err := c.getTrainRoutesForAllStops(tt.stops, South, tt.day)
+			if err != nil && tt.err == nil {
+				t.Fatalf("Failed to get train routes for %s: %v", name, err)
+			} else if err == nil && tt.err != nil {
+				t.Fatalf("getTrainRoutesForAllStops improperly succeeded for %s", name)
+			}
+			if len(d2) != tt.numS {
+				t.Fatalf("Incorrect routes North. Expected %d, recieved %d", tt.numS, len(d2))
 			}
 		})
 	}
