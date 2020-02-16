@@ -18,11 +18,26 @@ const (
 	holidaysURL      = "http://api.511.org/transit/holidays"
 )
 
+// timetable contains the normal and special timetables for a given line
+type timetable struct {
+	line    Line
+	normal  []timetableFrame
+	special map[time.Time][]timetableFrame
+}
+
+func newTimetable(line Line) *timetable {
+	return &timetable{
+		line:    line,
+		special: make(map[time.Time][]timetableFrame),
+	}
+}
+
 // CaltrainClient provides the means for querying information about caltrain
 // schedules, getting route information between stations, or getting live train
 // status updates
 type CaltrainClient struct {
 	timetable  map[Line][]timetableFrame // map of line type to slice of service journeys
+	timet      map[Line]*timetable       // map of line type to slice of timetables
 	dayService map[string][]string       // map of id to days of the week that the id corresponds to
 	ttLock     sync.RWMutex              // lock in case someone tries to access the timetable during an update
 	stations   map[Station]*stationInfo  // station information map
@@ -42,6 +57,7 @@ func New(key string) *CaltrainClient {
 	tz, _ := time.LoadLocation("America/Los_Angeles")
 	return &CaltrainClient{
 		timetable:  make(map[Line][]timetableFrame),
+		timet:      make(map[Line]*timetable),
 		dayService: make(map[string][]string),
 		key:        key,
 		tz:         tz,
@@ -85,6 +101,10 @@ func (c *CaltrainClient) UpdateTimeTable(ctx context.Context) error {
 		}
 		// store the timetable
 		c.timetable[line] = journeys
+		if _, ok := c.timet[line]; !ok {
+			c.timet[line] = newTimetable(line)
+		}
+		c.timet[line].normal = journeys
 
 		// overwrite the known data with the timetable's ServiceCalendarFrame
 		for key, value := range services {
@@ -98,7 +118,6 @@ func (c *CaltrainClient) UpdateTimeTable(ctx context.Context) error {
 // UpdateStations makes an API call to refresh the station information.
 // This should only need to be called during Initialization.
 func (c *CaltrainClient) UpdateStations(ctx context.Context) error {
-
 	query := map[string]string{
 		"operator_id": "CT",
 		"api_key":     c.key,
@@ -137,6 +156,39 @@ func (c *CaltrainClient) UpdateHolidays(ctx context.Context) error {
 	c.hLock.Lock()
 	c.holidays = holidays
 	c.hLock.Unlock()
+
+	c.ttLock.Lock()
+	defer c.ttLock.Unlock()
+	lines := []Line{Bullet, Limited, Local}
+	// request the timetable for each line
+	for _, line := range lines {
+		query := map[string]string{
+			"operator_id":           "CT",
+			"line_id":               line.String(),
+			"includespecialservice": "true",
+			"api_key":               c.key,
+		}
+		data, err := c.APIClient.Get(ctx, timetableURL, query)
+		if err != nil {
+			return fmt.Errorf("failed to make request: %w", err)
+		}
+
+		journeys, services, err := parseSpecialTimetable(data)
+		if err != nil {
+			return fmt.Errorf("failed to parse timetable: %w", err)
+		}
+		// store the timetable
+		if _, ok := c.timet[line]; !ok {
+			c.timet[line] = newTimetable(line)
+		}
+		// this should return a map?
+		c.timet[line].special = journeys
+
+		// overwrite the known data with the timetable's ServiceCalendarFrame
+		for key, value := range services {
+			c.dayService[key] = value
+		}
+	}
 	return nil
 }
 
@@ -272,12 +324,21 @@ func (c *CaltrainClient) GetTrainsBetweenStationsForWeekday(ctx context.Context,
 	return routes, nil
 }
 
+// getTrainsBetweenStationsForHoliday is a helper function that returns the
+// timetable for the given holiday
+func (c *CaltrainClient) getTrainsBetweenStationsForHoliday(ctx context.Context, src, dst Station, date time.Time) ([]*Route, error) {
+	// need a timetable function to get specials
+
+	// need a helper to compare shit
+}
+
 // GetTrainsBetweenStationsForDate returns a slice of Routes that travel
 // from src to dst for a given date. It uses the cached timetable and does
 // not make an API call. It checks against the known holidays. Date must be
 // in the correct time zone
 func (c *CaltrainClient) GetTrainsBetweenStationsForDate(ctx context.Context, src, dst Station, date time.Time) ([]*Route, error) {
 	if c.IsHoliday(date) {
+
 		return c.GetTrainsBetweenStationsForWeekday(ctx, src, dst, time.Sunday)
 	}
 	return c.GetTrainsBetweenStationsForWeekday(ctx, src, dst, date.Weekday())

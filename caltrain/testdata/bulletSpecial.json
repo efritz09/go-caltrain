@@ -1,0 +1,1646 @@
+{
+  "Content": {
+    "ServiceFrame": {
+      "id": "SF",
+      "routes": {
+        "Route": [
+          {
+            "id": "597802",
+            "Name": "Bullet:N :SpecialService",
+            "LineRef": {
+              "ref": "Bullet"
+            },
+            "DirectionRef": {
+              "ref": "N "
+            },
+            "pointsInSequence": {
+              "PointOnRoute": [
+                {
+                  "id": "597802:1",
+                  "PointRef": {
+                    "ref": "70261",
+                    "type": "ScheduledStopPointRefStructure"
+                  }
+                },
+                {
+                  "id": "597802:2",
+                  "PointRef": {
+                    "ref": "70221",
+                    "type": "ScheduledStopPointRefStructure"
+                  }
+                },
+                {
+                  "id": "597802:3",
+                  "PointRef": {
+                    "ref": "70211",
+                    "type": "ScheduledStopPointRefStructure"
+                  }
+                },
+                {
+                  "id": "597802:4",
+                  "PointRef": {
+                    "ref": "70171",
+                    "type": "ScheduledStopPointRefStructure"
+                  }
+                },
+                {
+                  "id": "597802:5",
+                  "PointRef": {
+                    "ref": "70141",
+                    "type": "ScheduledStopPointRefStructure"
+                  }
+                },
+                {
+                  "id": "597802:6",
+                  "PointRef": {
+                    "ref": "70111",
+                    "type": "ScheduledStopPointRefStructure"
+                  }
+                },
+                {
+                  "id": "597802:7",
+                  "PointRef": {
+                    "ref": "70091",
+                    "type": "ScheduledStopPointRefStructure"
+                  }
+                },
+                {
+                  "id": "597802:8",
+                  "PointRef": {
+                    "ref": "70061",
+                    "type": "ScheduledStopPointRefStructure"
+                  }
+                },
+                {
+                  "id": "597802:9",
+                  "PointRef": {
+                    "ref": "70011",
+                    "type": "ScheduledStopPointRefStructure"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "id": "597806",
+            "Name": "Bullet:S :SpecialService",
+            "LineRef": {
+              "ref": "Bullet"
+            },
+            "DirectionRef": {
+              "ref": "S "
+            },
+            "pointsInSequence": {
+              "PointOnRoute": [
+                {
+                  "id": "597806:1",
+                  "PointRef": {
+                    "ref": "70012",
+                    "type": "ScheduledStopPointRefStructure"
+                  }
+                },
+                {
+                  "id": "597806:2",
+                  "PointRef": {
+                    "ref": "70062",
+                    "type": "ScheduledStopPointRefStructure"
+                  }
+                },
+                {
+                  "id": "597806:3",
+                  "PointRef": {
+                    "ref": "70092",
+                    "type": "ScheduledStopPointRefStructure"
+                  }
+                },
+                {
+                  "id": "597806:4",
+                  "PointRef": {
+                    "ref": "70112",
+                    "type": "ScheduledStopPointRefStructure"
+                  }
+                },
+                {
+                  "id": "597806:5",
+                  "PointRef": {
+                    "ref": "70142",
+                    "type": "ScheduledStopPointRefStructure"
+                  }
+                },
+                {
+                  "id": "597806:6",
+                  "PointRef": {
+                    "ref": "70172",
+                    "type": "ScheduledStopPointRefStructure"
+                  }
+                },
+                {
+                  "id": "597806:7",
+                  "PointRef": {
+                    "ref": "70212",
+                    "type": "ScheduledStopPointRefStructure"
+                  }
+                },
+                {
+                  "id": "597806:8",
+                  "PointRef": {
+                    "ref": "70222",
+                    "type": "ScheduledStopPointRefStructure"
+                  }
+                },
+                {
+                  "id": "597806:9",
+                  "PointRef": {
+                    "ref": "70262",
+                    "type": "ScheduledStopPointRefStructure"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "id": "597811",
+            "Name": "Bullet:N :SpecialService",
+            "LineRef": {
+              "ref": "Bullet"
+            },
+            "DirectionRef": {
+              "ref": "N "
+            },
+            "pointsInSequence": {
+              "PointOnRoute": [
+                {
+                  "id": "597811:1",
+                  "PointRef": {
+                    "ref": "70261",
+                    "type": "ScheduledStopPointRefStructure"
+                  }
+                },
+                {
+                  "id": "597811:2",
+                  "PointRef": {
+                    "ref": "70221",
+                    "type": "ScheduledStopPointRefStructure"
+                  }
+                },
+                {
+                  "id": "597811:3",
+                  "PointRef": {
+                    "ref": "70211",
+                    "type": "ScheduledStopPointRefStructure"
+                  }
+                },
+                {
+                  "id": "597811:4",
+                  "PointRef": {
+                    "ref": "70171",
+                    "type": "ScheduledStopPointRefStructure"
+                  }
+                },
+                {
+                  "id": "597811:5",
+                  "PointRef": {
+                    "ref": "70141",
+                    "type": "ScheduledStopPointRefStructure"
+                  }
+                },
+                {
+                  "id": "597811:6",
+                  "PointRef": {
+                    "ref": "70111",
+                    "type": "ScheduledStopPointRefStructure"
+                  }
+                },
+                {
+                  "id": "597811:7",
+                  "PointRef": {
+                    "ref": "70091",
+                    "type": "ScheduledStopPointRefStructure"
+                  }
+                },
+                {
+                  "id": "597811:8",
+                  "PointRef": {
+                    "ref": "70061",
+                    "type": "ScheduledStopPointRefStructure"
+                  }
+                },
+                {
+                  "id": "597811:9",
+                  "PointRef": {
+                    "ref": "70011",
+                    "type": "ScheduledStopPointRefStructure"
+                  }
+                },
+                {
+                  "id": "597811:10",
+                  "PointRef": {
+                    "ref": "70012",
+                    "type": "ScheduledStopPointRefStructure"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "id": "597813",
+            "Name": "Bullet:S :SpecialService",
+            "LineRef": {
+              "ref": "Bullet"
+            },
+            "DirectionRef": {
+              "ref": "S "
+            },
+            "pointsInSequence": {
+              "PointOnRoute": [
+                {
+                  "id": "597813:1",
+                  "PointRef": {
+                    "ref": "70012",
+                    "type": "ScheduledStopPointRefStructure"
+                  }
+                },
+                {
+                  "id": "597813:2",
+                  "PointRef": {
+                    "ref": "70062",
+                    "type": "ScheduledStopPointRefStructure"
+                  }
+                },
+                {
+                  "id": "597813:3",
+                  "PointRef": {
+                    "ref": "70092",
+                    "type": "ScheduledStopPointRefStructure"
+                  }
+                },
+                {
+                  "id": "597813:4",
+                  "PointRef": {
+                    "ref": "70112",
+                    "type": "ScheduledStopPointRefStructure"
+                  }
+                },
+                {
+                  "id": "597813:5",
+                  "PointRef": {
+                    "ref": "70142",
+                    "type": "ScheduledStopPointRefStructure"
+                  }
+                },
+                {
+                  "id": "597813:6",
+                  "PointRef": {
+                    "ref": "70172",
+                    "type": "ScheduledStopPointRefStructure"
+                  }
+                },
+                {
+                  "id": "597813:7",
+                  "PointRef": {
+                    "ref": "70212",
+                    "type": "ScheduledStopPointRefStructure"
+                  }
+                },
+                {
+                  "id": "597813:8",
+                  "PointRef": {
+                    "ref": "70222",
+                    "type": "ScheduledStopPointRefStructure"
+                  }
+                },
+                {
+                  "id": "597813:9",
+                  "PointRef": {
+                    "ref": "70262",
+                    "type": "ScheduledStopPointRefStructure"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "ServiceCalendarFrame": {
+      "id": "SF",
+      "dayTypes": {
+        "DayType": [
+          {
+            "id": "9649",
+            "Name": "SpecialService",
+            "properties": {
+              "PropertyOfDay": {
+                "DaysOfWeek": null
+              }
+            }
+          },
+          {
+            "id": "9650",
+            "Name": "SpecialService",
+            "properties": {
+              "PropertyOfDay": {
+                "DaysOfWeek": null
+              }
+            }
+          }
+        ]
+      },
+      "dayTypeAssignments": {
+        "DayTypeAssignment": {
+          "DayTypeRef": null
+        }
+      }
+    },
+    "TimetableFrame": [
+      {
+        "id": "Timetable:597802",
+        "Name": "Bullet:N :SpecialService",
+        "frameValidityConditions": {
+          "AvailabilityCondition": {
+            "id": "Bullet:N :SpecialService",
+            "FromDate": "2020-02-08T00:00:00-08:00",
+            "ToDate": "2020-02-08T23:59:00-08:00",
+            "dayTypes": {
+              "DayTypeRef": {
+                "ref": "9649"
+              }
+            }
+          }
+        },
+        "vehicleJourneys": {
+          "ServiceJourney": [
+            {
+              "id": "801",
+              "SiriVehicleJourneyRef": "801",
+              "JourneyPatternView": {
+                "RouteRef": {
+                  "ref": "597802"
+                },
+                "DirectionRef": {
+                  "ref": "N "
+                }
+              },
+              "calls": {
+                "Call": [
+                  {
+                    "order": "1",
+                    "ScheduledStopPointRef": {
+                      "ref": "70261"
+                    },
+                    "Arrival": {
+                      "Time": "09:51:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "09:51:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "2",
+                    "ScheduledStopPointRef": {
+                      "ref": "70221"
+                    },
+                    "Arrival": {
+                      "Time": "10:01:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "10:01:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "3",
+                    "ScheduledStopPointRef": {
+                      "ref": "70211"
+                    },
+                    "Arrival": {
+                      "Time": "10:06:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "10:06:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "4",
+                    "ScheduledStopPointRef": {
+                      "ref": "70171"
+                    },
+                    "Arrival": {
+                      "Time": "10:13:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "10:13:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "5",
+                    "ScheduledStopPointRef": {
+                      "ref": "70141"
+                    },
+                    "Arrival": {
+                      "Time": "10:20:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "10:20:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "6",
+                    "ScheduledStopPointRef": {
+                      "ref": "70111"
+                    },
+                    "Arrival": {
+                      "Time": "10:27:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "10:27:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "7",
+                    "ScheduledStopPointRef": {
+                      "ref": "70091"
+                    },
+                    "Arrival": {
+                      "Time": "10:32:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "10:32:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "8",
+                    "ScheduledStopPointRef": {
+                      "ref": "70061"
+                    },
+                    "Arrival": {
+                      "Time": "10:40:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "10:40:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "9",
+                    "ScheduledStopPointRef": {
+                      "ref": "70011"
+                    },
+                    "Arrival": {
+                      "Time": "11:00:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "11:00:00",
+                      "DaysOffset": "0"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "803",
+              "SiriVehicleJourneyRef": "803",
+              "JourneyPatternView": {
+                "RouteRef": {
+                  "ref": "597802"
+                },
+                "DirectionRef": {
+                  "ref": "N "
+                }
+              },
+              "calls": {
+                "Call": [
+                  {
+                    "order": "1",
+                    "ScheduledStopPointRef": {
+                      "ref": "70261"
+                    },
+                    "Arrival": {
+                      "Time": "17:21:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "17:21:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "2",
+                    "ScheduledStopPointRef": {
+                      "ref": "70221"
+                    },
+                    "Arrival": {
+                      "Time": "17:31:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "17:31:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "3",
+                    "ScheduledStopPointRef": {
+                      "ref": "70211"
+                    },
+                    "Arrival": {
+                      "Time": "17:36:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "17:36:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "4",
+                    "ScheduledStopPointRef": {
+                      "ref": "70171"
+                    },
+                    "Arrival": {
+                      "Time": "17:43:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "17:43:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "5",
+                    "ScheduledStopPointRef": {
+                      "ref": "70141"
+                    },
+                    "Arrival": {
+                      "Time": "17:50:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "17:50:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "6",
+                    "ScheduledStopPointRef": {
+                      "ref": "70111"
+                    },
+                    "Arrival": {
+                      "Time": "17:57:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "17:57:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "7",
+                    "ScheduledStopPointRef": {
+                      "ref": "70091"
+                    },
+                    "Arrival": {
+                      "Time": "18:02:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "18:02:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "8",
+                    "ScheduledStopPointRef": {
+                      "ref": "70061"
+                    },
+                    "Arrival": {
+                      "Time": "18:10:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "18:10:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "9",
+                    "ScheduledStopPointRef": {
+                      "ref": "70011"
+                    },
+                    "Arrival": {
+                      "Time": "18:30:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "18:30:00",
+                      "DaysOffset": "0"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "Timetable:597806",
+        "Name": "Bullet:S :SpecialService",
+        "frameValidityConditions": {
+          "AvailabilityCondition": {
+            "id": "Bullet:S :SpecialService",
+            "FromDate": "2020-02-08T00:00:00-08:00",
+            "ToDate": "2020-02-08T23:59:00-08:00",
+            "dayTypes": {
+              "DayTypeRef": {
+                "ref": "9649"
+              }
+            }
+          }
+        },
+        "vehicleJourneys": {
+          "ServiceJourney": [
+            {
+              "id": "802",
+              "SiriVehicleJourneyRef": "802",
+              "JourneyPatternView": {
+                "RouteRef": {
+                  "ref": "597806"
+                },
+                "DirectionRef": {
+                  "ref": "S "
+                }
+              },
+              "calls": {
+                "Call": [
+                  {
+                    "order": "1",
+                    "ScheduledStopPointRef": {
+                      "ref": "70012"
+                    },
+                    "Arrival": {
+                      "Time": "12:04:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "12:04:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "2",
+                    "ScheduledStopPointRef": {
+                      "ref": "70062"
+                    },
+                    "Arrival": {
+                      "Time": "12:19:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "12:19:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "3",
+                    "ScheduledStopPointRef": {
+                      "ref": "70092"
+                    },
+                    "Arrival": {
+                      "Time": "12:26:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "12:26:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "4",
+                    "ScheduledStopPointRef": {
+                      "ref": "70112"
+                    },
+                    "Arrival": {
+                      "Time": "12:30:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "12:30:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "5",
+                    "ScheduledStopPointRef": {
+                      "ref": "70142"
+                    },
+                    "Arrival": {
+                      "Time": "12:38:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "12:38:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "6",
+                    "ScheduledStopPointRef": {
+                      "ref": "70172"
+                    },
+                    "Arrival": {
+                      "Time": "12:45:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "12:45:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "7",
+                    "ScheduledStopPointRef": {
+                      "ref": "70212"
+                    },
+                    "Arrival": {
+                      "Time": "12:54:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "12:54:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "8",
+                    "ScheduledStopPointRef": {
+                      "ref": "70222"
+                    },
+                    "Arrival": {
+                      "Time": "13:00:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "13:00:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "9",
+                    "ScheduledStopPointRef": {
+                      "ref": "70262"
+                    },
+                    "Arrival": {
+                      "Time": "13:13:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "13:13:00",
+                      "DaysOffset": "0"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "804",
+              "SiriVehicleJourneyRef": "804",
+              "JourneyPatternView": {
+                "RouteRef": {
+                  "ref": "597806"
+                },
+                "DirectionRef": {
+                  "ref": "S "
+                }
+              },
+              "calls": {
+                "Call": [
+                  {
+                    "order": "1",
+                    "ScheduledStopPointRef": {
+                      "ref": "70012"
+                    },
+                    "Arrival": {
+                      "Time": "19:34:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "19:34:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "2",
+                    "ScheduledStopPointRef": {
+                      "ref": "70062"
+                    },
+                    "Arrival": {
+                      "Time": "19:49:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "19:49:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "3",
+                    "ScheduledStopPointRef": {
+                      "ref": "70092"
+                    },
+                    "Arrival": {
+                      "Time": "19:56:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "19:56:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "4",
+                    "ScheduledStopPointRef": {
+                      "ref": "70112"
+                    },
+                    "Arrival": {
+                      "Time": "20:00:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "20:00:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "5",
+                    "ScheduledStopPointRef": {
+                      "ref": "70142"
+                    },
+                    "Arrival": {
+                      "Time": "20:08:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "20:08:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "6",
+                    "ScheduledStopPointRef": {
+                      "ref": "70172"
+                    },
+                    "Arrival": {
+                      "Time": "20:15:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "20:15:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "7",
+                    "ScheduledStopPointRef": {
+                      "ref": "70212"
+                    },
+                    "Arrival": {
+                      "Time": "20:24:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "20:24:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "8",
+                    "ScheduledStopPointRef": {
+                      "ref": "70222"
+                    },
+                    "Arrival": {
+                      "Time": "20:30:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "20:30:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "9",
+                    "ScheduledStopPointRef": {
+                      "ref": "70262"
+                    },
+                    "Arrival": {
+                      "Time": "20:43:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "20:43:00",
+                      "DaysOffset": "0"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "Timetable:597811",
+        "Name": "Bullet:N :SpecialService",
+        "frameValidityConditions": {
+          "AvailabilityCondition": {
+            "id": "Bullet:N :SpecialService",
+            "FromDate": "2020-02-17T00:00:00-08:00",
+            "ToDate": "2020-02-17T23:59:00-08:00",
+            "dayTypes": {
+              "DayTypeRef": {
+                "ref": "9650"
+              }
+            }
+          }
+        },
+        "vehicleJourneys": {
+          "ServiceJourney": [
+            {
+              "id": "691H",
+              "SiriVehicleJourneyRef": "691H",
+              "JourneyPatternView": {
+                "RouteRef": {
+                  "ref": "597811"
+                },
+                "DirectionRef": {
+                  "ref": "N "
+                }
+              },
+              "calls": {
+                "Call": [
+                  {
+                    "order": "1",
+                    "ScheduledStopPointRef": {
+                      "ref": "70261"
+                    },
+                    "Arrival": {
+                      "Time": "09:35:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "09:35:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "2",
+                    "ScheduledStopPointRef": {
+                      "ref": "70171"
+                    },
+                    "Arrival": {
+                      "Time": "09:55:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "09:55:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "3",
+                    "ScheduledStopPointRef": {
+                      "ref": "70091"
+                    },
+                    "Arrival": {
+                      "Time": "10:19:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "10:19:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "4",
+                    "ScheduledStopPointRef": {
+                      "ref": "70012"
+                    },
+                    "Arrival": {
+                      "Time": "10:45:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "10:45:00",
+                      "DaysOffset": "0"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "801H",
+              "SiriVehicleJourneyRef": "801H",
+              "JourneyPatternView": {
+                "RouteRef": {
+                  "ref": "597811"
+                },
+                "DirectionRef": {
+                  "ref": "N "
+                }
+              },
+              "calls": {
+                "Call": [
+                  {
+                    "order": "1",
+                    "ScheduledStopPointRef": {
+                      "ref": "70261"
+                    },
+                    "Arrival": {
+                      "Time": "09:51:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "09:51:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "2",
+                    "ScheduledStopPointRef": {
+                      "ref": "70221"
+                    },
+                    "Arrival": {
+                      "Time": "10:01:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "10:01:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "3",
+                    "ScheduledStopPointRef": {
+                      "ref": "70211"
+                    },
+                    "Arrival": {
+                      "Time": "10:06:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "10:06:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "4",
+                    "ScheduledStopPointRef": {
+                      "ref": "70171"
+                    },
+                    "Arrival": {
+                      "Time": "10:13:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "10:13:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "5",
+                    "ScheduledStopPointRef": {
+                      "ref": "70141"
+                    },
+                    "Arrival": {
+                      "Time": "10:20:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "10:20:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "6",
+                    "ScheduledStopPointRef": {
+                      "ref": "70111"
+                    },
+                    "Arrival": {
+                      "Time": "10:27:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "10:27:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "7",
+                    "ScheduledStopPointRef": {
+                      "ref": "70091"
+                    },
+                    "Arrival": {
+                      "Time": "10:32:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "10:32:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "8",
+                    "ScheduledStopPointRef": {
+                      "ref": "70061"
+                    },
+                    "Arrival": {
+                      "Time": "10:40:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "10:40:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "9",
+                    "ScheduledStopPointRef": {
+                      "ref": "70011"
+                    },
+                    "Arrival": {
+                      "Time": "11:00:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "11:00:00",
+                      "DaysOffset": "0"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "803H",
+              "SiriVehicleJourneyRef": "803H",
+              "JourneyPatternView": {
+                "RouteRef": {
+                  "ref": "597811"
+                },
+                "DirectionRef": {
+                  "ref": "N "
+                }
+              },
+              "calls": {
+                "Call": [
+                  {
+                    "order": "1",
+                    "ScheduledStopPointRef": {
+                      "ref": "70261"
+                    },
+                    "Arrival": {
+                      "Time": "17:21:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "17:21:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "2",
+                    "ScheduledStopPointRef": {
+                      "ref": "70221"
+                    },
+                    "Arrival": {
+                      "Time": "17:31:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "17:31:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "3",
+                    "ScheduledStopPointRef": {
+                      "ref": "70211"
+                    },
+                    "Arrival": {
+                      "Time": "17:36:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "17:36:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "4",
+                    "ScheduledStopPointRef": {
+                      "ref": "70171"
+                    },
+                    "Arrival": {
+                      "Time": "17:43:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "17:43:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "5",
+                    "ScheduledStopPointRef": {
+                      "ref": "70141"
+                    },
+                    "Arrival": {
+                      "Time": "17:50:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "17:50:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "6",
+                    "ScheduledStopPointRef": {
+                      "ref": "70111"
+                    },
+                    "Arrival": {
+                      "Time": "17:57:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "17:57:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "7",
+                    "ScheduledStopPointRef": {
+                      "ref": "70091"
+                    },
+                    "Arrival": {
+                      "Time": "18:02:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "18:02:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "8",
+                    "ScheduledStopPointRef": {
+                      "ref": "70061"
+                    },
+                    "Arrival": {
+                      "Time": "18:10:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "18:10:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "9",
+                    "ScheduledStopPointRef": {
+                      "ref": "70011"
+                    },
+                    "Arrival": {
+                      "Time": "18:30:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "18:30:00",
+                      "DaysOffset": "0"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "Timetable:597813",
+        "Name": "Bullet:S :SpecialService",
+        "frameValidityConditions": {
+          "AvailabilityCondition": {
+            "id": "Bullet:S :SpecialService",
+            "FromDate": "2020-02-17T00:00:00-08:00",
+            "ToDate": "2020-02-17T23:59:00-08:00",
+            "dayTypes": {
+              "DayTypeRef": {
+                "ref": "9650"
+              }
+            }
+          }
+        },
+        "vehicleJourneys": {
+          "ServiceJourney": [
+            {
+              "id": "802H",
+              "SiriVehicleJourneyRef": "802H",
+              "JourneyPatternView": {
+                "RouteRef": {
+                  "ref": "597813"
+                },
+                "DirectionRef": {
+                  "ref": "S "
+                }
+              },
+              "calls": {
+                "Call": [
+                  {
+                    "order": "1",
+                    "ScheduledStopPointRef": {
+                      "ref": "70012"
+                    },
+                    "Arrival": {
+                      "Time": "12:04:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "12:04:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "2",
+                    "ScheduledStopPointRef": {
+                      "ref": "70062"
+                    },
+                    "Arrival": {
+                      "Time": "12:19:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "12:19:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "3",
+                    "ScheduledStopPointRef": {
+                      "ref": "70092"
+                    },
+                    "Arrival": {
+                      "Time": "12:26:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "12:26:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "4",
+                    "ScheduledStopPointRef": {
+                      "ref": "70112"
+                    },
+                    "Arrival": {
+                      "Time": "12:30:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "12:30:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "5",
+                    "ScheduledStopPointRef": {
+                      "ref": "70142"
+                    },
+                    "Arrival": {
+                      "Time": "12:38:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "12:38:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "6",
+                    "ScheduledStopPointRef": {
+                      "ref": "70172"
+                    },
+                    "Arrival": {
+                      "Time": "12:45:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "12:45:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "7",
+                    "ScheduledStopPointRef": {
+                      "ref": "70212"
+                    },
+                    "Arrival": {
+                      "Time": "12:54:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "12:54:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "8",
+                    "ScheduledStopPointRef": {
+                      "ref": "70222"
+                    },
+                    "Arrival": {
+                      "Time": "13:00:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "13:00:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "9",
+                    "ScheduledStopPointRef": {
+                      "ref": "70262"
+                    },
+                    "Arrival": {
+                      "Time": "13:13:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "13:13:00",
+                      "DaysOffset": "0"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "804H",
+              "SiriVehicleJourneyRef": "804H",
+              "JourneyPatternView": {
+                "RouteRef": {
+                  "ref": "597813"
+                },
+                "DirectionRef": {
+                  "ref": "S "
+                }
+              },
+              "calls": {
+                "Call": [
+                  {
+                    "order": "1",
+                    "ScheduledStopPointRef": {
+                      "ref": "70012"
+                    },
+                    "Arrival": {
+                      "Time": "19:34:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "19:34:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "2",
+                    "ScheduledStopPointRef": {
+                      "ref": "70062"
+                    },
+                    "Arrival": {
+                      "Time": "19:49:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "19:49:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "3",
+                    "ScheduledStopPointRef": {
+                      "ref": "70092"
+                    },
+                    "Arrival": {
+                      "Time": "19:56:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "19:56:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "4",
+                    "ScheduledStopPointRef": {
+                      "ref": "70112"
+                    },
+                    "Arrival": {
+                      "Time": "20:00:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "20:00:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "5",
+                    "ScheduledStopPointRef": {
+                      "ref": "70142"
+                    },
+                    "Arrival": {
+                      "Time": "20:08:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "20:08:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "6",
+                    "ScheduledStopPointRef": {
+                      "ref": "70172"
+                    },
+                    "Arrival": {
+                      "Time": "20:15:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "20:15:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "7",
+                    "ScheduledStopPointRef": {
+                      "ref": "70212"
+                    },
+                    "Arrival": {
+                      "Time": "20:24:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "20:24:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "8",
+                    "ScheduledStopPointRef": {
+                      "ref": "70222"
+                    },
+                    "Arrival": {
+                      "Time": "20:30:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "20:30:00",
+                      "DaysOffset": "0"
+                    }
+                  },
+                  {
+                    "order": "9",
+                    "ScheduledStopPointRef": {
+                      "ref": "70262"
+                    },
+                    "Arrival": {
+                      "Time": "20:43:00",
+                      "DaysOffset": "0"
+                    },
+                    "Departure": {
+                      "Time": "20:43:00",
+                      "DaysOffset": "0"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

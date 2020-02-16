@@ -125,6 +125,30 @@ func parseTimetable(raw []byte) ([]timetableFrame, map[string][]string, error) {
 	return frames, services, nil
 }
 
+// parseSpecialTimetable is the same as parseTimetable, except the frames are
+// returned in a map with the day of service as the key. If parsing errors, it
+// will finish the parsing and return what did not fail
+func parseSpecialTimetable(raw []byte) (map[time.Time][]timetableFrame, map[string][]string, error) {
+	frames, s, err := parseTimetable(raw)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var e error
+	spec := make(map[time.Time][]timetableFrame)
+	for _, f := range frames {
+		day := f.FrameValidityConditions.AvailabilityCondition.FromDate
+		ti, err := time.Parse("2006-01-02T15:04:05-07:00", day)
+		if err != nil {
+			e = err
+		}
+		// missing entry is an empty slice, so we don't need to check
+		val := spec[ti]
+		spec[ti] = append(val, f)
+	}
+	return spec, s, e
+}
+
 // parseStations returns a map of station name to station struct, parsing the
 // north and south codes
 func parseStations(raw []byte) (map[Station]*stationInfo, error) {

@@ -59,6 +59,8 @@ func TestGetStations(t *testing.T) {
 	}
 }
 
+// TODO: helper function to populate all timetable information
+
 func TestGetTrainRoute(t *testing.T) {
 	ctx := context.Background()
 	c := New(fakeKey)
@@ -484,5 +486,12 @@ func TestIsHoliday(t *testing.T) {
 			}
 		})
 	}
+}
+
+func populateTimetable(c *CaltrainClient) {
+	m := &apiClientMock{}
+	m.GetResultFilePath = "testdata/holiday.json"
+	c.APIClient = m
+	// TODO:
 
 }
