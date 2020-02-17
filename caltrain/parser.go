@@ -183,7 +183,20 @@ func parseHolidays(raw []byte) ([]time.Time, error) {
 	raw = bytes.TrimPrefix(raw, []byte("\xef\xbb\xbf"))
 	data := holidayJson{}
 	if err := json.Unmarshal(raw, &data); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal: %w", err)
+		// TEMPORARY: try to use the alt struct
+		data := holidayJsonAlt{}
+		if err := json.Unmarshal(raw, &data); err != nil {
+			return nil, fmt.Errorf("failed to unmarshal: %w", err)
+
+		}
+		holiday := data.Content.AvailabilityConditions
+		id := strings.TrimPrefix(holiday.ID, "CT:")
+		date, err := time.Parse("2006-01-02", id)
+		if err != nil {
+			return nil, fmt.Errorf("failed to parse time value %s: %w", id, err)
+		}
+		return []time.Time{date}, nil
+		// return nil, fmt.Errorf("failed to unmarshal: %w", err)
 	}
 
 	holidays := data.Content.AvailabilityConditions
