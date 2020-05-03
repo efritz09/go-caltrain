@@ -9,6 +9,16 @@ import (
 // timetable.go contains helpers relating to the timetable. All functions must
 // have ttLock read locked before calling
 
+// TrainNotFoundError is returned when a provided train number does not exist
+// in the current timetable.
+type TrainNotFoundError struct {
+	Number string
+}
+
+func (t *TrainNotFoundError) Error() string {
+	return fmt.Sprintf("No routes found for train: %s", t.Number)
+}
+
 // getTimetableForStation returns a list of trains that stop at a given station
 // code and directions
 func (c *CaltrainClient) getTimetableForStation(stationCode string, dir Direction, day time.Weekday) ([]timetableRouteJourney, error) {
@@ -55,7 +65,7 @@ func (c *CaltrainClient) getRouteForTrain(trainNum string) (timetableRouteJourne
 			}
 		}
 	}
-	return timetableRouteJourney{}, fmt.Errorf("No routes found for train %s", trainNum)
+	return timetableRouteJourney{}, &TrainNotFoundError{Number: trainNum}
 }
 
 // getTrainRoutesBetweenStations returns a slice of routes from src to dst on a
