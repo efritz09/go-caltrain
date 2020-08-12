@@ -7,7 +7,3 @@ Go implementation to get live caltrain status using [511.org](https://511.org/)
 
 `go test ./... -race -cover -count=1 -coverprofile=c.out`
 
-
-# TODOs:
-Add travisCI or some other CI tool
-
