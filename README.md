@@ -1,10 +1,11 @@
-
 [![Go Report Card](https://goreportcard.com/badge/github.com/efritz09/go-caltrain)](https://goreportcard.com/report/github.com/efritz09/go-caltrain)
+[![codecov](https://codecov.io/gh/efritz09/go-caltrain/branch/master/graph/badge.svg)](https://codecov.io/gh/efritz09/go-caltrain)
 [![](https://godoc.org/github.com/efritz09/go-caltrain/caltrain?status.svg)](https://godoc.org/github.com/efritz09/go-caltrain/caltrain)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 # go-caltrain
 
-Go implementation to get live caltrain status using [511.org](https://511.org/)
+Go implementation providing an API for querying Caltrain timetables and live train statuses using the API provided by [511.org](https://511.org/).
 
 [See it in action](http://wheresmycaltrain.com/)
 
