@@ -155,7 +155,7 @@ func TestGetTrainsBetweenStationsForWeekday(t *testing.T) {
 				t.Fatalf("GetTrainsBetweenStationsForWeekday improperly succeeded for %s", name)
 			}
 			if len(d1) != tt.numN {
-				t.Fatalf("Incorrect routes North. Expected %d, recieved %d", tt.numN, len(d1))
+				t.Fatalf("Incorrect routes North. Expected %d, received %d", tt.numN, len(d1))
 			}
 
 			// verify south
@@ -166,7 +166,7 @@ func TestGetTrainsBetweenStationsForWeekday(t *testing.T) {
 				t.Fatalf("GetTrainsBetweenStationsForWeekday improperly succeeded for %s", name)
 			}
 			if len(d2) != tt.numS {
-				t.Fatalf("Incorrect routes North. Expected %d, recieved %d", tt.numS, len(d2))
+				t.Fatalf("Incorrect routes North. Expected %d, received %d", tt.numS, len(d2))
 			}
 		})
 	}
@@ -219,7 +219,7 @@ func TestGetTrainsBetweenStationsForDate(t *testing.T) {
 				t.Fatalf("GetTrainsBetweenStationsForWeekday improperly succeeded for %s", tt.name)
 			}
 			if len(d1) != tt.numN {
-				t.Fatalf("Incorrect routes North. Expected %d, recieved %d", tt.numN, len(d1))
+				t.Fatalf("Incorrect routes North. Expected %d, received %d", tt.numN, len(d1))
 			}
 
 			// verify south
@@ -230,7 +230,7 @@ func TestGetTrainsBetweenStationsForDate(t *testing.T) {
 				t.Fatalf("GetTrainsBetweenStationsForWeekday improperly succeeded for %s", tt.name)
 			}
 			if len(d2) != tt.numS {
-				t.Fatalf("Incorrect routes North. Expected %d, recieved %d", tt.numS, len(d2))
+				t.Fatalf("Incorrect routes North. Expected %d, received %d", tt.numS, len(d2))
 			}
 		})
 	}
@@ -265,7 +265,7 @@ func TestGetDelays(t *testing.T) {
 			}
 
 			if len(d) != tt.delays {
-				t.Fatalf("Incorrect number of delays. Expected %d, recieved %d", tt.delays, len(d))
+				t.Fatalf("Incorrect number of delays. Expected %d, received %d", tt.delays, len(d))
 			}
 		})
 	}
@@ -297,7 +297,7 @@ func TestGetDelaysCache(t *testing.T) {
 		t.Fatalf("Failed to get train delays for %v", err)
 	}
 	if len(d) != 2 {
-		t.Fatalf("Incorrect number of delays. Expected %d, recieved %d", 2, len(d))
+		t.Fatalf("Incorrect number of delays. Expected %d, received %d", 2, len(d))
 	}
 
 	// check that the cache was filled
@@ -310,7 +310,7 @@ func TestGetDelaysCache(t *testing.T) {
 		t.Fatalf("Failed to get train delays for %v", err)
 	}
 	if len(d) != 2 {
-		t.Fatalf("Incorrect number of delays. Expected %d, recieved %d", 2, len(d))
+		t.Fatalf("Incorrect number of delays. Expected %d, received %d", 2, len(d))
 	}
 
 	// check that the cache was not changed
@@ -366,7 +366,7 @@ func TestGetStationStatusCache(t *testing.T) {
 		t.Fatalf("Failed to get train delays for %v", err)
 	}
 	if len(d) != 1 {
-		t.Fatalf("Incorrect number of delays. Expected %d, recieved %d", 1, len(d))
+		t.Fatalf("Incorrect number of delays. Expected %d, received %d", 1, len(d))
 	}
 	// check that the cache was filled
 	if len(cache) != 1 {
@@ -382,7 +382,7 @@ func TestGetStationStatusCache(t *testing.T) {
 		t.Fatalf("Failed to get train delays for %v", err)
 	}
 	if len(d) != 2 {
-		t.Fatalf("Incorrect number of delays. Expected %d, recieved %d", 2, len(d))
+		t.Fatalf("Incorrect number of delays. Expected %d, received %d", 2, len(d))
 	}
 
 	// check that the cache was not changed
@@ -395,7 +395,7 @@ func TestGetStationStatusCache(t *testing.T) {
 		t.Fatalf("Failed to get train delays for %v", err)
 	}
 	if len(d) != 2 {
-		t.Fatalf("Incorrect number of delays. Expected %d, recieved %d", 2, len(d))
+		t.Fatalf("Incorrect number of delays. Expected %d, received %d", 2, len(d))
 	}
 
 	// check that the cache was not changed

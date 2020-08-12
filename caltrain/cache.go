@@ -95,4 +95,4 @@ func (c *mockCache) get(key string) ([]byte, time.Time, bool) {
 	return nil, time.Now(), false
 }
 
-func (C *mockCache) clearCache() {}
+func (c *mockCache) clearCache() {}

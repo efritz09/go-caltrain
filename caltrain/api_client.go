@@ -65,9 +65,8 @@ func (a *APIClient511) Get(ctx context.Context, url string, query map[string]str
 		// return a specific error for too many requests
 		if resp.StatusCode == http.StatusTooManyRequests {
 			return nil, &APILimitError{}
-		} else {
-			return nil, &APIError{Status: resp.Status}
 		}
+		return nil, &APIError{Status: resp.Status}
 	}
 
 	// TODO: return the number of tries left? It exists in the header under
@@ -102,7 +101,6 @@ func (a *apiClientMock) Get(ctx context.Context, url string, query map[string]st
 			return a.GetResult, err
 		}
 		return data, nil
-	} else {
-		return a.GetResult, nil
 	}
+	return a.GetResult, nil
 }

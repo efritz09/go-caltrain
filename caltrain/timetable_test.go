@@ -107,7 +107,7 @@ func TestGetTrainRoutesBetweenStations(t *testing.T) {
 				t.Fatalf("getTrainRoutesBetweenStations improperly succeeded for %s", name)
 			}
 			if len(d1) != tt.numN {
-				t.Fatalf("Incorrect routes North. Expected %d, recieved %d", tt.numN, len(d1))
+				t.Fatalf("Incorrect routes North. Expected %d, received %d", tt.numN, len(d1))
 			}
 
 			// test south
@@ -118,7 +118,7 @@ func TestGetTrainRoutesBetweenStations(t *testing.T) {
 				t.Fatalf("getTrainRoutesBetweenStations improperly succeeded for %s", name)
 			}
 			if len(d2) != tt.numS {
-				t.Fatalf("Incorrect routes North. Expected %d, recieved %d", tt.numS, len(d2))
+				t.Fatalf("Incorrect routes North. Expected %d, received %d", tt.numS, len(d2))
 			}
 		})
 	}
@@ -213,7 +213,7 @@ func TestGetTrainRoutesForAllStops(t *testing.T) {
 				t.Fatalf("getTrainRoutesForAllStops improperly succeeded for %s", name)
 			}
 			if len(d1) != tt.numN {
-				t.Fatalf("Incorrect routes North. Expected %d, recieved %d", tt.numN, len(d1))
+				t.Fatalf("Incorrect routes North. Expected %d, received %d", tt.numN, len(d1))
 			}
 
 			// test south
@@ -224,7 +224,7 @@ func TestGetTrainRoutesForAllStops(t *testing.T) {
 				t.Fatalf("getTrainRoutesForAllStops improperly succeeded for %s", name)
 			}
 			if len(d2) != tt.numS {
-				t.Fatalf("Incorrect routes North. Expected %d, recieved %d", tt.numS, len(d2))
+				t.Fatalf("Incorrect routes North. Expected %d, received %d", tt.numS, len(d2))
 			}
 		})
 	}

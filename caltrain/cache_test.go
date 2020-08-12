@@ -37,19 +37,19 @@ func TestCache(t *testing.T) {
 	if v1, _, ok := c.get("a"); !ok {
 		t.Error("'a' was not found")
 	} else if !bytes.Equal(v1, d1) {
-		t.Errorf("unexpected value for 'a': Expected %b, recieved %b", d1, v1)
+		t.Errorf("unexpected value for 'a': Expected %b, received %b", d1, v1)
 	}
 
 	if v2, _, ok := c.get("b"); !ok {
 		t.Error("'b' was not found")
 	} else if !bytes.Equal(v2, d2) {
-		t.Errorf("unexpected value for 'b': Expected %b, recieved %b", d2, v2)
+		t.Errorf("unexpected value for 'b': Expected %b, received %b", d2, v2)
 	}
 
 	if v3, _, ok := c.get("c"); !ok {
 		t.Error("'c' was not found")
 	} else if !bytes.Equal(v3, d3) {
-		t.Errorf("unexpected value for 'c': Expected %b, recieved %b", d3, v3)
+		t.Errorf("unexpected value for 'c': Expected %b, received %b", d3, v3)
 	}
 }
 
@@ -66,12 +66,12 @@ func TestExpiration(t *testing.T) {
 	if v1, _, ok := c.get("a"); !ok {
 		t.Error("'a' was not found")
 	} else if !bytes.Equal(v1, d1) {
-		t.Errorf("unexpected value for 'a': Expected %b, recieved %b", d1, v1)
+		t.Errorf("unexpected value for 'a': Expected %b, received %b", d1, v1)
 	}
 	if v2, _, ok := c.get("b"); !ok {
 		t.Error("'b' was not found")
 	} else if !bytes.Equal(v2, d2) {
-		t.Errorf("unexpected value for 'b': Expected %b, recieved %b", d2, v2)
+		t.Errorf("unexpected value for 'b': Expected %b, received %b", d2, v2)
 	}
 
 	mock.Add(defaultCacheTimeout)
@@ -79,12 +79,12 @@ func TestExpiration(t *testing.T) {
 	if v1, _, ok := c.get("a"); ok {
 		t.Error("'a' has not timed out")
 	} else if !bytes.Equal(v1, d1) {
-		t.Errorf("unexpected value for 'a': Expected %b, recieved %b", d1, v1)
+		t.Errorf("unexpected value for 'a': Expected %b, received %b", d1, v1)
 	}
 	if v2, _, ok := c.get("b"); ok {
 		t.Error("'b' has not timed out")
 	} else if !bytes.Equal(v2, d2) {
-		t.Errorf("unexpected value for 'b': Expected %b, recieved %b", d2, v2)
+		t.Errorf("unexpected value for 'b': Expected %b, received %b", d2, v2)
 	}
 }
 
@@ -101,12 +101,12 @@ func TestReplacement(t *testing.T) {
 	if v1, _, ok := c.get("a"); !ok {
 		t.Error("'a' was not found")
 	} else if !bytes.Equal(v1, d1) {
-		t.Errorf("unexpected value for 'a': Expected %b, recieved %b", d1, v1)
+		t.Errorf("unexpected value for 'a': Expected %b, received %b", d1, v1)
 	}
 	if v2, _, ok := c.get("b"); !ok {
 		t.Error("'b' was not found")
 	} else if !bytes.Equal(v2, d2) {
-		t.Errorf("unexpected value for 'b': Expected %b, recieved %b", d2, v2)
+		t.Errorf("unexpected value for 'b': Expected %b, received %b", d2, v2)
 	}
 
 	// now replace b with a new value
@@ -117,12 +117,12 @@ func TestReplacement(t *testing.T) {
 	if v1, _, ok := c.get("a"); ok {
 		t.Error("'a' has not timed out")
 	} else if !bytes.Equal(v1, d1) {
-		t.Errorf("unexpected value for 'a': Expected %b, recieved %b", d1, v1)
+		t.Errorf("unexpected value for 'a': Expected %b, received %b", d1, v1)
 	}
 	if v2, _, ok := c.get("b"); !ok {
 		t.Error("'b' has timed out")
 	} else if !bytes.Equal(v2, d3) {
-		t.Errorf("unexpected value for 'b': Expected %b, recieved %b", d3, v2)
+		t.Errorf("unexpected value for 'b': Expected %b, received %b", d3, v2)
 	}
 }
 

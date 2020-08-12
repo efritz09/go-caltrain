@@ -407,9 +407,8 @@ func (c *CaltrainClient) getRouteCodes(src, dst Station) (string, string, error)
 	// if the source is greater than destination, it's moving south
 	if dir == South {
 		return srcSt.southCode, dstSt.southCode, nil
-	} else {
-		return srcSt.northCode, dstSt.northCode, nil
 	}
+	return srcSt.northCode, dstSt.northCode, nil
 }
 
 // journeyToRoute converts a timetableRouteJourney into a Route

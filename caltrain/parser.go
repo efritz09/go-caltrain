@@ -168,7 +168,7 @@ func parseStations(raw []byte) (map[Station]*stationInfo, error) {
 			ret[name] = newStation
 		} else {
 			// the location difference between the north and south side is
-			// negligable and we can ignore it
+			// negligible and we can ignore it
 			if err := addDirectionToStation(st, stop.ID); err != nil {
 				return nil, fmt.Errorf("failed to parse stations: %w", err)
 			}

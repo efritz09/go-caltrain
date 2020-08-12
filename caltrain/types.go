@@ -174,8 +174,10 @@ func ParseStation(s string) (Station, error) {
 type Direction int
 
 const (
-	North Direction = iota // "North"
-	South                  // "South"
+	// North defines Northbound trains
+	North Direction = iota
+	// South defines Southbound trains
+	South
 )
 
 var directions = [...]string{
@@ -209,9 +211,12 @@ func ParseDirection(d string) (Direction, error) {
 type Line int
 
 const (
-	Bullet  Line = iota // "Bullet"
-	Limited             // "Limited"
-	Local               // "Local"
+	// Bullet defines trains running on the "Bullet" schedule
+	Bullet Line = iota
+	// Limited defines trains running on the "Limited" schedule
+	Limited
+	// Local defines trains running on the "Local" schedule
+	Local
 )
 
 var lines = [...]string{
