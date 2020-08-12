@@ -196,9 +196,9 @@ func (d Direction) String() string {
 // is not a valid direction it returns an error
 func ParseDirection(d string) (Direction, error) {
 	l := strings.ToLower(d)
-	if l == "north" {
+	if l == "north" || l == "n" {
 		return North, nil
-	} else if l == "south" {
+	} else if l == "south" || l == "s" {
 		return South, nil
 	} else {
 		return 0, fmt.Errorf("%s is not a valid direction. Must be either North or South", d)
