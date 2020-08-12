@@ -233,9 +233,9 @@ func TestGetTrainRoutesForAllStops(t *testing.T) {
 func TestIsInDayRef(t *testing.T) {
 	c := New(fakeKey)
 	services := map[string][]string{
-		"8005": []string{"monday", "tuesday", "wednesday", "thursday", "friday"},
-		"8006": []string{"saturday", "sunday"},
-		"8007": []string{"saturday"},
+		"8005": {"monday", "tuesday", "wednesday", "thursday", "friday"},
+		"8006": {"saturday", "sunday"},
+		"8007": {"saturday"},
 	}
 	c.dayService = services
 
