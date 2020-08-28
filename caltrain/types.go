@@ -260,6 +260,7 @@ func (l Line) Name() string {
 	return fmt.Sprintf("unknown line %d", l)
 }
 
+// AllLines returns a slice of all supported train lines
 func AllLines() []Line {
 	return []Line{Bullet, Limited, LimitedA, LimitedB, Local, Special}
 }
