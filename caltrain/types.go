@@ -238,13 +238,16 @@ func (l Line) String() string {
 // valid line it returns an error
 func ParseLine(l string) (Line, error) {
 	s := strings.ToLower(l)
-	if s == "limited" {
+	switch s := strings.ToLower(l); s {
+	case "limited", "ltd a", "ltd b":
 		return Limited, nil
-	} else if s == "local" {
+	case "local":
 		return Local, nil
-	} else if s == "bullet" {
+	case "bullet":
 		return Bullet, nil
-	} else {
-		return 0, fmt.Errorf("%s is not a valid line. Must be Local, Limited or Bullet", l)
+	case "special":
+		return Local, nil
+	default:
+		return 0, fmt.Errorf("%s is not a valid line. Must be Local, Limited, LTD A, LTD B, or Bullet", l)
 	}
 }
