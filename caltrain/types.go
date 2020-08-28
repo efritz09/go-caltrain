@@ -228,17 +228,34 @@ const (
 var lines = [...]string{
 	"Bullet",
 	"Limited",
-	"LimitedA",
-	"LimitedB",
+	"Limited A",
+	"Limited B",
 	"Local",
 	"Special",
 }
 
-// String returns the string name of the line. String values are show in the
-// Line constant definition
+// String returns the string representation of the line. String values are show
+// in the Line constant definition
 func (l Line) String() string {
-	if Bullet <= l && l <= Local {
+	if Bullet <= l && l <= Special {
 		return lines[l]
+	}
+	return fmt.Sprintf("unknown line %d", l)
+}
+
+var names = [...]string{
+	"Bullet",
+	"Limited",
+	"LTD A",
+	"LTD B",
+	"Local",
+	"Special",
+}
+
+// Name returns the string name as defined in the 511.org API
+func (l Line) Name() string {
+	if Bullet <= l && l <= Special {
+		return names[l]
 	}
 	return fmt.Sprintf("unknown line %d", l)
 }

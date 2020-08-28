@@ -73,7 +73,7 @@ func (c *CaltrainClient) UpdateTimeTable(ctx context.Context) error {
 	for _, line := range lines {
 		query := map[string]string{
 			"operator_id": "CT",
-			"line_id":     line.String(),
+			"line_id":     line.Name(),
 			"api_key":     c.key,
 		}
 		data, err := c.APIClient.Get(ctx, timetableURL, query)
