@@ -207,7 +207,7 @@ func ParseDirection(d string) (Direction, error) {
 	}
 }
 
-// A Line specifies a Caltrain route line type (Bullet, Limited, Local)
+// A Line specifies a Caltrain route line type (Bullet, Limited, Local, etc)
 type Line int
 
 const (
@@ -215,14 +215,23 @@ const (
 	Bullet Line = iota
 	// Limited defines trains running on the "Limited" schedule
 	Limited
+	// LimitedA defines trains running on the "Limited A" schedule
+	LimitedA
+	// LimitedB defines trains running on the "Limited B" schedule
+	LimitedB
 	// Local defines trains running on the "Local" schedule
 	Local
+	// Special defines trains running on the "Special" schedule
+	Special
 )
 
 var lines = [...]string{
 	"Bullet",
 	"Limited",
+	"LimitedA",
+	"LimitedB",
 	"Local",
+	"Special",
 }
 
 // String returns the string name of the line. String values are show in the
@@ -234,19 +243,26 @@ func (l Line) String() string {
 	return fmt.Sprintf("unknown line %d", l)
 }
 
+func AllLines() []Line {
+	return []Line{Bullet, Limited, LimitedA, LimitedB, Local, Special}
+}
+
 // ParseLine returns a Line from the string passed in. If the string is not a
 // valid line it returns an error
 func ParseLine(l string) (Line, error) {
-	s := strings.ToLower(l)
 	switch s := strings.ToLower(l); s {
-	case "limited", "ltd a", "ltd b":
+	case "limited":
 		return Limited, nil
+	case "ltd a":
+		return LimitedA, nil
+	case "ltd b":
+		return LimitedB, nil
 	case "local":
 		return Local, nil
 	case "bullet":
 		return Bullet, nil
 	case "special":
-		return Local, nil
+		return Special, nil
 	default:
 		return 0, fmt.Errorf("%s is not a valid line. Must be Local, Limited, LTD A, LTD B, or Bullet", l)
 	}
