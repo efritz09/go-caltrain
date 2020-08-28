@@ -1,0 +1,17 @@
+{
+    "Content": {
+        "ServiceFrame": {
+            "id": "SF",
+            "routes": null
+        },
+        "ServiceCalendarFrame": {
+            "id": "SF",
+            "dayTypes": null,
+            "dayTypeAssignments": {
+                "DayTypeAssignment": {
+                    "DayTypeRef": null
+                }
+            }
+        }
+    }
+}

@@ -26,7 +26,10 @@ func TestGetTimetableForStation(t *testing.T) {
 	// c.UpdateTimeTable currently populates each line with bulletSchedule.
 	// remove the other instances
 	delete(c.timetable, Limited)
+	delete(c.timetable, LimitedA)
+	delete(c.timetable, LimitedB)
 	delete(c.timetable, Local)
+	delete(c.timetable, Special)
 
 	tests := []struct {
 		station  Station
@@ -79,7 +82,10 @@ func TestGetTrainRoutesBetweenStations(t *testing.T) {
 	// c.UpdateTimeTable currently populates each line with bulletSchedule.
 	// remove the other instances
 	delete(c.timetable, Limited)
+	delete(c.timetable, LimitedA)
+	delete(c.timetable, LimitedB)
 	delete(c.timetable, Local)
+	delete(c.timetable, Special)
 
 	tests := []struct {
 		src  Station
@@ -142,7 +148,10 @@ func TestGetRouteForTrain(t *testing.T) {
 	// c.UpdateTimeTable currently populates each line with bulletSchedule.
 	// remove the other instances
 	delete(c.timetable, Limited)
+	delete(c.timetable, LimitedA)
+	delete(c.timetable, LimitedB)
 	delete(c.timetable, Local)
+	delete(c.timetable, Special)
 
 	tests := []struct {
 		train string
@@ -187,7 +196,10 @@ func TestGetTrainRoutesForAllStops(t *testing.T) {
 	// c.UpdateTimeTable currently populates each line with bulletSchedule.
 	// remove the other instances
 	delete(c.timetable, Limited)
+	delete(c.timetable, LimitedA)
+	delete(c.timetable, LimitedB)
 	delete(c.timetable, Local)
+	delete(c.timetable, Special)
 
 	tests := []struct {
 		stops []Station

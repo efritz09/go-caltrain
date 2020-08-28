@@ -75,7 +75,10 @@ func TestGetTrainRoute(t *testing.T) {
 	// c.UpdateTimeTable currently populates each line with bulletSchedule.
 	// remove the other instances
 	delete(c.timetable, Limited)
+	delete(c.timetable, LimitedA)
+	delete(c.timetable, LimitedB)
 	delete(c.timetable, Local)
+	delete(c.timetable, Special)
 
 	exp := &Route{
 		TrainNum:  "801",
@@ -127,7 +130,10 @@ func TestGetTrainsBetweenStationsForWeekday(t *testing.T) {
 	// c.UpdateTimeTable currently populates each line with bulletSchedule.
 	// remove the other instances
 	delete(c.timetable, Limited)
+	delete(c.timetable, LimitedA)
+	delete(c.timetable, LimitedB)
 	delete(c.timetable, Local)
+	delete(c.timetable, Special)
 
 	tests := []struct {
 		src  Station
@@ -193,7 +199,10 @@ func TestGetTrainsBetweenStationsForDate(t *testing.T) {
 	// c.UpdateTimeTable currently populates each line with bulletSchedule.
 	// remove the other instances
 	delete(c.timetable, Limited)
+	delete(c.timetable, LimitedA)
+	delete(c.timetable, LimitedB)
 	delete(c.timetable, Local)
+	delete(c.timetable, Special)
 
 	tests := []struct {
 		name string
@@ -412,7 +421,10 @@ func TestUpdateTimeTable(t *testing.T) {
 	}{
 		{name: "Bullet", filepath: "testdata/bulletSchedule.json"},
 		{name: "Limited", filepath: "testdata/limitedSchedule.json"},
+		{name: "LimitedA", filepath: "testdata/limitedASchedule.json"},
+		{name: "LimitedB", filepath: "testdata/limitedBSchedule.json"},
 		{name: "Local", filepath: "testdata/localSchedule.json"},
+		{name: "Special", filepath: "testdata/specialSchedule.json"},
 	}
 	ctx := context.Background()
 	for _, tt := range tests {

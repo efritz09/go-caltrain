@@ -48,6 +48,9 @@ func New(key string) *CaltrainClient {
 	}
 }
 
+// TODO: Implement
+// func (c *CaltrainClient) UpdateLines(ctx context.Context) error {}
+
 // Initialize makes the 511.org API calls to populate the stations and
 // timetable. It calls UpdateStations, UpdateTimetable, and UpdateHolidays
 func (c *CaltrainClient) Initialize(ctx context.Context) error {
@@ -65,12 +68,12 @@ func (c *CaltrainClient) Initialize(ctx context.Context) error {
 func (c *CaltrainClient) UpdateTimeTable(ctx context.Context) error {
 	c.ttLock.Lock()
 	defer c.ttLock.Unlock()
-	lines := []Line{Bullet, Limited, Local}
+	lines := AllLines()
 	// request the timetable for each line
 	for _, line := range lines {
 		query := map[string]string{
 			"operator_id": "CT",
-			"line_id":     line.String(),
+			"line_id":     line.Name(),
 			"api_key":     c.key,
 		}
 		data, err := c.APIClient.Get(ctx, timetableURL, query)
