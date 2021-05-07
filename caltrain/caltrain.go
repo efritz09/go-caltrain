@@ -78,7 +78,7 @@ func (c *CaltrainClient) UpdateTimeTable(ctx context.Context) error {
 		}
 		data, err := c.APIClient.Get(ctx, timetableURL, query)
 		if err != nil {
-			return fmt.Errorf("failed to make request: %w", err)
+			return fmt.Errorf("failed to make 'update timetable' request: %w", err)
 		}
 
 		journeys, services, err := parseTimetable(data)
@@ -109,7 +109,7 @@ func (c *CaltrainClient) UpdateStations(ctx context.Context) error {
 	}
 	data, err := c.APIClient.Get(ctx, stationsURL, query)
 	if err != nil {
-		return fmt.Errorf("failed to make request: %w", err)
+		return fmt.Errorf("failed to make 'update stations' request: %w", err)
 	}
 
 	stations, err := parseStations(data)
@@ -132,7 +132,7 @@ func (c *CaltrainClient) UpdateHolidays(ctx context.Context) error {
 	}
 	data, err := c.APIClient.Get(ctx, holidaysURL, query)
 	if err != nil {
-		return fmt.Errorf("failed to make request: %w", err)
+		return fmt.Errorf("failed to make 'update holidays' request: %w", err)
 	}
 
 	holidays, err := parseHolidays(data)
@@ -175,7 +175,7 @@ func (c *CaltrainClient) GetDelays(ctx context.Context, threshold time.Duration)
 
 	data, err := c.APIClient.Get(ctx, delayURL, query)
 	if err != nil {
-		return nil, t, fmt.Errorf("failed to make request: %w", err)
+		return nil, t, fmt.Errorf("failed to make 'get delays' request: %w", err)
 	}
 
 	// Now parse the body json string
@@ -229,7 +229,7 @@ func (c *CaltrainClient) GetStationStatus(ctx context.Context, stationName Stati
 
 	data, err := c.APIClient.Get(ctx, stationStatusURL, query)
 	if err != nil {
-		return nil, t, fmt.Errorf("failed to make request: %w", err)
+		return nil, t, fmt.Errorf("failed to make 'get station status' request: %w", err)
 	}
 
 	// Now parse the body json string
