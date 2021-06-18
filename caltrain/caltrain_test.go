@@ -14,12 +14,12 @@ const (
 )
 
 var allLines []Line = []Line{
-	Line{Id: "Local", Name: "Local"},
-	Line{Id: "Limited", Name: "Limited"},
-	Line{Id: "LTD A", Name: "Limited A"},
-	Line{Id: "LTD B", Name: "Limited B"},
-	Line{Id: "Bullet", Name: "Bullet"},
-	Line{Id: "Special", Name: "Special"},
+	{Id: "Local", Name: "Local"},
+	{Id: "Limited", Name: "Limited"},
+	{Id: "LTD A", Name: "Limited A"},
+	{Id: "LTD B", Name: "Limited B"},
+	{Id: "Bullet", Name: "Bullet"},
+	{Id: "Special", Name: "Special"},
 }
 
 func TestGetStations(t *testing.T) {

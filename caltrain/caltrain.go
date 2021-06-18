@@ -515,7 +515,7 @@ func (c *CaltrainClient) getStationFromCode(code string) Station {
 	return 0
 }
 
-// // AllLines returns a slice of all available train lines
+// AllLines returns a slice of all available train lines
 func (c *CaltrainClient) AllLines() []Line {
 	c.lLock.RLock()
 	defer c.lLock.RUnlock()

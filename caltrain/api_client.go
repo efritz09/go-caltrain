@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+
+	"github.com/sirupsen/logrus"
 )
 
 // APILimitError is returned on a failed API request when the failure
@@ -20,6 +22,7 @@ func (a *APILimitError) Error() string {
 // than too many requests
 type APIError struct {
 	Status string
+	Code   int
 }
 
 func (a *APIError) Error() string {
@@ -64,11 +67,12 @@ func (a *APIClient511) Get(ctx context.Context, url string, query map[string]str
 	}
 
 	if resp.StatusCode != http.StatusOK {
+		logrus.Debugf("API error - %s", resp.Status)
 		// return a specific error for too many requests
 		if resp.StatusCode == http.StatusTooManyRequests {
 			return nil, &APILimitError{}
 		}
-		return nil, &APIError{Status: resp.Status}
+		return nil, &APIError{Status: resp.Status, Code: resp.StatusCode}
 	}
 
 	// TODO: return the number of tries left? It exists in the header under
