@@ -8,6 +8,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/sirupsen/logrus"
 )
 
 const (
@@ -77,6 +79,7 @@ func (c *CaltrainClient) Initialize(ctx context.Context) (e error) {
 // UpdateLines makes an API call to refresh the available lines. This should be
 // called before UpdateTimeTable to ensure the time table data is accurate
 func (c *CaltrainClient) UpdateLines(ctx context.Context) error {
+	logrus.Debug("Updating train lines...")
 	c.lLock.Lock()
 	defer c.lLock.Unlock()
 
@@ -100,13 +103,15 @@ func (c *CaltrainClient) UpdateLines(ctx context.Context) error {
 // UpdateTimeTable makes an API call to refresh the timetable data. This
 // should be called periodically to ensure correct information.
 func (c *CaltrainClient) UpdateTimeTable(ctx context.Context) error {
+	logrus.Debug("Updating time tables...")
 	c.ttLock.Lock()
 	defer c.ttLock.Unlock()
 	// request the timetable for each line
 	for _, line := range c.lines {
+		logrus.Debugf("Fetching time table for %s trains", line.Name)
 		query := map[string]string{
 			"operator_id": "CT",
-			"line_id":     line.Name,
+			"line_id":     line.Id,
 			"api_key":     c.key,
 		}
 		data, err := c.APIClient.Get(ctx, timetableURL, query)
@@ -133,6 +138,7 @@ func (c *CaltrainClient) UpdateTimeTable(ctx context.Context) error {
 // UpdateStations makes an API call to refresh the station information.
 // This should only need to be called during Initialization.
 func (c *CaltrainClient) UpdateStations(ctx context.Context) error {
+	logrus.Debug("Updating stations...")
 	c.sLock.Lock()
 	defer c.sLock.Unlock()
 
@@ -156,6 +162,7 @@ func (c *CaltrainClient) UpdateStations(ctx context.Context) error {
 // UpdateHolidays makes an API call to refresh the holiday data. This can
 // be updated multiple times a year so this should be called periodically.
 func (c *CaltrainClient) UpdateHolidays(ctx context.Context) error {
+	logrus.Debug("Updating holidays...")
 	c.sLock.Lock()
 	defer c.sLock.Unlock()
 
@@ -186,6 +193,7 @@ func (c *CaltrainClient) SetupCache(expire time.Duration) {
 // GetDelays makes an API call and returns a slice of TrainStatus who's
 // delay into their next station is greater than the time.Duration argument
 func (c *CaltrainClient) GetDelays(ctx context.Context, threshold time.Duration) ([]TrainStatus, time.Time, error) {
+	logrus.Debug("Checking for delayed trains...")
 	query := map[string]string{
 		"agency":  "CT",
 		"api_key": c.key,
@@ -238,6 +246,7 @@ func (c *CaltrainClient) GetDelays(ctx context.Context, threshold time.Duration)
 // GetStationStatus makes an API call and returns a slice of TrainsStatus
 // who have a status reported for the given station and direction.
 func (c *CaltrainClient) GetStationStatus(ctx context.Context, stationName Station, direction Direction) ([]TrainStatus, time.Time, error) {
+	logrus.Debugf("Getting station status for %s...", stationName.String())
 	t := time.Now()
 	code, err := c.getStationCode(stationName, direction)
 	if err != nil {
@@ -297,6 +306,7 @@ func (c *CaltrainClient) GetStationStatus(ctx context.Context, stationName Stati
 // from src to dst on the given weekday. It uses the cached timetable and
 // does not make an API call
 func (c *CaltrainClient) GetTrainsBetweenStationsForWeekday(ctx context.Context, src, dst Station, weekday time.Weekday) ([]*Route, error) {
+	logrus.Debugf("Getting trains between stations '%s' and '%s' for a '%s'", src.String(), dst.String(), weekday.String())
 	c.ttLock.RLock()
 	defer c.ttLock.RUnlock()
 
@@ -515,7 +525,7 @@ func (c *CaltrainClient) getStationFromCode(code string) Station {
 	return 0
 }
 
-// // AllLines returns a slice of all available train lines
+// AllLines returns a slice of all available train lines
 func (c *CaltrainClient) AllLines() []Line {
 	c.lLock.RLock()
 	defer c.lLock.RUnlock()

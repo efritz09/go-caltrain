@@ -237,9 +237,9 @@ func TestParseLines(t *testing.T) {
 	}
 
 	exp := []Line{
-		Line{Id: "Local", Name: "Local"},
-		Line{Id: "LTD A", Name: "Limited A"},
-		Line{Id: "LTD B", Name: "Limited B"},
+		{Id: "Local", Name: "Local"},
+		{Id: "LTD A", Name: "Limited A"},
+		{Id: "LTD B", Name: "Limited B"},
 	}
 
 	lines, err := parseLines(data)
