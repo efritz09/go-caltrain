@@ -40,7 +40,7 @@ func (c *CaltrainClient) getTimetableForStation(stationCode string, dir Directio
 			journeys := frame.VehicleJourneys.TimetableRouteJourney
 			for _, journey := range journeys {
 				if isStationInJourney(stationCode, journey) {
-					journey.Line = line.Name()
+					journey.Line = line
 					allJourneys = append(allJourneys, journey)
 				}
 			}
@@ -59,7 +59,7 @@ func (c *CaltrainClient) getRouteForTrain(trainNum string) (timetableRouteJourne
 			journeys := frame.VehicleJourneys.TimetableRouteJourney
 			for _, journey := range journeys {
 				if journey.ID == trainNum {
-					journey.Line = line.Name()
+					journey.Line = line
 					return journey, nil
 				}
 			}
@@ -89,7 +89,7 @@ func (c *CaltrainClient) getTrainRoutesBetweenStations(src, dst Station, day tim
 			journeys := frame.VehicleJourneys.TimetableRouteJourney
 			for _, journey := range journeys {
 				if areStationsInJourney([]string{sCode, dCode}, journey) {
-					journey.Line = line.Name()
+					journey.Line = line
 					routes = append(routes, journey)
 				}
 			}
@@ -123,7 +123,7 @@ func (c *CaltrainClient) getTrainRoutesForAllStops(stops []Station, dir Directio
 			journeys := frame.VehicleJourneys.TimetableRouteJourney
 			for _, journey := range journeys {
 				if areStationsInJourney(codes, journey) {
-					journey.Line = line.Name()
+					journey.Line = line
 					routes = append(routes, journey)
 				}
 			}

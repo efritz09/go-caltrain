@@ -12,6 +12,7 @@ func TestGetTimetableForStation(t *testing.T) {
 	// Load the timetable for only the bullet schedule
 	ctx := context.Background()
 	c := New(fakeKey)
+	c.lines = allLines
 	m := &apiClientMock{}
 	m.GetResultFilePath = "testdata/bulletSchedule.json"
 	c.APIClient = m
@@ -25,11 +26,11 @@ func TestGetTimetableForStation(t *testing.T) {
 	}
 	// c.UpdateTimeTable currently populates each line with bulletSchedule.
 	// remove the other instances
-	delete(c.timetable, Limited)
-	delete(c.timetable, LimitedA)
-	delete(c.timetable, LimitedB)
-	delete(c.timetable, Local)
-	delete(c.timetable, Special)
+	delete(c.timetable, "Limited")
+	delete(c.timetable, "Limited A")
+	delete(c.timetable, "Limited B")
+	delete(c.timetable, "Local")
+	delete(c.timetable, "Special")
 
 	tests := []struct {
 		station  Station
@@ -68,6 +69,7 @@ func TestGetTrainRoutesBetweenStations(t *testing.T) {
 	// Load the timetable for only the bullet schedule
 	ctx := context.Background()
 	c := New(fakeKey)
+	c.lines = allLines
 	m := &apiClientMock{}
 	m.GetResultFilePath = "testdata/bulletSchedule.json"
 	c.APIClient = m
@@ -81,11 +83,11 @@ func TestGetTrainRoutesBetweenStations(t *testing.T) {
 	}
 	// c.UpdateTimeTable currently populates each line with bulletSchedule.
 	// remove the other instances
-	delete(c.timetable, Limited)
-	delete(c.timetable, LimitedA)
-	delete(c.timetable, LimitedB)
-	delete(c.timetable, Local)
-	delete(c.timetable, Special)
+	delete(c.timetable, "Limited")
+	delete(c.timetable, "Limited A")
+	delete(c.timetable, "Limited B")
+	delete(c.timetable, "Local")
+	delete(c.timetable, "Special")
 
 	tests := []struct {
 		src  Station
@@ -134,6 +136,7 @@ func TestGetRouteForTrain(t *testing.T) {
 	// Load the timetable for only the bullet schedule
 	ctx := context.Background()
 	c := New(fakeKey)
+	c.lines = allLines
 	m := &apiClientMock{}
 	m.GetResultFilePath = "testdata/bulletSchedule.json"
 	c.APIClient = m
@@ -147,11 +150,11 @@ func TestGetRouteForTrain(t *testing.T) {
 	}
 	// c.UpdateTimeTable currently populates each line with bulletSchedule.
 	// remove the other instances
-	delete(c.timetable, Limited)
-	delete(c.timetable, LimitedA)
-	delete(c.timetable, LimitedB)
-	delete(c.timetable, Local)
-	delete(c.timetable, Special)
+	delete(c.timetable, "Limited")
+	delete(c.timetable, "Limited A")
+	delete(c.timetable, "Limited B")
+	delete(c.timetable, "Local")
+	delete(c.timetable, "Special")
 
 	tests := []struct {
 		train string
@@ -182,6 +185,7 @@ func TestGetTrainRoutesForAllStops(t *testing.T) {
 	// Load the timetable for only the bullet schedule
 	ctx := context.Background()
 	c := New(fakeKey)
+	c.lines = allLines
 	m := &apiClientMock{}
 	m.GetResultFilePath = "testdata/bulletSchedule.json"
 	c.APIClient = m
@@ -195,11 +199,11 @@ func TestGetTrainRoutesForAllStops(t *testing.T) {
 	}
 	// c.UpdateTimeTable currently populates each line with bulletSchedule.
 	// remove the other instances
-	delete(c.timetable, Limited)
-	delete(c.timetable, LimitedA)
-	delete(c.timetable, LimitedB)
-	delete(c.timetable, Local)
-	delete(c.timetable, Special)
+	delete(c.timetable, "Limited")
+	delete(c.timetable, "Limited A")
+	delete(c.timetable, "Limited B")
+	delete(c.timetable, "Local")
+	delete(c.timetable, "Special")
 
 	tests := []struct {
 		stops []Station

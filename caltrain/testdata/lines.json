@@ -1,0 +1,29 @@
+[
+    {
+        "Id": "LTD B",
+        "Name": "Limited B",
+        "TransportMode": "rail",
+        "PublicCode": "LTD B",
+        "SiriLineRef": "Limited B",
+        "Monitored": true,
+        "OperatorRef": "CT"
+    },
+    {
+        "Id": "Local",
+        "Name": "Local",
+        "TransportMode": "rail",
+        "PublicCode": "Local",
+        "SiriLineRef": "Local",
+        "Monitored": true,
+        "OperatorRef": "CT"
+    },
+    {
+        "Id": "LTD A",
+        "Name": "Limited A",
+        "TransportMode": "rail",
+        "PublicCode": "LTD A",
+        "SiriLineRef": "Limited A",
+        "Monitored": true,
+        "OperatorRef": "CT"
+    }
+]
