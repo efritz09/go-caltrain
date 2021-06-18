@@ -15,8 +15,8 @@ const (
 
 // parseDelays returns a slice of TrainsStatus for all trains that are delayed
 // more than the threshold argument
-func parseDelays(raw []byte, threshold time.Duration) ([]TrainStatus, error) {
-	trains, err := getTrains(raw)
+func parseDelays(raw []byte, threshold time.Duration, lines []Line) ([]TrainStatus, error) {
+	trains, err := getTrains(raw, lines)
 	if err != nil {
 		return nil, err
 	}
@@ -30,7 +30,7 @@ func parseDelays(raw []byte, threshold time.Duration) ([]TrainStatus, error) {
 }
 
 // getTrains unmarshals the json blob and returns a slice of trains
-func getTrains(raw []byte) ([]TrainStatus, error) {
+func getTrains(raw []byte, lines []Line) ([]TrainStatus, error) {
 	data := trainStatusJson{}
 	// trim some problematic characters: https://stackoverflow.com/questions/31398044/got-error-invalid-character-%C3%AF-looking-for-beginning-of-value-from-json-unmar
 	raw = bytes.TrimPrefix(raw, []byte("\xef\xbb\xbf"))
@@ -64,7 +64,7 @@ func getTrains(raw []byte) ([]TrainStatus, error) {
 			}
 		}
 		if train.LineRef != "" {
-			line, err = ParseLine(train.LineRef)
+			line, err = parseLine(train.LineRef, lines)
 			if err != nil {
 				return ret, fmt.Errorf("could not get trains: %w", err)
 			}
@@ -172,6 +172,25 @@ func parseStations(raw []byte) (map[Station]*stationInfo, error) {
 			if err := addDirectionToStation(st, stop.ID); err != nil {
 				return nil, fmt.Errorf("failed to parse stations: %w", err)
 			}
+		}
+	}
+
+	return ret, nil
+}
+
+// parseLines returns a slice of lines that are available
+func parseLines(raw []byte) ([]Line, error) {
+	raw = bytes.TrimPrefix(raw, []byte("\xef\xbb\xbf"))
+	data := lineJson{}
+	if err := json.Unmarshal(raw, &data); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal: %w", err)
+	}
+
+	ret := make([]Line, len(data))
+	for i, line := range data {
+		ret[i] = Line{
+			Id:   line.ID,
+			Name: line.Name,
 		}
 	}
 

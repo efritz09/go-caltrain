@@ -13,6 +13,15 @@ const (
 	defaultDelayThreshold = 10 * time.Minute
 )
 
+var allLines []Line = []Line{
+	Line{Id: "Local", Name: "Local"},
+	Line{Id: "Limited", Name: "Limited"},
+	Line{Id: "LTD A", Name: "Limited A"},
+	Line{Id: "LTD B", Name: "Limited B"},
+	Line{Id: "Bullet", Name: "Bullet"},
+	Line{Id: "Special", Name: "Special"},
+}
+
 func TestGetStations(t *testing.T) {
 	exp := map[Station]struct{}{
 		Station22ndStreet:   {},
@@ -62,6 +71,7 @@ func TestGetStations(t *testing.T) {
 func TestGetTrainRoute(t *testing.T) {
 	ctx := context.Background()
 	c := New(fakeKey)
+	c.lines = allLines
 	m := &apiClientMock{}
 	m.GetResultFilePath = "testdata/bulletSchedule.json"
 	c.APIClient = m
@@ -74,16 +84,16 @@ func TestGetTrainRoute(t *testing.T) {
 	}
 	// c.UpdateTimeTable currently populates each line with bulletSchedule.
 	// remove the other instances
-	delete(c.timetable, Limited)
-	delete(c.timetable, LimitedA)
-	delete(c.timetable, LimitedB)
-	delete(c.timetable, Local)
-	delete(c.timetable, Special)
+	delete(c.timetable, "Limited")
+	delete(c.timetable, "Limited A")
+	delete(c.timetable, "Limited B")
+	delete(c.timetable, "Local")
+	delete(c.timetable, "Special")
 
 	exp := &Route{
 		TrainNum:  "801",
 		Direction: North,
-		Line:      Bullet,
+		Line:      Line{"Bullet", "Bullet"},
 		NumStops:  9,
 		Stops: []TrainStop{
 			{Order: 1, Station: StationSanJose, Arrival: time.Date(0, time.January, 1, 9, 51, 0, 0, time.UTC), Departure: time.Date(0, time.January, 1, 9, 51, 0, 0, time.UTC)},
@@ -117,6 +127,7 @@ func TestGetTrainRoute(t *testing.T) {
 func TestGetTrainsBetweenStationsForWeekday(t *testing.T) {
 	ctx := context.Background()
 	c := New(fakeKey)
+	c.lines = allLines
 	m := &apiClientMock{}
 	m.GetResultFilePath = "testdata/bulletSchedule.json"
 	c.APIClient = m
@@ -129,11 +140,11 @@ func TestGetTrainsBetweenStationsForWeekday(t *testing.T) {
 	}
 	// c.UpdateTimeTable currently populates each line with bulletSchedule.
 	// remove the other instances
-	delete(c.timetable, Limited)
-	delete(c.timetable, LimitedA)
-	delete(c.timetable, LimitedB)
-	delete(c.timetable, Local)
-	delete(c.timetable, Special)
+	delete(c.timetable, "Limited")
+	delete(c.timetable, "Limited A")
+	delete(c.timetable, "Limited B")
+	delete(c.timetable, "Local")
+	delete(c.timetable, "Special")
 
 	tests := []struct {
 		src  Station
@@ -182,6 +193,7 @@ func TestGetTrainsBetweenStationsForWeekday(t *testing.T) {
 func TestGetTrainsBetweenStationsForDate(t *testing.T) {
 	ctx := context.Background()
 	c := New(fakeKey)
+	c.lines = allLines
 	m := &apiClientMock{}
 	m.GetResultFilePath = "testdata/bulletSchedule.json"
 	c.APIClient = m
@@ -198,11 +210,11 @@ func TestGetTrainsBetweenStationsForDate(t *testing.T) {
 	}
 	// c.UpdateTimeTable currently populates each line with bulletSchedule.
 	// remove the other instances
-	delete(c.timetable, Limited)
-	delete(c.timetable, LimitedA)
-	delete(c.timetable, LimitedB)
-	delete(c.timetable, Local)
-	delete(c.timetable, Special)
+	delete(c.timetable, "Limited")
+	delete(c.timetable, "Limited A")
+	delete(c.timetable, "Limited B")
+	delete(c.timetable, "Local")
+	delete(c.timetable, "Special")
 
 	tests := []struct {
 		name string
@@ -250,6 +262,7 @@ func TestGetTrainsBetweenStationsForDate(t *testing.T) {
 func TestGetDelays(t *testing.T) {
 	ctx := context.Background()
 	c := New(fakeKey)
+	c.lines = allLines
 	tests := []struct {
 		name   string
 		data   string
@@ -283,6 +296,7 @@ func TestGetDelays(t *testing.T) {
 func TestGetDelaysCache(t *testing.T) {
 	ctx := context.Background()
 	c := New(fakeKey)
+	c.lines = allLines
 	m := &apiClientMock{}
 	m.GetResultFilePath = "testdata/parseDelayData1.json"
 	c.APIClient = m
@@ -332,6 +346,7 @@ func TestGetDelaysCache(t *testing.T) {
 func TestGetStationStatus(t *testing.T) {
 	ctx := context.Background()
 	c := New(fakeKey)
+	c.lines = allLines
 	m := &apiClientMock{}
 	m.GetResultFilePath = "testdata/stations.json"
 	c.APIClient = m
@@ -348,6 +363,7 @@ func TestGetStationStatus(t *testing.T) {
 func TestGetStationStatusCache(t *testing.T) {
 	ctx := context.Background()
 	c := New(fakeKey)
+	c.lines = allLines
 	m := &apiClientMock{}
 	m.GetResultFilePath = "testdata/stations.json"
 	c.APIClient = m
@@ -421,8 +437,8 @@ func TestUpdateTimeTable(t *testing.T) {
 	}{
 		{name: "Bullet", filepath: "testdata/bulletSchedule.json"},
 		{name: "Limited", filepath: "testdata/limitedSchedule.json"},
-		{name: "LimitedA", filepath: "testdata/limitedASchedule.json"},
-		{name: "LimitedB", filepath: "testdata/limitedBSchedule.json"},
+		{name: "Limited A", filepath: "testdata/limitedASchedule.json"},
+		{name: "Limited B", filepath: "testdata/limitedBSchedule.json"},
 		{name: "Local", filepath: "testdata/localSchedule.json"},
 		{name: "Special", filepath: "testdata/specialSchedule.json"},
 	}
@@ -430,6 +446,7 @@ func TestUpdateTimeTable(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := New(fakeKey)
+			c.lines = allLines
 			m := &apiClientMock{}
 			m.GetResultFilePath = tt.filepath
 			c.APIClient = m
@@ -445,6 +462,7 @@ func TestUpdateTimeTable(t *testing.T) {
 func TestGetStationTimetable(t *testing.T) {
 	ctx := context.Background()
 	c := New(fakeKey)
+	c.lines = allLines
 	m := &apiClientMock{}
 	m.GetResultFilePath = "testdata/stations.json"
 	c.APIClient = m

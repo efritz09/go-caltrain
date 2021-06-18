@@ -22,8 +22,8 @@ func TestParseDelays(t *testing.T) {
 			name: "DelayData1",
 			data: "testdata/parseDelayData1.json",
 			expected: []TrainStatus{
-				{TrainNum: "258", NextStop: StationSunnyvale, Direction: South, Delay: delay1, Arrival: time.Date(2019, time.December, 25, 0, 58, 10, 0, time.UTC), Line: Limited},
-				{TrainNum: "263", NextStop: StationPaloAlto, Direction: North, Delay: delay2, Arrival: time.Date(2019, time.December, 25, 0, 50, 01, 0, time.UTC), Line: Limited},
+				{TrainNum: "258", NextStop: StationSunnyvale, Direction: South, Delay: delay1, Arrival: time.Date(2019, time.December, 25, 0, 58, 10, 0, time.UTC), Line: Line{"Limited", "Limited"}},
+				{TrainNum: "263", NextStop: StationPaloAlto, Direction: North, Delay: delay2, Arrival: time.Date(2019, time.December, 25, 0, 50, 01, 0, time.UTC), Line: Line{"Limited", "Limited"}},
 			},
 			err: nil,
 		},
@@ -45,7 +45,7 @@ func TestParseDelays(t *testing.T) {
 				t.Fatalf("Could not read test data for %s: %v", tt.name, err)
 			}
 
-			delays, err := parseDelays(data, defaultDelayThreshold)
+			delays, err := parseDelays(data, defaultDelayThreshold, allLines)
 			if err != nil && tt.err == nil {
 				t.Fatalf("Failed to get trains for %s: %v", tt.name, err)
 			} else if err == nil && tt.err != nil {
@@ -70,8 +70,8 @@ func TestGetTrains(t *testing.T) {
 			name: "HillsdaleSouth",
 			data: "testdata/parseHillsdaleSouth.json",
 			expected: []TrainStatus{
-				{TrainNum: "436", NextStop: StationHillsdale, Direction: South, Delay: 0, Arrival: time.Date(2019, time.December, 30, 3, 6, 57, 0, time.UTC), Line: Local},
-				{TrainNum: "804", NextStop: StationHillsdale, Direction: South, Delay: 0, Arrival: time.Date(2019, time.December, 30, 3, 59, 45, 0, time.UTC), Line: Bullet},
+				{TrainNum: "436", NextStop: StationHillsdale, Direction: South, Delay: 0, Arrival: time.Date(2019, time.December, 30, 3, 6, 57, 0, time.UTC), Line: Line{"Local", "Local"}},
+				{TrainNum: "804", NextStop: StationHillsdale, Direction: South, Delay: 0, Arrival: time.Date(2019, time.December, 30, 3, 59, 45, 0, time.UTC), Line: Line{"Bullet", "Bullet"}},
 			},
 			err: nil,
 		},
@@ -79,7 +79,7 @@ func TestGetTrains(t *testing.T) {
 			name: "HillsdaleNorth",
 			data: "testdata/parseHillsdaleNorth.json",
 			expected: []TrainStatus{
-				{TrainNum: "437", NextStop: StationHillsdale, Direction: North, Delay: 0, Arrival: time.Date(2019, time.December, 30, 4, 4, 45, 0, time.UTC), Line: Local},
+				{TrainNum: "437", NextStop: StationHillsdale, Direction: North, Delay: 0, Arrival: time.Date(2019, time.December, 30, 4, 4, 45, 0, time.UTC), Line: Line{"Local", "Local"}},
 			},
 			err: nil,
 		},
@@ -101,7 +101,7 @@ func TestGetTrains(t *testing.T) {
 				t.Fatalf("Could not read test data for %s: %v", tt.name, err)
 			}
 
-			trains, err := getTrains(data)
+			trains, err := getTrains(data, allLines)
 			if err != nil && tt.err == nil {
 				t.Fatalf("Failed to get trains for %s: %v", tt.name, err)
 			} else if err == nil && tt.err != nil {
@@ -223,6 +223,44 @@ func TestParseStations(t *testing.T) {
 		if st.southCode != v.southCode {
 			t.Fatalf("conflicting southCodes: %s vs %s", v.southCode, st.southCode)
 		}
+	}
+}
+
+func TestParseLines(t *testing.T) {
+	f, err := os.Open("testdata/lines.json")
+	if err != nil {
+		t.Fatalf("Could not open test data: %v", err)
+	}
+	data, err := ioutil.ReadAll(f)
+	if err != nil {
+		t.Fatalf("Could not read test data: %v", err)
+	}
+
+	exp := []Line{
+		Line{Id: "Local", Name: "Local"},
+		Line{Id: "LTD A", Name: "Limited A"},
+		Line{Id: "LTD B", Name: "Limited B"},
+	}
+
+	lines, err := parseLines(data)
+	if err != nil {
+		t.Fatalf("Failed to parse lines: %v", err)
+	}
+
+	if len(exp) != len(lines) {
+		t.Fatalf("Unexpected lines\nexpected: %v\nreceived: %v", exp, lines)
+	}
+
+	m1 := make(map[string]Line)
+	m2 := make(map[string]Line)
+	for _, k := range exp {
+		m1[k.Name] = k
+	}
+	for _, k := range lines {
+		m2[k.Name] = k
+	}
+	if !reflect.DeepEqual(m1, m2) {
+		t.Fatalf("Unexpected lines\nexpected: %v\nreceived: %v", exp, lines)
 	}
 }
 

@@ -46,6 +46,8 @@ func (a *APIClient511) Get(ctx context.Context, url string, query map[string]str
 		return nil, err
 	}
 
+	// TODO: handle 500 errors?
+
 	req.Header.Set("Content-Type", "application/json")
 
 	// update the url with the required query parameters

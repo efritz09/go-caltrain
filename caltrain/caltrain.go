@@ -12,26 +12,29 @@ import (
 
 const (
 	delayURL         = "http://api.511.org/transit/StopMonitoring"
+	holidaysURL      = "http://api.511.org/transit/holidays"
+	linesURL         = "http://api.511.org/transit/lines"
 	stationsURL      = "http://api.511.org/transit/stops"
 	stationStatusURL = "http://api.511.org/transit/StopMonitoring"
 	timetableURL     = "http://api.511.org/transit/timetable"
-	holidaysURL      = "http://api.511.org/transit/holidays"
 )
 
 // CaltrainClient provides the means for querying information about caltrain
 // schedules, getting route information between stations, or getting live train
 // status updates
 type CaltrainClient struct {
-	timetable  map[Line][]timetableFrame // map of line type to slice of service journeys
-	dayService map[string][]string       // map of id to days of the week that the id corresponds to
-	ttLock     sync.RWMutex              // lock in case someone tries to access the timetable during and update
-	stations   map[Station]*stationInfo  // station information map
-	holidays   []time.Time               // slice of days that are on a holiday schedule
-	sLock      sync.RWMutex              // lock in case someone tries to access the stations during and update
-	useCache   bool                      // set by calling the SetupCache method
-	tz         *time.Location            // constant America/LosAngeles time
-	key        string                    // API key for 511.org
-	cache      cache                     // interface for caching recent request results
+	timetable  map[string][]timetableFrame // map of line name to slice of service journeys
+	dayService map[string][]string         // map of id to days of the week that the id corresponds to
+	ttLock     sync.RWMutex                // lock in case someone tries to access the timetable during an update
+	stations   map[Station]*stationInfo    // station information map
+	sLock      sync.RWMutex                // lock in case someone tries to access the stations during an update
+	lines      []Line                      // slice of available lines
+	lLock      sync.RWMutex                // lock in case someone tries to access the lines during an update
+	useCache   bool                        // set by calling the SetupCache method
+	holidays   []time.Time                 // slice of days that are on a holiday schedule
+	tz         *time.Location              // constant America/LosAngeles time
+	key        string                      // API key for 511.org
+	cache      cache                       // interface for caching recent request results
 
 	APIClient APIClient // API client for making caltrain queries. Default APIClient511
 }
@@ -40,27 +43,58 @@ type CaltrainClient struct {
 func New(key string) *CaltrainClient {
 	tz, _ := time.LoadLocation("America/Los_Angeles")
 	return &CaltrainClient{
-		timetable:  make(map[Line][]timetableFrame),
+		timetable:  make(map[string][]timetableFrame),
 		dayService: make(map[string][]string),
+		stations:   make(map[Station]*stationInfo),
+		lines:      []Line{},
 		key:        key,
 		tz:         tz,
 		APIClient:  NewClient(),
 	}
 }
 
-// TODO: Implement
-// func (c *CaltrainClient) UpdateLines(ctx context.Context) error {}
-
 // Initialize makes the 511.org API calls to populate the stations and
 // timetable. It calls UpdateStations, UpdateTimetable, and UpdateHolidays
-func (c *CaltrainClient) Initialize(ctx context.Context) error {
+func (c *CaltrainClient) Initialize(ctx context.Context) (e error) {
+	if err := c.UpdateLines(ctx); err != nil {
+		e = fmt.Errorf("failure updating Lines: %w", err)
+	}
+
 	if err := c.UpdateStations(ctx); err != nil {
-		return err
+		e = fmt.Errorf("failure updating Stations: %w", err)
 	}
+
 	if err := c.UpdateHolidays(ctx); err != nil {
-		return err
+		e = fmt.Errorf("failure updating Holidays: %w", err)
 	}
-	return c.UpdateTimeTable(ctx)
+
+	if err := c.UpdateTimeTable(ctx); err != nil {
+		e = fmt.Errorf("failure updating Time Tables: %w", err)
+	}
+	return
+}
+
+// UpdateLines makes an API call to refresh the available lines. This should be
+// called before UpdateTimeTable to ensure the time table data is accurate
+func (c *CaltrainClient) UpdateLines(ctx context.Context) error {
+	c.lLock.Lock()
+	defer c.lLock.Unlock()
+
+	query := map[string]string{
+		"operator_id": "CT",
+		"api_key":     c.key,
+	}
+	data, err := c.APIClient.Get(ctx, linesURL, query)
+	if err != nil {
+		return fmt.Errorf("failed to make 'update lines' request: %w", err)
+	}
+
+	lines, err := parseLines(data)
+	if err != nil {
+		return fmt.Errorf("failed to parse lines: %w", err)
+	}
+	c.lines = lines
+	return nil
 }
 
 // UpdateTimeTable makes an API call to refresh the timetable data. This
@@ -68,12 +102,11 @@ func (c *CaltrainClient) Initialize(ctx context.Context) error {
 func (c *CaltrainClient) UpdateTimeTable(ctx context.Context) error {
 	c.ttLock.Lock()
 	defer c.ttLock.Unlock()
-	lines := AllLines()
 	// request the timetable for each line
-	for _, line := range lines {
+	for _, line := range c.lines {
 		query := map[string]string{
 			"operator_id": "CT",
-			"line_id":     line.Name(),
+			"line_id":     line.Name,
 			"api_key":     c.key,
 		}
 		data, err := c.APIClient.Get(ctx, timetableURL, query)
@@ -86,7 +119,7 @@ func (c *CaltrainClient) UpdateTimeTable(ctx context.Context) error {
 			return fmt.Errorf("failed to parse timetable: %w", err)
 		}
 		// store the timetable
-		c.timetable[line] = journeys
+		c.timetable[line.Name] = journeys
 
 		// overwrite the known data with the timetable's ServiceCalendarFrame
 		for key, value := range services {
@@ -168,7 +201,9 @@ func (c *CaltrainClient) GetDelays(ctx context.Context, threshold time.Duration)
 		var ok bool
 		data, cacheTime, ok = c.cache.get(delayURL)
 		if ok {
-			cacheData, cacheError = parseDelays(data, threshold)
+			c.lLock.RLock()
+			cacheData, cacheError = parseDelays(data, threshold, c.lines)
+			c.lLock.RUnlock()
 			return cacheData, cacheTime, cacheError
 		}
 	}
@@ -179,7 +214,9 @@ func (c *CaltrainClient) GetDelays(ctx context.Context, threshold time.Duration)
 	}
 
 	// Now parse the body json string
-	trains, err := parseDelays(data, threshold)
+	c.lLock.RLock()
+	trains, err := parseDelays(data, threshold, c.lines)
+	c.lLock.RUnlock()
 	if err != nil {
 		if c.useCache {
 			var limErr *APILimitError
@@ -222,7 +259,9 @@ func (c *CaltrainClient) GetStationStatus(ctx context.Context, stationName Stati
 		var ok bool
 		data, cacheTime, ok = c.cache.get(stationStatusURL + code)
 		if ok {
-			cacheData, cacheError = getTrains(data)
+			c.lLock.RLock()
+			cacheData, cacheError = getTrains(data, c.lines)
+			c.lLock.RUnlock()
 			return cacheData, cacheTime, cacheError
 		}
 	}
@@ -233,7 +272,9 @@ func (c *CaltrainClient) GetStationStatus(ctx context.Context, stationName Stati
 	}
 
 	// Now parse the body json string
-	trains, err := getTrains(data)
+	c.lLock.RLock()
+	trains, err := getTrains(data, c.lines)
+	c.lLock.RUnlock()
 	if err != nil {
 		if c.useCache {
 			var limErr *APILimitError
@@ -416,7 +457,12 @@ func (c *CaltrainClient) getRouteCodes(src, dst Station) (string, string, error)
 
 // journeyToRoute converts a timetableRouteJourney into a Route
 func (c *CaltrainClient) journeyToRoute(r timetableRouteJourney) (*Route, error) {
-	line, _ := ParseLine(r.Line)
+	c.lLock.RLock()
+	line, err := parseLine(r.Line, c.lines)
+	c.lLock.RUnlock()
+	if err != nil {
+		return nil, err
+	}
 
 	route := &Route{
 		TrainNum:  r.ID,
@@ -469,6 +515,13 @@ func (c *CaltrainClient) getStationFromCode(code string) Station {
 	return 0
 }
 
+// // AllLines returns a slice of all available train lines
+func (c *CaltrainClient) AllLines() []Line {
+	c.lLock.RLock()
+	defer c.lLock.RUnlock()
+	return c.lines
+}
+
 // GetDirectionFromSrcToDst returns the direction the train would go to get
 // from src to dst. Value is either North or South
 func GetDirectionFromSrcToDst(src, dst Station) (Direction, error) {
@@ -503,4 +556,16 @@ func getDirFromChar(c string) Direction {
 	} else {
 		return 0
 	}
+}
+
+// parseLine returns the Line corresponding with the string argument. It
+// accepts names or line IDs
+func parseLine(line string, lines []Line) (Line, error) {
+	for _, l := range lines {
+		if strings.EqualFold(l.Id, line) || strings.EqualFold(l.Name, line) {
+			return l, nil
+		}
+	}
+
+	return Line{}, fmt.Errorf("%s is not a valid line", line)
 }
