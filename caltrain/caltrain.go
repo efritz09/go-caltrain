@@ -111,7 +111,7 @@ func (c *CaltrainClient) UpdateTimeTable(ctx context.Context) error {
 		logrus.Debugf("Fetching time table for %s trains", line.Name)
 		query := map[string]string{
 			"operator_id": "CT",
-			"line_id":     line.Name,
+			"line_id":     line.Id,
 			"api_key":     c.key,
 		}
 		data, err := c.APIClient.Get(ctx, timetableURL, query)
