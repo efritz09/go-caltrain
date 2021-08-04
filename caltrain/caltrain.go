@@ -259,6 +259,7 @@ func (c *CaltrainClient) GetStationStatus(ctx context.Context, stationName Stati
 	}
 
 	logrus.Infof("Query: %+v", query)
+	fmt.Println("Query: %+v", query)
 
 	var cacheData []TrainStatus
 	var cacheTime time.Time
