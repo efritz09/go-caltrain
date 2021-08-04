@@ -258,7 +258,7 @@ func (c *CaltrainClient) GetStationStatus(ctx context.Context, stationName Stati
 		"api_key":  c.key,
 	}
 
-	logrus.Debugf("Query: %+v", query)
+	logrus.Infof("Query: %+v", query)
 
 	var cacheData []TrainStatus
 	var cacheTime time.Time
