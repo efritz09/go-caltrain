@@ -140,10 +140,12 @@ func parseStations(raw []byte) (map[Station]*stationInfo, error) {
 	// that gets us halfway there first, then convert to our struct
 	stops := data.Contents.DataObjects.ScheduledStopPoint
 	for _, stop := range stops {
-		if strings.HasSuffix(stop.Name, "Station") {
+		if stop.ID == "777403" || stop.ID == "777402" {
+			// Skip the Tamien and San Jose stations that are an outlier for some reason
 			continue
 		}
-		name, err := ParseStation(strings.TrimSuffix(stop.Name, " Caltrain"))
+
+		name, err := ParseStation(strings.TrimSuffix(stop.Name, " Caltrain Station"))
 		if err != nil {
 			return ret, fmt.Errorf("failed to parse station: %w", err)
 		}
