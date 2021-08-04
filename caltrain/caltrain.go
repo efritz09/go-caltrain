@@ -96,6 +96,9 @@ func (c *CaltrainClient) UpdateLines(ctx context.Context) error {
 	if err != nil {
 		return fmt.Errorf("failed to parse lines: %w", err)
 	}
+	if len(lines) == 0 {
+		return errors.New("unable to populate the lines: none found")
+	}
 	c.lines = lines
 	return nil
 }
@@ -132,6 +135,10 @@ func (c *CaltrainClient) UpdateTimeTable(ctx context.Context) error {
 		}
 	}
 
+	if len(c.timetable) == 0 {
+		return errors.New("unable to populate the timetables: none found")
+	}
+
 	return nil
 }
 
@@ -154,6 +161,9 @@ func (c *CaltrainClient) UpdateStations(ctx context.Context) error {
 	stations, err := parseStations(data)
 	if err != nil {
 		return fmt.Errorf("failed to parse stations: %w", err)
+	}
+	if len(stations) == 0 {
+		return errors.New("unable to populate the station list: none found")
 	}
 	c.stations = stations
 	return nil
