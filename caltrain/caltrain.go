@@ -461,7 +461,7 @@ func (c *CaltrainClient) getLine(id string) (Line, error) {
 		}
 	}
 
-	return nil, fmt.Errorf("unknown line ID %s", id)
+	return Line{}, fmt.Errorf("unknown line ID %s", id)
 }
 
 // getRouteCodes returns the proper station codes for a route given a
