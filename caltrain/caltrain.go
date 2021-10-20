@@ -111,7 +111,7 @@ func (c *CaltrainClient) UpdateTimeTable(ctx context.Context) error {
 	defer c.ttLock.Unlock()
 	// request the timetable for each line
 	for _, line := range c.lines {
-		logrus.Debugf("Fetching time table for %s trains", line.Name)
+		logrus.Debugf("Fetching time table for %s-%s trains", line.Id, line.Name)
 		query := map[string]string{
 			"operator_id": "CT",
 			"line_id":     line.Id,
@@ -127,7 +127,7 @@ func (c *CaltrainClient) UpdateTimeTable(ctx context.Context) error {
 			return fmt.Errorf("failed to parse timetable: %w", err)
 		}
 		// store the timetable
-		c.timetable[line.Name] = journeys
+		c.timetable[line.Id] = journeys
 
 		// overwrite the known data with the timetable's ServiceCalendarFrame
 		for key, value := range services {
@@ -447,6 +447,21 @@ func (c *CaltrainClient) getStationCode(st Station, dir Direction) (string, erro
 	} else {
 		return "", fmt.Errorf("unknown direction %s", dir)
 	}
+}
+
+// getLine returns a Line struc for a given line ID
+func (c *CaltrainClient) getLine(id string) (Line, error) {
+	// first validate the direction
+	c.lLock.RLock()
+	defer c.lLock.RUnlock()
+
+	for _, l := range c.lines {
+		if l.Id == id {
+			return l, nil
+		}
+	}
+
+	return Line{}, fmt.Errorf("unknown line ID %s", id)
 }
 
 // getRouteCodes returns the proper station codes for a route given a

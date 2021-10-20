@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strings"
 	"time"
+
+	"github.com/sirupsen/logrus"
 )
 
 // timetable.go contains helpers relating to the timetable. All functions must
@@ -26,7 +28,14 @@ func (c *CaltrainClient) getTimetableForStation(stationCode string, dir Directio
 
 	weekday := strings.ToLower(day.String())
 
-	for line, ttArray := range c.timetable {
+	for lineId, ttArray := range c.timetable {
+		line, err := c.getLine(lineId)
+		if err != nil {
+			logrus.Errorf("failed to get line!")
+			line = Line{Id: "unknown", Name: "Unknown"}
+		} else {
+			logrus.Debugf("getting line %s-%s for station code %s...", line.Id, line.Name, stationCode)
+		}
 		for _, frame := range ttArray {
 			// Check the day reference
 			if !c.isForToday(weekday, frame.FrameValidityConditions.AvailabilityCondition.DayTypes.DayTypeRef.Ref) {
@@ -40,7 +49,7 @@ func (c *CaltrainClient) getTimetableForStation(stationCode string, dir Directio
 			journeys := frame.VehicleJourneys.TimetableRouteJourney
 			for _, journey := range journeys {
 				if isStationInJourney(stationCode, journey) {
-					journey.Line = line
+					journey.Line = line.Name
 					allJourneys = append(allJourneys, journey)
 				}
 			}
