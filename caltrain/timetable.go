@@ -32,7 +32,7 @@ func (c *CaltrainClient) getTimetableForStation(stationCode string, dir Directio
 		line, err := c.getLine(lineId)
 		if err != nil {
 			logrus.Errorf("failed to get line!")
-			line := Line{Id: "unknown", Name: "Unknown"}
+			line = Line{Id: "unknown", Name: "Unknown"}
 		} else {
 			logrus.Debugf("getting line %s-%s for station code %s...", line.Id, line.Name, stationCode)
 		}
